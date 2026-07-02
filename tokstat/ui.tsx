@@ -53,7 +53,7 @@
             {item.ok && (
             <VStack gap={1}>
               <HStack className="items-center">
-                <Text className="text-[10px] uppercase tracking-wider text-[var(--ag-muted)]">{t.session}</Text>
+                <Text className="text-[10px] uppercase tracking-wider">{t.session}</Text>
                 <Spacer/>
                 <Text className="text-xs font-semibold tabular-nums">{item.session_pct_text}</Text>
               </HStack>
@@ -64,7 +64,7 @@
             {item.ok && (
             <VStack gap={1}>
               <HStack className="items-center">
-                <Text className="text-[10px] uppercase tracking-wider text-[var(--ag-muted)]">{t.week}</Text>
+                <Text className="text-[10px] uppercase tracking-wider">{t.week}</Text>
                 <Spacer/>
                 <Text className="text-xs font-semibold tabular-nums">{item.weekly_pct_text}</Text>
               </HStack>
