@@ -72,6 +72,13 @@
             ]
           },
           {
+            "key": "primary_color",
+            "type": "color",
+            "default": "#3b82f6",
+            "label": { "default": "Primary color", "zh": "主颜色", "ja": "メインカラー" },
+            "help": { "default": "Bar/ring color at normal usage (high usage still turns orange/red)", "zh": "正常用量时进度条/圆环的颜色（高用量仍变橙/红预警）", "ja": "通常時のバー/リング色（高使用時はオレンジ/赤で警告）" }
+          },
+          {
             "key": "tray_claude",
             "type": "bool",
             "default": "true",

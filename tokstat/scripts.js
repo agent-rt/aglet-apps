@@ -23,9 +23,18 @@ function numOr0(pct) { return typeof pct === "number" ? pct : 0; }
 
 function pctColor(pct) {
   if (typeof pct !== "number") return "default";
-  if (pct >= 95) return "danger";
-  if (pct >= 80) return "warning";
-  return "primary";
+  if (pct >= 95) return "danger";   // 阈值预警保留(高用量变红)
+  if (pct >= 80) return "warning";  // (变橙)
+  return primaryColor();            // 正常档 = 用户主色(#hex,取色器设置)
+}
+
+// 主色设置(#rrggbb);未设置回退默认蓝。colorToken 直接吃 #hex。
+function primaryColor() {
+  try {
+    const v = aglet.settings.get(APP_ID, "primary_color").value;
+    if (typeof v === "string" && /^#[0-9a-fA-F]{6}$/.test(v)) return v;
+  } catch (_e) {}
+  return "#3b82f6";
 }
 
 // 剩余时长 → 语言中立紧凑格式：`45s` `12m` `3h 28m` `3h` `2d 5h` `4d`。
