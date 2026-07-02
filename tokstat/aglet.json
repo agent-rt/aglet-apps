@@ -24,7 +24,8 @@
     "data:read",
     "data:write",
     "settings:read",
-    "settings:write"
+    "settings:write",
+    "notifications:post"
   ],
   "settings": {
     "groups": [
@@ -95,6 +96,26 @@
             "disabledWhen": { "key": "enable_codex", "equals": "false" }
           }
         ]
+      },
+      {
+        "title": { "default": "Alerts", "zh": "提醒", "ja": "通知" },
+        "fields": [
+          {
+            "key": "notify_enabled",
+            "type": "bool",
+            "default": "true",
+            "label": { "default": "Usage alerts", "zh": "用量提醒", "ja": "使用量アラート" },
+            "help": { "default": "Send a notification when usage reaches the threshold", "zh": "用量达到阈值时发系统通知", "ja": "使用量がしきい値に達したら通知" }
+          },
+          {
+            "key": "notify_at",
+            "type": "number",
+            "default": "90",
+            "label": { "default": "Threshold %", "zh": "阈值 %", "ja": "しきい値 %" },
+            "help": { "default": "Notify when session or weekly usage reaches this percent", "zh": "会话或每周用量达到此百分比时提醒", "ja": "セッション/週の使用量がこの%に達したら通知" },
+            "disabledWhen": { "key": "notify_enabled", "equals": "false" }
+          }
+        ]
       }
     ]
   },
@@ -122,6 +143,8 @@
         "ts": { "type": "integer" },
         "ok": { "type": "boolean" },
         "needs_auth": { "type": "boolean" },
+        "notified_session": { "type": "boolean" },
+        "notified_weekly": { "type": "boolean" },
         "err": { "type": "string" },
         "session_pct": { "type": "integer" },
         "session_pct_text": { "type": "string" },

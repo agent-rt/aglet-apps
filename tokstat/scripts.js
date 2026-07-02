@@ -66,6 +66,30 @@ function boolSetting(key, def) {
   } catch (_e) { return def; }
 }
 
+// settings number(存成串)。未设/非数 = 默认。
+function numSetting(key, def) {
+  try {
+    const v = aglet.settings.get(APP_ID, key).value;
+    if (v === undefined || v === null || v === "") return def;
+    const n = Number(v);
+    return Number.isFinite(n) ? n : def;
+  } catch (_e) { return def; }
+}
+
+// 用量阈值通知(即时:notifications.schedule 省 at)。文案语言中立(scripts 无 t()):
+// 品牌 label + 窗口 emoji(⏱会话/📅每周)+ 百分比 + ↺重置时间。id 稳定 → 重发替换不堆叠。
+async function warnNotify(ctx, p, win, emoji, pct, resetText) {
+  try {
+    await ctx.dispatch("notifications.schedule", {
+      id: `warn-${p.id}-${win}`,
+      title: `${p.label} ${emoji} ${pct}%`,
+      body: resetText && resetText !== "—" ? `↺ ${resetText}` : "",
+    });
+  } catch (e) {
+    console.warn(`[tokstat] notify(${p.id},${win}) failed:`, String(e));
+  }
+}
+
 // ── 凭据 + HTTP ────────────────────────────────────────────────────────────
 
 // aicreds 插件：只读凭据 → { access_token, account_id? }。读不到(未登录)返回 null。
@@ -156,6 +180,27 @@ async function upsertProvider(p, side, ts, ctx) {
   const sPct = sess.used_pct;
   const wPct = week.used_pct;
 
+  // 阈值通知去重:读上次 current 的 notified_* 标志,过阈值时通知一次;跌回阈值下(如窗口
+  // 重置用量归零)→ 复位标志,下次再越线可再通知。标志随 row 存回(否则每次 upsert 会丢)。
+  let old = {};
+  try {
+    const r = aglet.data.list(APP_ID, "current", { where: { source: p.id }, limit: 1 });
+    if (r && r.items && r.items.length) old = r.items[0].data;
+  } catch (_e) {}
+  let nS = !!old.notified_session;
+  let nW = !!old.notified_weekly;
+  if (boolSetting("notify_enabled", true)) {
+    const thr = numSetting("notify_at", 90);
+    if (typeof sPct === "number") {
+      if (sPct >= thr) { if (!nS) { await warnNotify(ctx, p, "session", "⏱", Math.round(sPct), resetLine(sess.resets_at_ms)); nS = true; } }
+      else nS = false;
+    }
+    if (typeof wPct === "number") {
+      if (wPct >= thr) { if (!nW) { await warnNotify(ctx, p, "weekly", "📅", Math.round(wPct), resetLine(week.resets_at_ms)); nW = true; } }
+      else nW = false;
+    }
+  }
+
   const row = {
     source: p.id,
     label: p.label,
@@ -165,6 +210,8 @@ async function upsertProvider(p, side, ts, ctx) {
     enabled: true,
     ok: true,
     needs_auth: false,
+    notified_session: nS,
+    notified_weekly: nW,
     err: "",
     session_pct: numOr0(sPct),
     session_pct_text: pctText(sPct),
