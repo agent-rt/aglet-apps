@@ -3,5 +3,6 @@
   "menuQuit": "退出",
   "session": "会话",
   "week": "本周",
-  "resets": "重置于"
+  "resets": "重置还剩",
+  "empty": "未启用任何服务 —— 在设置里开启。"
 }

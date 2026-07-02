@@ -6,11 +6,11 @@
     "ja": "AI トークン使用量"
   },
   "description": {
-    "default": "Claude + Codex usage (session & weekly) in your menu bar, with progress bars and reset countdowns.",
-    "zh": "在菜单栏查看 Claude + Codex 的用量（会话与每周），含进度条与重置倒计时。",
-    "ja": "メニューバーで Claude + Codex の使用量（セッション・週）を進捗バーとリセットまでのカウントダウン付きで表示。"
+    "default": "AI coding token usage (session & weekly) in your menu bar — progress bars, reset countdowns. Enable the providers you use; pick which show in the menu bar.",
+    "zh": "在菜单栏查看 AI 编程用量（会话与每周），含进度条与重置倒计时。按需启用各家、选择在菜单栏显示哪些。",
+    "ja": "メニューバーで AI コーディングの使用量（セッション・週）を表示。使うプロバイダを有効化し、メニューバーに出すものを選べます。"
   },
-  "version": "0.2.0",
+  "version": "0.3.0",
   "license": "MIT",
   "min_runtime": "0.1.2",
   "renderer": "auto",
@@ -29,18 +29,52 @@
   "settings": {
     "groups": [
       {
-        "title": { "default": "Display", "zh": "显示", "ja": "表示" },
+        "title": { "default": "Track", "zh": "统计", "ja": "計測" },
         "fields": [
           {
-            "key": "show",
-            "label": { "default": "Show", "zh": "显示", "ja": "表示" },
+            "key": "enable_claude",
+            "type": "bool",
+            "default": "true",
+            "label": { "default": "Claude", "zh": "Claude", "ja": "Claude" },
+            "help": { "default": "Poll Claude usage and show it in the popover", "zh": "定时获取 Claude 用量并在弹层显示", "ja": "Claude の使用量を取得しポップオーバーに表示" }
+          },
+          {
+            "key": "enable_codex",
+            "type": "bool",
+            "default": "true",
+            "label": { "default": "Codex", "zh": "Codex", "ja": "Codex" },
+            "help": { "default": "Poll Codex usage and show it in the popover", "zh": "定时获取 Codex 用量并在弹层显示", "ja": "Codex の使用量を取得しポップオーバーに表示" }
+          }
+        ]
+      },
+      {
+        "title": { "default": "Menu bar", "zh": "菜单栏", "ja": "メニューバー" },
+        "fields": [
+          {
+            "key": "menubar_layout",
             "type": "select",
-            "default": "both",
+            "default": "horizontal",
+            "label": { "default": "Layout", "zh": "排列", "ja": "レイアウト" },
             "options": [
-              { "value": "both", "label": "Claude + Codex" },
-              { "value": "claude", "label": { "default": "Claude only", "zh": "仅 Claude", "ja": "Claude のみ" } },
-              { "value": "codex", "label": { "default": "Codex only", "zh": "仅 Codex", "ja": "Codex のみ" } }
+              { "value": "horizontal", "label": { "default": "Horizontal", "zh": "水平", "ja": "横" } },
+              { "value": "vertical", "label": { "default": "Vertical", "zh": "竖直", "ja": "縦" } }
             ]
+          },
+          {
+            "key": "tray_claude",
+            "type": "bool",
+            "default": "true",
+            "label": { "default": "Claude", "zh": "Claude", "ja": "Claude" },
+            "help": { "default": "Show Claude in the menu bar (up to 2)", "zh": "在菜单栏显示 Claude（最多 2 个）", "ja": "メニューバーに Claude を表示（最大 2 件）" },
+            "disabledWhen": { "key": "enable_claude", "equals": "false" }
+          },
+          {
+            "key": "tray_codex",
+            "type": "bool",
+            "default": "true",
+            "label": { "default": "Codex", "zh": "Codex", "ja": "Codex" },
+            "help": { "default": "Show Codex in the menu bar (up to 2)", "zh": "在菜单栏显示 Codex（最多 2 个）", "ja": "メニューバーに Codex を表示（最大 2 件）" },
+            "disabledWhen": { "key": "enable_codex", "equals": "false" }
           }
         ]
       }
@@ -50,86 +84,34 @@
     "samples": {
       "storage": "persistent",
       "schema": {
-        "ts": {
-          "type": "integer"
-        },
-        "source": {
-          "type": "string"
-        },
-        "ok": {
-          "type": "boolean"
-        },
-        "session_pct": {
-          "type": "integer"
-        },
-        "weekly_pct": {
-          "type": "integer"
-        },
-        "session_resets_ms": {
-          "type": "integer"
-        },
-        "weekly_resets_ms": {
-          "type": "integer"
-        },
-        "total_cost_usd": {
-          "type": "number"
-        }
+        "ts": { "type": "integer" },
+        "source": { "type": "string" },
+        "ok": { "type": "boolean" },
+        "session_pct": { "type": "integer" },
+        "weekly_pct": { "type": "integer" },
+        "session_resets_ms": { "type": "integer" },
+        "weekly_resets_ms": { "type": "integer" }
       }
     },
     "current": {
       "storage": "persistent",
       "schema": {
-        "source": {
-          "type": "string"
-        },
-        "ts": {
-          "type": "integer"
-        },
-        "ok": {
-          "type": "boolean"
-        },
-        "err": {
-          "type": "string"
-        },
-        "menu_text": {
-          "type": "string"
-        },
-        "session_pct": {
-          "type": "integer"
-        },
-        "session_pct_text": {
-          "type": "string"
-        },
-        "session_color": {
-          "type": "string"
-        },
-        "session_reset_text": {
-          "type": "string"
-        },
-        "weekly_pct": {
-          "type": "integer"
-        },
-        "weekly_pct_text": {
-          "type": "string"
-        },
-        "weekly_color": {
-          "type": "string"
-        },
-        "weekly_reset_text": {
-          "type": "string"
-        },
-        "cost_text": {
-          "type": "string"
-        },
-        "plan_text": {
-          "type": "string"
-        },
-        "source_text": {
-          "type": "string"
-        },
-        "credits_text": {
-          "type": "string"
-        }
+        "source": { "type": "string" },
+        "label": { "type": "string" },
+        "abbrev": { "type": "string" },
+        "order": { "type": "integer" },
+        "enabled": { "type": "boolean" },
+        "ts": { "type": "integer" },
+        "ok": { "type": "boolean" },
+        "err": { "type": "string" },
+        "session_pct": { "type": "integer" },
+        "session_pct_text": { "type": "string" },
+        "session_color": { "type": "string" },
+        "session_reset_text": { "type": "string" },
+        "weekly_pct": { "type": "integer" },
+        "weekly_pct_text": { "type": "string" },
+        "weekly_color": { "type": "string" },
+        "weekly_reset_text": { "type": "string" }
       }
     }
   },
@@ -141,10 +123,10 @@
       "while": "always"
     }
   ],
-  "comment_state": "DATA_FLOW.md：refresh job(每 5min + 开窗即刷)读凭据(aicreds 插件)→ app 内 HTTP 拉用量 → SQLite `current`/`samples` → UI。popover/menubar 当前值全走 current collection，不用 setState 表征。state：show_claude/show_codex(显示过滤正向布尔，默认 true=both，scripts.syncShowFlags 按 settings.show 刷，popover 正向守卫用)；needs_auth(两边都无凭据=未登录，供宿主横幅)。",
-  "state": { "show_claude": true, "show_codex": true, "needs_auth": false },
+  "comment_state": "DATA_FLOW.md：refresh job(每 5min + 开窗即刷/切设置即刷)对每个已启用 provider 读凭据(aicreds)→ app 内 HTTP 拉用量 → upsert `current`(每 provider 一行,by_field source,含 enabled 标志) + append `samples`。`current` 是**持久缓存**:禁用只标 enabled=false(不删,保值);429/需登录 → 保留上次真值,current 缺失但有 sample → 从最新 sample 重建。弹层 <DataList collection=current where enabled=true orderBy order> 数据驱动渲染;菜单栏 TrayLabel 用 <Image logo>+<Progress bar> 读 `current`,可见性靠 ui.tsx 守卫 `enable_X && tray_X`(op:if),方向靠 `menubar_layout` 设置。settings 两组:统计(enable_X 总开关)/ 菜单栏(menubar_layout + tray_X,tray_X disabledWhen enable_X=false 置灰)。加新 provider(gemini…)=改 scripts PROVIDERS + aicreds + settings 两组各加开关 + ui.tsx 加一组 logo/bar 与弹层块。不用 setState 表征(全走 SQLite,walker 可读)。",
+  "state": {},
   "window": {
     "width": 280,
-    "height": 320
+    "height": 340
   }
 }

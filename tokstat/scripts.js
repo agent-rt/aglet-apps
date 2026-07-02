@@ -1,27 +1,25 @@
-// tokstat scripts.js — Claude + Codex token usage.
+// tokstat scripts.js — AI coding token usage (data-driven, N providers).
 //
-// 数据流：refresh job → 读凭据(aicreds 插件) → app 内 HTTP 拉各家用量 → SQLite → UI。
-//   - HTTP 全在这里：Claude `api.anthropic.com/api/oauth/usage`、
-//     Codex `chatgpt.com/backend-api/wham/usage`。凭据(会自动续期的 OAuth
-//     access token)由只读插件 `aicreds` 从 Keychain / ~/.codex/auth.json 取。
-//   - `samples` (persistent)：每拍 append 原始数字 → Sparkline/Chart 历史。
-//   - `current`  (persistent, upsert by source)：每 source 一行「最新快照」，
-//     携带 popover/menubar 要显示的全部字段 → popover/TrayLabel 经 <DataScope>
-//     读 /data/<as>。
-//   - 瞬时失败(429 / 网断)那一侧**不写**，保留上一次真值(不抹成 "…")。
-//   - 不再有 CLI/PTY 兜底：HTTP 失败就是失败。
+// 数据流：refresh job → 对每个「已启用」provider 读凭据(aicreds 插件) → app 内 HTTP
+// 拉用量 → upsert `current`(每 provider 一行, by_field source, 含 enabled 标志) +
+// append `samples`。`current` 是**持久缓存**：
+//   - 未启用：只标 enabled=false(不删行、保留缓存值);弹层按 enabled 过滤隐藏,
+//     菜单栏按 ui.tsx 守卫 `enable_X && tray_X` 隐藏。
+//   - 瞬时失败(429/网断/未登录)：保留上次真值;current 缺失但有历史 sample → 从最新
+//     sample 重建(covers 旧版本删过 current 的情况),再启用即可见。
+//   - 弹层：<DataList collection=current where enabled=true orderBy order> 数据驱动渲染。
+//   - 菜单栏：TrayLabel 用 <Image logo>+<Progress bar> 直接读 `current`(见 ui.tsx)。
+//   - 全走 SQLite(walker 可读)，不用 setState。
+//
+// 加新 provider(gemini…)：PROVIDERS 加一条 + aicreds 支持其 token + settings 两组
+// 各加一个开关 + ui.tsx 加一组 logo/bar 与弹层块。
 
 const APP_ID = "tokstat";
 
-// ── 展示格式化(与数据来源无关，原样保留) ──────────────────────────────────
+// ── 展示格式化 ─────────────────────────────────────────────────────────────
 
-function pctText(pct) {
-  return typeof pct === "number" ? `${pct}%` : "—";
-}
-
-function pctShort(pct) {
-  return typeof pct === "number" ? `${pct}` : "?";
-}
+function pctText(pct) { return typeof pct === "number" ? `${pct}%` : "—"; }
+function numOr0(pct) { return typeof pct === "number" ? pct : 0; }
 
 function pctColor(pct) {
   if (typeof pct !== "number") return "default";
@@ -30,33 +28,38 @@ function pctColor(pct) {
   return "primary";
 }
 
+// 剩余时长 → 语言中立紧凑格式：`45s` `12m` `3h 28m` `3h` `2d 5h` `4d`。
+// 前缀("重置还剩"/"resets in"/"リセットまで")由 ui.tsx 的 {t.resets} 按 locale 补。
 function untilText(ms) {
-  if (typeof ms !== "number") return null;
-  let s = Math.max(0, Math.round((ms - Date.now()) / 1000));
+  if (typeof ms !== "number" || !Number.isFinite(ms)) return null;
+  const s = Math.max(0, Math.round((ms - Date.now()) / 1000));
   if (s < 60) return `${s}s`;
   const m = Math.floor(s / 60);
   if (m < 60) return `${m}m`;
   const h = Math.floor(m / 60);
-  const mm = m % 60;
-  if (h < 48) return mm > 0 ? `${h}h${mm}m` : `${h}h`;
-  return `${Math.floor(h / 24)}d${h % 24}h`;
-}
-
-function resetLine(raw, ms) {
-  const until = untilText(ms);
-  if (until && raw) return `in ${until} · ${raw}`;
-  if (until) return `in ${until}`;
-  if (typeof ms === "number" && ms > 0) {
-    const d = new Date(ms);
-    return d.toLocaleString();
+  if (h < 48) {
+    const mm = m % 60;
+    return mm > 0 ? `${h}h ${mm}m` : `${h}h`;
   }
-  return raw || "—";
+  const d = Math.floor(h / 24);
+  const hh = h % 24;
+  return hh > 0 ? `${d}d ${hh}h` : `${d}d`;
 }
 
-// ── 凭据 + HTTP 探测 ───────────────────────────────────────────────────────
+function resetLine(ms) { return untilText(ms) || "—"; }
 
-// aicreds 插件：只读凭据 → { access_token, account_id? }。读不到(未登录)返回
-// { access_token:"" }。任何异常按未登录处理。
+// settings bool(存成 "true"/"false" 串或 bool)。未设 = 默认。
+function boolSetting(key, def) {
+  try {
+    const v = aglet.settings.get(APP_ID, key).value;
+    if (v === undefined || v === null || v === "") return def;
+    return v === true || v === "true";
+  } catch (_e) { return def; }
+}
+
+// ── 凭据 + HTTP ────────────────────────────────────────────────────────────
+
+// aicreds 插件：只读凭据 → { access_token, account_id? }。读不到(未登录)返回 null。
 async function readCred(ctx, provider) {
   try {
     const c = await ctx.plugins.aicreds.read({ provider });
@@ -68,35 +71,24 @@ async function readCred(ctx, provider) {
   }
 }
 
-// 统一 fetch：返回 { ok:true, data } / { transient:true } / { needs_auth:true }。
-// 429 / 非 2xx / 网断 / body 非预期 一律 transient(调用方保留上次值)。
+// 同步 fetch(宿主 fetch 是同步)。429/非2xx/网断/body 非预期 → { transient:true }。
 function getJson(url, headers) {
   let r;
-  try {
-    r = fetch(url, { headers });
-  } catch (e) {
-    console.warn(`[tokstat] fetch ${url} threw:`, String(e));
-    return { transient: true };
-  }
-  if (r.status === 429 || !r.ok) {
-    return { transient: true, status: r.status };
-  }
+  try { r = fetch(url, { headers }); }
+  catch (e) { console.warn(`[tokstat] fetch ${url} threw:`, String(e)); return { transient: true }; }
+  if (r.status === 429 || !r.ok) return { transient: true, status: r.status };
   let d;
   try { d = r.json(); } catch (_e) { return { transient: true }; }
   if (!d || d.error) return { transient: true };
   return { ok: true, data: d };
 }
 
-// Claude window：{ utilization(%), resets_at(ISO) } → { used_pct, resets_at_ms }。
+// Claude：{ utilization(%), resets_at(ISO) } → { used_pct, resets_at_ms }。
 function claudeWindow(w) {
   if (!w) return {};
   const pct = typeof w.utilization === "number" ? Math.round(w.utilization) : undefined;
   const ms = typeof w.resets_at === "string" ? Date.parse(w.resets_at) : NaN;
-  return {
-    used_pct: pct,
-    resets_at_ms: Number.isFinite(ms) ? ms : undefined,
-    resets_at_raw: null,
-  };
+  return { used_pct: pct, resets_at_ms: Number.isFinite(ms) ? ms : undefined };
 }
 
 function fetchClaude(cred) {
@@ -109,25 +101,16 @@ function fetchClaude(cred) {
   if (!res.ok) return res;
   const d = res.data;
   if (!d.five_hour && !d.seven_day) return { transient: true };
-  return {
-    ok: true,
-    session: claudeWindow(d.five_hour),
-    weekly: claudeWindow(d.seven_day),
-    total_cost_usd: null, // 该端点不含 cost
-  };
+  return { ok: true, session: claudeWindow(d.five_hour), weekly: claudeWindow(d.seven_day) };
 }
 
-// Codex window：{ used_percent(%), reset_at|resets_at(epoch 秒) } → { used_pct, resets_at_ms }。
+// Codex：{ used_percent(%), reset_at|resets_at(epoch 秒) } → { used_pct, resets_at_ms }。
 function codexWindow(w) {
   if (!w) return {};
   const pct = typeof w.used_percent === "number" ? Math.round(w.used_percent) : undefined;
   const secs = typeof w.reset_at === "number" ? w.reset_at
     : (typeof w.resets_at === "number" ? w.resets_at : undefined);
-  return {
-    used_pct: pct,
-    resets_at_ms: secs !== undefined ? secs * 1000 : undefined,
-    resets_at_raw: null,
-  };
+  return { used_pct: pct, resets_at_ms: secs !== undefined ? secs * 1000 : undefined };
 }
 
 function fetchCodex(cred) {
@@ -140,151 +123,133 @@ function fetchCodex(cred) {
   if (cred.account_id) headers["ChatGPT-Account-Id"] = cred.account_id;
   const res = getJson("https://chatgpt.com/backend-api/wham/usage", headers);
   if (!res.ok) return res;
-  const d = res.data;
-  const rl = d.rate_limit;
+  const rl = res.data.rate_limit;
   if (!rl) return { transient: true };
-  const cr = d.credits || {};
-  const balance = typeof cr.balance === "number" ? cr.balance.toFixed(2)
-    : (typeof cr.balance === "string" ? cr.balance : undefined);
-  return {
+  return { ok: true, session: codexWindow(rl.primary_window), weekly: codexWindow(rl.secondary_window) };
+}
+
+// ── Provider 注册表 ────────────────────────────────────────────────────────
+// 加 provider：加一条 {id, label, abbrev, order, fetch} + aicreds 支持 id 的 token
+// + settings 两组各加 enable_<id> / tray_<id> 开关。
+
+const PROVIDERS = [
+  { id: "claude", label: "Claude", abbrev: "CL", order: 1, fetch: fetchClaude },
+  { id: "codex", label: "Codex", abbrev: "CX", order: 2, fetch: fetchCodex },
+];
+
+// ── 入库 ───────────────────────────────────────────────────────────────────
+
+async function upsertProvider(p, side, ts, ctx) {
+  const sess = side.session ?? {};
+  const week = side.weekly ?? {};
+  const sPct = sess.used_pct;
+  const wPct = week.used_pct;
+
+  const row = {
+    source: p.id,
+    label: p.label,
+    abbrev: p.abbrev,
+    order: p.order,
+    ts,
+    enabled: true,
     ok: true,
-    source: "http",
-    session: codexWindow(rl.primary_window),
-    weekly: codexWindow(rl.secondary_window),
-    plan_type: typeof d.plan_type === "string" ? d.plan_type : undefined,
-    credits: { unlimited: cr.unlimited === true, balance, has_credits: cr.has_credits === true },
+    err: "",
+    session_pct: numOr0(sPct),
+    session_pct_text: pctText(sPct),
+    session_color: pctColor(sPct),
+    session_reset_text: resetLine(sess.resets_at_ms),
+    weekly_pct: numOr0(wPct),
+    weekly_pct_text: pctText(wPct),
+    weekly_color: pctColor(wPct),
+    weekly_reset_text: resetLine(week.resets_at_ms),
   };
+  try {
+    await ctx.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
+  } catch (e) {
+    console.warn(`[tokstat] upsert current(${p.id}) failed:`, e);
+  }
+  try {
+    await ctx.dispatch("data.create", {
+      collection: "samples",
+      data: {
+        ts, source: p.id, ok: true,
+        session_pct: numOr0(sPct),
+        weekly_pct: numOr0(wPct),
+        session_resets_ms: typeof sess.resets_at_ms === "number" ? sess.resets_at_ms : 0,
+        weekly_resets_ms: typeof week.resets_at_ms === "number" ? week.resets_at_ms : 0,
+      },
+    });
+  } catch (e) {
+    console.warn(`[tokstat] data.create samples(${p.id}) failed:`, e);
+  }
 }
 
-// ── 入库(每 source 最新快照 + 历史) ──────────────────────────────────────
-
-// sample = { ts?, claude?, codex? }。只写「存在的一侧」——瞬时失败的一侧不传，
-// 保留 current 里的上一次真值(不抹成 "?·?"/"…")。
-async function processSample(sample, ctx) {
-  const ts = typeof sample.ts === "number" ? sample.ts : (ctx.now ? ctx.now() : Date.now());
-
-  async function ingest(source, side, extra) {
-    const ok = side.ok === true;
-    const sess = side.session ?? {};
-    const week = side.weekly ?? {};
-    const sPct = sess.used_pct;
-    const wPct = week.used_pct;
-
-    const row = {
-      source,
-      ts,
-      ok,
-      err: ok ? "" : (side.error || "no data"),
-      menu_text: `${pctShort(sPct)}·${pctShort(wPct)}`,
-      session_pct: typeof sPct === "number" ? sPct : 0,
-      session_pct_text: pctText(sPct),
-      session_color: pctColor(sPct),
-      session_reset_text: resetLine(sess.resets_at_raw ?? null, sess.resets_at_ms),
-      weekly_pct: typeof wPct === "number" ? wPct : 0,
-      weekly_pct_text: pctText(wPct),
-      weekly_color: pctColor(wPct),
-      weekly_reset_text: resetLine(week.resets_at_raw ?? null, week.resets_at_ms),
-      cost_text: extra.cost_text ?? "",
-      plan_text: extra.plan_text ?? "",
-      source_text: extra.source_text ?? "",
-      credits_text: extra.credits_text ?? "",
-    };
-    try {
+// 设某 provider current 行的 enabled 标志(不删行、不动缓存值)。
+// current 是**持久缓存**:禁用只标记 enabled=false(弹层按 enabled 过滤隐藏、菜单栏按
+// 设置守卫隐藏),值保留 → 再启用时即便 fetch 命中 429 也能立刻显示上次真值,历史不丢。
+async function setEnabled(id, enabled, ctx) {
+  try {
+    const r = aglet.data.list(APP_ID, "current", { where: { source: id }, limit: 1 });
+    if (r && r.items && r.items.length) {
+      const row = { ...r.items[0].data, enabled };
       await ctx.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
-    } catch (e) {
-      console.warn(`[tokstat] upsert current(${source}) failed:`, e);
+      return true;
     }
-
-    if (ok) {
-      try {
-        await ctx.dispatch("data.create", {
-          collection: "samples",
-          data: {
-            ts,
-            source,
-            ok,
-            session_pct: typeof sPct === "number" ? sPct : 0,
-            weekly_pct: typeof wPct === "number" ? wPct : 0,
-            session_resets_ms: typeof sess.resets_at_ms === "number" ? sess.resets_at_ms : 0,
-            weekly_resets_ms: typeof week.resets_at_ms === "number" ? week.resets_at_ms : 0,
-            total_cost_usd: typeof extra.cost_usd === "number" ? extra.cost_usd : 0,
-          },
-        });
-      } catch (e) {
-        console.warn(`[tokstat] data.create samples(${source}) failed:`, e);
-      }
-    }
+  } catch (e) {
+    console.warn(`[tokstat] setEnabled current(${id}) failed:`, String(e));
   }
-
-  if (sample.claude) {
-    const claude = sample.claude;
-    const cost = typeof claude.total_cost_usd === "number" ? claude.total_cost_usd : null;
-    await ingest("claude", claude, {
-      cost_text: cost !== null ? `$${cost.toFixed(4)}` : "—",
-      cost_usd: cost ?? 0,
-    });
-  }
-
-  if (sample.codex) {
-    const codex = sample.codex;
-    const xc = codex.credits ?? {};
-    const credits_text = xc.unlimited === true
-      ? "unlimited"
-      : (typeof xc.balance === "string" ? `$${xc.balance}` : "—");
-    await ingest("codex", codex, {
-      plan_text: typeof codex.plan_type === "string" ? codex.plan_type : "—",
-      source_text: typeof codex.source === "string" ? codex.source : "—",
-      credits_text,
-    });
-  }
-
-  syncShowFlags(ctx);
+  return false;
 }
 
-// Display filter (settings.show = both|claude|codex) → 正向布尔 state，给 popover
-// 区块可见性用。菜单栏 TrayLabel 走服务端 op:ne 过滤；popover 要结构性隐藏整段
-// DataScope，native 守卫只可靠支持正向 `{state.x && ...}`。见 memory tsx-jsx-guard-positive-only。
-function syncShowFlags(ctx) {
-  let show = "both";
-  try { show = aglet.settings.get(APP_ID, "show").value || "both"; } catch (_e) {}
-  if (ctx && ctx.setStateAt) {
-    ctx.setStateAt("/state/show_claude", show !== "codex");
-    ctx.setStateAt("/state/show_codex", show !== "claude");
+// 从最近一条 sample 重建 current 行(启用但 fetch 失败[429/需登录]且 current 缺失时的兜底)。
+// current 可能被历史上的禁用删掉、或旧版本清过 —— 只要 samples 有历史,就用它显示上次真值。
+// 派生字段(text/color/reset)从 sample 原始值重算。返回是否重建成功。
+async function restoreFromSample(p, ctx) {
+  try {
+    const r = aglet.data.list(APP_ID, "samples", { where: { source: p.id }, orderBy: [{ field: "ts", direction: "desc" }], limit: 1 });
+    const s = r && r.items && r.items[0] && r.items[0].data;
+    if (!s) return false;
+    const row = {
+      source: p.id, label: p.label, abbrev: p.abbrev, order: p.order,
+      ts: s.ts, enabled: true, ok: true, err: "",
+      session_pct: numOr0(s.session_pct), session_pct_text: pctText(s.session_pct),
+      session_color: pctColor(s.session_pct), session_reset_text: resetLine(s.session_resets_ms),
+      weekly_pct: numOr0(s.weekly_pct), weekly_pct_text: pctText(s.weekly_pct),
+      weekly_color: pctColor(s.weekly_pct), weekly_reset_text: resetLine(s.weekly_resets_ms),
+    };
+    await ctx.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
+    return true;
+  } catch (e) {
+    console.warn(`[tokstat] restoreFromSample(${p.id}) failed:`, String(e));
+    return false;
   }
 }
 
-// 一拍：读两边凭据 → HTTP 拉用量 → 只写成功的一侧。
+// ── 一拍 ───────────────────────────────────────────────────────────────────
+
 async function runRefresh(ctx) {
-  syncShowFlags(ctx);
-
-  const claudeCred = await readCred(ctx, "claude");
-  const codexCred = await readCred(ctx, "codex");
-
-  const claude = fetchClaude(claudeCred);
-  const codex = fetchCodex(codexCred);
-
-  // 两边都没凭据 = 未登录 → 通知宿主(登录门/横幅)。
-  if (ctx && ctx.setStateAt) {
-    ctx.setStateAt("/state/needs_auth", !!(claude.needs_auth && codex.needs_auth));
+  const ts = ctx.now ? ctx.now() : Date.now();
+  for (const p of PROVIDERS) {
+    if (!boolSetting("enable_" + p.id, true)) {
+      await setEnabled(p.id, false, ctx); // 未启用：不轮询,标记隐藏,保留缓存值
+      continue;
+    }
+    const cred = await readCred(ctx, p.id);
+    const side = p.fetch(cred);
+    if (side.ok) {
+      await upsertProvider(p, side, ts, ctx);
+    } else {
+      // transient / needs_auth：保留上次真值。current 在 → 翻 enabled=true;current 缺失
+      // 但有历史 sample → 从 sample 重建(覆盖旧版本删过 current 的情况),再启用即可见。
+      const had = await setEnabled(p.id, true, ctx);
+      if (!had) await restoreFromSample(p, ctx);
+    }
   }
-
-  const sample = { ts: ctx.now ? ctx.now() : Date.now() };
-  if (claude.ok) sample.claude = claude;
-  if (codex.ok) sample.codex = codex;
-
-  if (sample.claude || sample.codex) {
-    await processSample(sample, ctx);
-  }
-  // 无成功一侧：保留 current 上次真值，什么都不写(避免抹成 "…")。
 }
 
 export default {
-  // 定时 job(manifest jobs[].run = "refresh"，every 5min) + 开窗即刷。
-  async refresh(_payload, ctx) {
-    await runRefresh(ctx);
-  },
-  // 右键菜单 "Refresh now"(<TrayMenuItem onSelect="refreshNow">)→ bg handler(无 webview)。
-  async refreshNow(_payload, ctx) {
-    await runRefresh(ctx);
-  },
+  // 定时 job(every 5min)+ 开窗即刷。
+  async refresh(_payload, ctx) { await runRefresh(ctx); },
+  // 右键菜单 "Refresh now"。
+  async refreshNow(_payload, ctx) { await runRefresh(ctx); },
 };

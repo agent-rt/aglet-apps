@@ -3,5 +3,6 @@
   "menuQuit": "Quit",
   "session": "Session",
   "week": "Week",
-  "resets": "resets"
+  "resets": "resets in",
+  "empty": "No providers enabled — turn one on in Settings."
 }
