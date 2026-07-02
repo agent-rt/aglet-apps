@@ -61,6 +61,17 @@
             ]
           },
           {
+            "key": "menubar_style",
+            "type": "select",
+            "default": "bar",
+            "label": { "default": "Style", "zh": "形态", "ja": "形式" },
+            "options": [
+              { "value": "bar", "label": { "default": "Bar", "zh": "进度条", "ja": "バー" } },
+              { "value": "text", "label": { "default": "Percent", "zh": "百分比", "ja": "パーセント" } },
+              { "value": "gauge", "label": { "default": "Ring", "zh": "圆环", "ja": "リング" } }
+            ]
+          },
+          {
             "key": "tray_claude",
             "type": "bool",
             "default": "true",
