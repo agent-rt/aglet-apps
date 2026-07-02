@@ -69,7 +69,8 @@
             "options": [
               { "value": "bar", "label": { "default": "Bar", "zh": "进度条", "ja": "バー" } },
               { "value": "text", "label": { "default": "Percent", "zh": "百分比", "ja": "パーセント" } },
-              { "value": "gauge", "label": { "default": "Ring", "zh": "圆环", "ja": "リング" } }
+              { "value": "gauge", "label": { "default": "Ring", "zh": "圆环", "ja": "リング" } },
+              { "value": "trend", "label": { "default": "Trend", "zh": "趋势", "ja": "トレンド" } }
             ]
           },
           {
