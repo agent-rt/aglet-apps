@@ -103,6 +103,7 @@
         "enabled": { "type": "boolean" },
         "ts": { "type": "integer" },
         "ok": { "type": "boolean" },
+        "needs_auth": { "type": "boolean" },
         "err": { "type": "string" },
         "session_pct": { "type": "integer" },
         "session_pct_text": { "type": "string" },

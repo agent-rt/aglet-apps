@@ -50,6 +50,7 @@
             <HStack className="items-center">
               <Text className="text-[11px] font-semibold uppercase tracking-wider">{item.label}</Text>
             </HStack>
+            {item.ok && (
             <VStack gap={1}>
               <HStack className="items-center">
                 <Text className="text-[10px] uppercase tracking-wider text-[var(--ag-muted)]">{t.session}</Text>
@@ -59,6 +60,8 @@
               <Progress value={item.session_pct} max={100} color={item.session_color} size="sm"/>
               <Text className="text-[10px] text-[var(--ag-muted)] leading-tight">{t.resets} {item.session_reset_text}</Text>
             </VStack>
+            )}
+            {item.ok && (
             <VStack gap={1}>
               <HStack className="items-center">
                 <Text className="text-[10px] uppercase tracking-wider text-[var(--ag-muted)]">{t.week}</Text>
@@ -68,6 +71,13 @@
               <Progress value={item.weekly_pct} max={100} color={item.weekly_color} size="sm"/>
               <Text className="text-[10px] text-[var(--ag-muted)] leading-tight">{t.resets} {item.weekly_reset_text}</Text>
             </VStack>
+            )}
+            {item.needs_auth && (
+            <VStack gap={2} className="items-start">
+              <Text className="text-[10px] text-[var(--ag-muted)] leading-tight">{t.expired}</Text>
+              <Button label={t.reauth} size="sm" variant="bordered" onClick={() => scripts.refreshNow()}/>
+            </VStack>
+            )}
           </VStack>
         </Item>
         <Empty>

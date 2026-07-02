@@ -98,6 +98,7 @@ function fetchClaude(cred) {
     Accept: "application/json",
     "User-Agent": "tokstat",
   });
+  if (res.status === 401 || res.status === 403) return { needs_auth: true }; // token 过期/失效 → 提示重登
   if (!res.ok) return res;
   const d = res.data;
   if (!d.five_hour && !d.seven_day) return { transient: true };
@@ -122,6 +123,7 @@ function fetchCodex(cred) {
   };
   if (cred.account_id) headers["ChatGPT-Account-Id"] = cred.account_id;
   const res = getJson("https://chatgpt.com/backend-api/wham/usage", headers);
+  if (res.status === 401 || res.status === 403) return { needs_auth: true }; // token 过期/失效 → 提示重登
   if (!res.ok) return res;
   const rl = res.data.rate_limit;
   if (!rl) return { transient: true };
@@ -153,6 +155,7 @@ async function upsertProvider(p, side, ts, ctx) {
     ts,
     enabled: true,
     ok: true,
+    needs_auth: false,
     err: "",
     session_pct: numOr0(sPct),
     session_pct_text: pctText(sPct),
@@ -211,7 +214,7 @@ async function restoreFromSample(p, ctx) {
     if (!s) return false;
     const row = {
       source: p.id, label: p.label, abbrev: p.abbrev, order: p.order,
-      ts: s.ts, enabled: true, ok: true, err: "",
+      ts: s.ts, enabled: true, ok: true, needs_auth: false, err: "",
       session_pct: numOr0(s.session_pct), session_pct_text: pctText(s.session_pct),
       session_color: pctColor(s.session_pct), session_reset_text: resetLine(s.session_resets_ms),
       weekly_pct: numOr0(s.weekly_pct), weekly_pct_text: pctText(s.weekly_pct),
@@ -238,12 +241,31 @@ async function runRefresh(ctx) {
     const side = p.fetch(cred);
     if (side.ok) {
       await upsertProvider(p, side, ts, ctx);
+    } else if (side.needs_auth) {
+      // token 过期/未登录:不替用户刷新(边界),标记 needs_auth → 弹层提示重登 codex。
+      await markNeedsAuth(p, ctx);
     } else {
-      // transient / needs_auth：保留上次真值。current 在 → 翻 enabled=true;current 缺失
+      // transient(429/网断):保留上次真值。current 在 → 翻 enabled=true;current 缺失
       // 但有历史 sample → 从 sample 重建(覆盖旧版本删过 current 的情况),再启用即可见。
       const had = await setEnabled(p.id, true, ctx);
       if (!had) await restoreFromSample(p, ctx);
     }
+  }
+}
+
+// 标记某 provider 需重新登录(token 过期/失效)。保留上次 pct(若有),置 ok=false+needs_auth=true
+// → 弹层 <Item> 里 {item.needs_auth && ...} 显示重登提示 + 刷新按钮。不动凭据、不代刷新。
+async function markNeedsAuth(p, ctx) {
+  let base = {};
+  try {
+    const r = aglet.data.list(APP_ID, "current", { where: { source: p.id }, limit: 1 });
+    if (r && r.items && r.items.length) base = r.items[0].data;
+  } catch (_e) {}
+  const row = { ...base, source: p.id, label: p.label, abbrev: p.abbrev, order: p.order, enabled: true, ok: false, needs_auth: true };
+  try {
+    await ctx.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
+  } catch (e) {
+    console.warn(`[tokstat] markNeedsAuth(${p.id}) failed:`, String(e));
   }
 }
 
