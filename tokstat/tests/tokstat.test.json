@@ -1,0 +1,83 @@
+{
+  "name": "tokstat current enabled-filter + samples per-source series",
+  "aglet": "..",
+  "_comment": "Hermetic data-level：不跑 scripts(免 HTTP/凭据)。验弹层 current where enabled=true 过滤 + Sparkline samples where source=X 分序列(per-provider 趋势图靠此)。",
+  "steps": [
+    {
+      "_comment": "current：claude 启用 / codex 禁用",
+      "action": "data.create",
+      "params": {
+        "collection": "current",
+        "data": {
+          "source": "claude", "label": "Claude", "abbrev": "CL", "order": 0,
+          "enabled": true, "ok": true, "needs_auth": false,
+          "session_pct": 42, "session_pct_text": "42%", "session_color": "#3b82f6",
+          "weekly_pct": 20, "weekly_pct_text": "20%", "weekly_color": "#3b82f6"
+        }
+      }
+    },
+    {
+      "action": "data.create",
+      "params": {
+        "collection": "current",
+        "data": {
+          "source": "codex", "label": "Codex", "abbrev": "CX", "order": 1,
+          "enabled": false, "ok": true, "needs_auth": false,
+          "session_pct": 88, "session_pct_text": "88%", "session_color": "#f97316",
+          "weekly_pct": 55, "weekly_pct_text": "55%", "weekly_color": "#f97316"
+        }
+      }
+    },
+    {
+      "_comment": "弹层 <DataList collection=current where enabled=true> —— 只应见 claude",
+      "action": "data.list",
+      "params": { "collection": "current", "query": { "where": { "enabled": true } } },
+      "expect": { "ok": true, "items_len": 1 }
+    },
+    {
+      "action": "data.list",
+      "params": { "collection": "current" },
+      "expect": { "ok": true, "items_len": 2 }
+    },
+
+    {
+      "_comment": "samples：claude 2 点(上升)",
+      "action": "data.create",
+      "params": { "collection": "samples", "data": { "ts": 1000, "source": "claude", "ok": true, "session_pct": 40 } }
+    },
+    {
+      "action": "data.create",
+      "params": { "collection": "samples", "data": { "ts": 2000, "source": "claude", "ok": true, "session_pct": 42 } }
+    },
+    {
+      "_comment": "samples：codex 3 点(下降)",
+      "action": "data.create",
+      "params": { "collection": "samples", "data": { "ts": 1000, "source": "codex", "ok": true, "session_pct": 90 } }
+    },
+    {
+      "action": "data.create",
+      "params": { "collection": "samples", "data": { "ts": 2000, "source": "codex", "ok": true, "session_pct": 80 } }
+    },
+    {
+      "action": "data.create",
+      "params": { "collection": "samples", "data": { "ts": 3000, "source": "codex", "ok": true, "session_pct": 70 } }
+    },
+    {
+      "_comment": "Sparkline query where source=claude → 只 claude 序列(2 点)",
+      "action": "data.list",
+      "params": { "collection": "samples", "query": { "where": { "source": "claude" }, "orderBy": [{ "field": "ts", "direction": "asc" }] } },
+      "expect": { "ok": true, "items_len": 2 }
+    },
+    {
+      "_comment": "source=codex → 只 codex 序列(3 点)——证明 per-item 过滤不混 source",
+      "action": "data.list",
+      "params": { "collection": "samples", "query": { "where": { "source": "codex" }, "orderBy": [{ "field": "ts", "direction": "asc" }] } },
+      "expect": { "ok": true, "items_len": 3 }
+    },
+    {
+      "action": "data.list",
+      "params": { "collection": "samples" },
+      "expect": { "ok": true, "items_len": 5 }
+    }
+  ]
+}

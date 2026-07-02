@@ -102,6 +102,7 @@
                 <Text className="text-xs font-semibold tabular-nums">{item.session_pct_text}</Text>
               </HStack>
               <Progress value={item.session_pct} max={100} color={item.session_color} size="sm"/>
+              <Sparkline collection="samples" field="session_pct" query={{where:{source: item.source}}} limit={30} color={item.session_color}/>
               <Text className="text-[10px] text-[var(--ag-muted)] leading-tight">{t.resets} {item.session_reset_text}</Text>
             </VStack>
             )}
