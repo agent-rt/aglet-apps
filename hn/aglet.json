@@ -98,40 +98,39 @@
   "settings": {
     "groups": [
       {
-        "title": "Translation (optional)",
-        "help": "Translate HN titles & summaries via an OpenAI-compatible LLM. Leave the endpoint blank to keep English titles.",
+        "title": { "default": "Translation", "zh": "翻译", "ja": "翻訳" },
+        "help": { "default": "Translate titles & summaries via an OpenAI-compatible LLM. Blank endpoint = keep English.", "zh": "用兼容 OpenAI 的 LLM 翻译标题与摘要。端点留空＝保留英文。", "ja": "OpenAI 互換 LLM で見出し・要約を翻訳。エンドポイント空＝英語のまま。" },
         "fields": [
           {
             "key": "llm_endpoint",
-            "label": "LLM endpoint",
+            "label": { "default": "Endpoint", "zh": "端点", "ja": "エンドポイント" },
             "type": "text",
             "placeholder": "https://api.openai.com/v1/chat/completions"
           },
           {
             "key": "llm_model",
-            "label": "Model",
+            "label": { "default": "Model", "zh": "模型", "ja": "モデル" },
             "type": "text",
-            "placeholder": "model name (some servers require it)"
+            "placeholder": "gpt-4o-mini",
+            "help": { "default": "Some servers require it", "zh": "部分服务需要", "ja": "一部のサーバで必須" }
           },
           {
             "key": "api_key",
-            "label": "API key",
+            "label": { "default": "API key", "zh": "API 密钥", "ja": "API キー" },
             "type": "secret",
-            "help": "For hosted APIs (OpenAI, etc.). Blank for a local LLM."
+            "help": { "default": "Hosted APIs only; blank for local", "zh": "托管 API 才需要；本地留空", "ja": "ホスト型 API のみ、ローカルは空" }
           },
           {
             "key": "title_prompt",
-            "label": "Title prompt",
+            "label": { "default": "Title prompt", "zh": "标题提示词", "ja": "見出しプロンプト" },
             "type": "textarea",
-            "placeholder": "把英文 HN 标题翻成中文。技术名词（Rust / Kafka / GPU / OAuth 等）保留英文。仅输出译文一行，不加引号、不加前后缀。",
-            "help": "System prompt for translating titles. Blank = built-in."
+            "help": { "default": "Blank = built-in", "zh": "留空＝内置", "ja": "空＝組み込み" }
           },
           {
             "key": "summary_prompt",
-            "label": "Summary prompt",
+            "label": { "default": "Summary prompt", "zh": "摘要提示词", "ja": "要約プロンプト" },
             "type": "textarea",
-            "placeholder": "用 1 句中文（≤60 字）写这条 HN story 的看点：为什么它上 HN、争议点或核心结论。不要复述标题。仅输出一行中文。",
-            "help": "System prompt for the one-line summary. Blank = built-in."
+            "help": { "default": "Blank = built-in", "zh": "留空＝内置", "ja": "空＝組み込み" }
           }
         ]
       }
