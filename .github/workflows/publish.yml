@@ -19,6 +19,12 @@ on:
 permissions:
   contents: read
 
+# 多个 app tag 同时推时,publish job 会各自向 aglet-dev/registry 推分支 + 收尾 push,
+# 并发会撞车(`failed to push some refs`)。同组串行化——排队而非取消,保证每个都发出去。
+concurrency:
+  group: registry-publish
+  cancel-in-progress: false
+
 jobs:
   publish:
     name: Publish
