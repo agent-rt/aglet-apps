@@ -21,21 +21,9 @@ const APP_ID = "tokstat";
 function pctText(pct) { return typeof pct === "number" ? `${pct}%` : "—"; }
 function numOr0(pct) { return typeof pct === "number" ? pct : 0; }
 
-function pctColor(pct) {
-  if (typeof pct !== "number") return "default";
-  if (pct >= 95) return "danger";   // 阈值预警保留(高用量变红)
-  if (pct >= 80) return "warning";  // (变橙)
-  return primaryColor();            // 正常档 = 用户主色(#hex,取色器设置)
-}
-
-// 主色设置(#rrggbb);未设置回退默认蓝。colorToken 直接吃 #hex。
-function primaryColor() {
-  try {
-    const v = aglet.settings.get(APP_ID, "primary_color").value;
-    if (typeof v === "string" && /^#[0-9a-fA-F]{6}$/.test(v)) return v;
-  } catch (_e) {}
-  return "#3b82f6";
-}
+// 颜色不再 bake:阈值分档(<80 主色/系统、80–95 橙、≥95 红)与主色都在 ui.tsx
+// 用 <Progress bands>/<Meter bands> + coalesce(primary_color, "primary") 渲染时算,
+// 故改主色/用量即时同步(无需重算 provider),空主色 → "primary" token → 跟随系统强调色。
 
 // 剩余时长 → 语言中立紧凑格式：`45s` `12m` `3h 28m` `3h` `2d 5h` `4d`。
 // 前缀("重置还剩"/"resets in"/"リセットまで")由 ui.tsx 的 {t.resets} 按 locale 补。
@@ -215,11 +203,9 @@ async function upsertProvider(p, side, ts, ctx) {
     err: "",
     session_pct: numOr0(sPct),
     session_pct_text: pctText(sPct),
-    session_color: pctColor(sPct),
     session_reset_text: resetLine(sess.resets_at_ms),
     weekly_pct: numOr0(wPct),
     weekly_pct_text: pctText(wPct),
-    weekly_color: pctColor(wPct),
     weekly_reset_text: resetLine(week.resets_at_ms),
   };
   try {
@@ -272,9 +258,9 @@ async function restoreFromSample(p, ctx) {
       source: p.id, label: p.label, abbrev: p.abbrev, order: p.order,
       ts: s.ts, enabled: true, ok: true, needs_auth: false, err: "",
       session_pct: numOr0(s.session_pct), session_pct_text: pctText(s.session_pct),
-      session_color: pctColor(s.session_pct), session_reset_text: resetLine(s.session_resets_ms),
+      session_reset_text: resetLine(s.session_resets_ms),
       weekly_pct: numOr0(s.weekly_pct), weekly_pct_text: pctText(s.weekly_pct),
-      weekly_color: pctColor(s.weekly_pct), weekly_reset_text: resetLine(s.weekly_resets_ms),
+      weekly_reset_text: resetLine(s.weekly_resets_ms),
     };
     await ctx.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
     return true;

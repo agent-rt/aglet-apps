@@ -37,14 +37,14 @@
             "type": "bool",
             "default": "true",
             "label": { "default": "Claude", "zh": "Claude", "ja": "Claude" },
-            "help": { "default": "Poll Claude usage and show it in the popover", "zh": "定时获取 Claude 用量并在弹层显示", "ja": "Claude の使用量を取得しポップオーバーに表示" }
+            "help": { "default": "Poll Claude usage", "zh": "统计 Claude 用量", "ja": "Claude 使用量を計測" }
           },
           {
             "key": "enable_codex",
             "type": "bool",
             "default": "true",
             "label": { "default": "Codex", "zh": "Codex", "ja": "Codex" },
-            "help": { "default": "Poll Codex usage and show it in the popover", "zh": "定时获取 Codex 用量并在弹层显示", "ja": "Codex の使用量を取得しポップオーバーに表示" }
+            "help": { "default": "Poll Codex usage", "zh": "统计 Codex 用量", "ja": "Codex 使用量を計測" }
           }
         ]
       },
@@ -69,23 +69,22 @@
             "options": [
               { "value": "bar", "label": { "default": "Bar", "zh": "进度条", "ja": "バー" } },
               { "value": "text", "label": { "default": "Percent", "zh": "百分比", "ja": "パーセント" } },
-              { "value": "gauge", "label": { "default": "Ring", "zh": "圆环", "ja": "リング" } },
-              { "value": "trend", "label": { "default": "Trend", "zh": "趋势", "ja": "トレンド" } }
+              { "value": "gauge", "label": { "default": "Ring", "zh": "圆环", "ja": "リング" } }
             ]
           },
           {
             "key": "primary_color",
             "type": "color",
-            "default": "#3b82f6",
+            "default": "",
             "label": { "default": "Primary color", "zh": "主颜色", "ja": "メインカラー" },
-            "help": { "default": "Bar/ring color at normal usage (high usage still turns orange/red)", "zh": "正常用量时进度条/圆环的颜色（高用量仍变橙/红预警）", "ja": "通常時のバー/リング色（高使用時はオレンジ/赤で警告）" }
+            "help": { "default": "Empty = system accent; high usage → orange/red", "zh": "留空＝系统强调色；高用量→橙/红", "ja": "空＝システム強調色、高使用→オレンジ/赤" }
           },
           {
             "key": "tray_claude",
             "type": "bool",
             "default": "true",
             "label": { "default": "Claude", "zh": "Claude", "ja": "Claude" },
-            "help": { "default": "Show Claude in the menu bar (up to 2)", "zh": "在菜单栏显示 Claude（最多 2 个）", "ja": "メニューバーに Claude を表示（最大 2 件）" },
+            "help": { "default": "Show in menu bar", "zh": "在菜单栏显示", "ja": "メニューバーに表示" },
             "disabledWhen": { "key": "enable_claude", "equals": "false" }
           },
           {
@@ -93,7 +92,7 @@
             "type": "bool",
             "default": "true",
             "label": { "default": "Codex", "zh": "Codex", "ja": "Codex" },
-            "help": { "default": "Show Codex in the menu bar (up to 2)", "zh": "在菜单栏显示 Codex（最多 2 个）", "ja": "メニューバーに Codex を表示（最大 2 件）" },
+            "help": { "default": "Show in menu bar", "zh": "在菜单栏显示", "ja": "メニューバーに表示" },
             "disabledWhen": { "key": "enable_codex", "equals": "false" }
           }
         ]
@@ -106,14 +105,17 @@
             "type": "bool",
             "default": "true",
             "label": { "default": "Usage alerts", "zh": "用量提醒", "ja": "使用量アラート" },
-            "help": { "default": "Send a notification when usage reaches the threshold", "zh": "用量达到阈值时发系统通知", "ja": "使用量がしきい値に達したら通知" }
+            "help": { "default": "Notify at threshold", "zh": "达阈值时通知", "ja": "しきい値で通知" }
           },
           {
             "key": "notify_at",
-            "type": "number",
+            "type": "slider",
             "default": "90",
+            "min": 50,
+            "max": 100,
+            "step": 5,
             "label": { "default": "Threshold %", "zh": "阈值 %", "ja": "しきい値 %" },
-            "help": { "default": "Notify when session or weekly usage reaches this percent", "zh": "会话或每周用量达到此百分比时提醒", "ja": "セッション/週の使用量がこの%に達したら通知" },
+            "help": { "default": "Session or weekly reaches this %", "zh": "会话或每周达此 %", "ja": "セッション/週がこの%" },
             "disabledWhen": { "key": "notify_enabled", "equals": "false" }
           }
         ]
