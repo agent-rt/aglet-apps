@@ -1,0 +1,7 @@
+{
+  "tabRecommend": "おすすめ",
+  "emptyRecommendTitle": "おすすめ記事はまだありません",
+  "emptyDesc": "バックグラウンド更新後に表示されます。エージェントに InfoQ の更新を依頼することもできます。",
+  "btnOpen": "開く",
+  "syncError": "更新に失敗しました"
+}

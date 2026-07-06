@@ -1,0 +1,7 @@
+{
+  "tabRecommend": "推荐",
+  "emptyRecommendTitle": "还没有推荐文章",
+  "emptyDesc": "后台刷新后会自动出现，也可以让 Agent 手动刷新 InfoQ。",
+  "btnOpen": "打开",
+  "syncError": "刷新失败"
+}

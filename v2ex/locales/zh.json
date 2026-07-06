@@ -1,0 +1,9 @@
+{
+  "tabLatest": "最新",
+  "tabHot": "最热",
+  "emptyLatestTitle": "还没有最新主题",
+  "emptyHotTitle": "还没有最热主题",
+  "emptyDesc": "后台刷新后会自动出现，也可以让 Agent 手动刷新 V2EX。",
+  "btnOpen": "打开",
+  "syncError": "刷新失败"
+}

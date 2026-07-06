@@ -1,0 +1,11 @@
+{
+  "tabHot": "ホット",
+  "tabFlash": "速報",
+  "emptyHotTitle": "ホット記事はまだありません",
+  "emptyFlashTitle": "速報はまだありません",
+  "emptyDesc": "バックグラウンド更新後に表示されます。エージェントに 36Kr の更新を依頼することもできます。",
+  "btnOpen": "開く",
+  "badgeHot": "注目",
+  "badgeFlash": "速報",
+  "syncError": "更新に失敗しました"
+}

@@ -1,0 +1,9 @@
+{
+  "tabLatest": "Latest",
+  "tabHot": "Hot",
+  "emptyLatestTitle": "No latest topics yet",
+  "emptyHotTitle": "No hot topics yet",
+  "emptyDesc": "Items appear after the background refresh. You can also ask the agent to refresh V2EX.",
+  "btnOpen": "Open",
+  "syncError": "Refresh failed"
+}

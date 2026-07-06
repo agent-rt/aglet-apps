@@ -1,0 +1,7 @@
+{
+  "tabRecommend": "Recommend",
+  "emptyRecommendTitle": "No recommended articles yet",
+  "emptyDesc": "Items appear after the background refresh. You can also ask the agent to refresh InfoQ.",
+  "btnOpen": "Open",
+  "syncError": "Refresh failed"
+}

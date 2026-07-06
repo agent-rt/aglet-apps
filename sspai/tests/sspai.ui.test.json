@@ -1,0 +1,63 @@
+{
+  "name": "sspai tabs render",
+  "aglet": "..",
+  "steps": [
+    {
+      "action": "data.create",
+      "params": {
+        "collection": "index_articles",
+        "data": {
+          "guid": "index-1",
+          "title": "自动给文章术语加百科链接，这个方案一分钟搞定",
+          "url": "https://sspai.com/post/111941",
+          "summary": "给文章中的术语自动嵌入百科链接，减少读者跳出上下文查询的成本。",
+          "author": "少数派编辑部",
+          "published_at": "2026-07-06T02:00:00.000Z",
+          "published_ts": 1783303200000,
+          "source": "SSPAI Index"
+        }
+      }
+    },
+    {
+      "action": "data.create",
+      "params": {
+        "collection": "matrix_articles",
+        "data": {
+          "guid": "matrix-1",
+          "title": "别让截图和灵感散落各处：用 Cutpics 快速收进 Obsidian",
+          "url": "https://sspai.com/post/111942",
+          "summary": "Cutpics 是一个面向 Obsidian 用户的快速采集工具。",
+          "author": "新七天",
+          "published_at": "2026-07-05T16:12:33.000Z",
+          "published_ts": 1783267953000,
+          "source": "SSPAI Matrix"
+        }
+      }
+    },
+    {
+      "action": "view.waitfor",
+      "select": {
+        "role": "heading",
+        "level": 3,
+        "in_item": { "guid": "index-1" }
+      },
+      "timeout": 3000,
+      "expect": { "ok": true, "data": { "found": true } }
+    },
+    {
+      "action": "intent.fire",
+      "select": { "role": "tab", "value": "matrix" },
+      "expect": { "ok": true, "data": { "clicked": true } }
+    },
+    {
+      "action": "view.waitfor",
+      "select": {
+        "role": "heading",
+        "level": 3,
+        "in_item": { "guid": "matrix-1" }
+      },
+      "timeout": 3000,
+      "expect": { "ok": true, "data": { "found": true } }
+    }
+  ]
+}

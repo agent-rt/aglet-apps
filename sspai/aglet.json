@@ -1,0 +1,85 @@
+{
+  "id": "sspai",
+  "name": {
+    "default": "少数派",
+    "en": "SSPAI",
+    "zh": "少数派",
+    "ja": "少数派"
+  },
+  "description": {
+    "default": "SSPAI homepage and Matrix articles from RSSHub.",
+    "en": "SSPAI homepage and Matrix articles from RSSHub.",
+    "zh": "基于 RSSHub 的少数派首页与 Matrix 文章。",
+    "ja": "RSSHub から少数派のホームと Matrix 記事を表示します。"
+  },
+  "docs": "# 少数派\n\n少数派阅读小工具。后台 job 从 RSSHub 拉取两个 feed：\n\n- `https://rsshub.rssforever.com/sspai/index` → 首页文章\n- `https://rsshub.rssforever.com/sspai/matrix` → Matrix 文章\n\n优先使用 `xml` wasm plugin 的 `xml.rss` 解析 RSS；开发时用 `aglet dev sspai --link <xml-plugin-dir>`。\n",
+  "version": "0.1.0",
+  "min_runtime": "0.1.3",
+  "license": "MIT",
+  "renderer": "auto",
+  "author": "aglet-dev",
+  "category": "media",
+  "keywords": [
+    "sspai",
+    "rss",
+    "articles",
+    "matrix",
+    "chinese"
+  ],
+  "icon": "https://api.iconify.design/ph/article-medium-fill.svg?color=%23d71920&width=256",
+  "permissions": [
+    "data:read",
+    "data:write"
+  ],
+  "requires": [
+    {
+      "plugin": "xml",
+      "range": ">=0.1.0"
+    }
+  ],
+  "window": {
+    "style": "phone",
+    "width": 420,
+    "height": 820,
+    "resizable": false
+  },
+  "jobs": [
+    {
+      "id": "ingest",
+      "run": "ingest",
+      "every": 300000,
+      "while": "always"
+    }
+  ],
+  "collections": {
+    "index_articles": {
+      "schema": {
+        "guid": { "type": "string" },
+        "title": { "type": "string" },
+        "url": { "type": "string" },
+        "summary": { "type": "string" },
+        "author": { "type": "string" },
+        "published_at": { "type": "string" },
+        "published_ts": { "type": "number" },
+        "source": { "type": "string" }
+      },
+      "indexes": ["guid", "published_ts", "author"]
+    },
+    "matrix_articles": {
+      "schema": {
+        "guid": { "type": "string" },
+        "title": { "type": "string" },
+        "url": { "type": "string" },
+        "summary": { "type": "string" },
+        "author": { "type": "string" },
+        "published_at": { "type": "string" },
+        "published_ts": { "type": "number" },
+        "source": { "type": "string" }
+      },
+      "indexes": ["guid", "published_ts", "author"]
+    }
+  },
+  "state": {
+    "sync_error": ""
+  }
+}

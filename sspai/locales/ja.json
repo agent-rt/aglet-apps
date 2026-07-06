@@ -1,0 +1,9 @@
+{
+  "tabIndex": "ホーム",
+  "tabMatrix": "Matrix",
+  "emptyIndexTitle": "ホーム記事はまだありません",
+  "emptyMatrixTitle": "Matrix 記事はまだありません",
+  "emptyDesc": "バックグラウンド更新後に表示されます。エージェントに少数派の更新を依頼することもできます。",
+  "btnOpen": "開く",
+  "syncError": "更新に失敗しました"
+}

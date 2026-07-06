@@ -1,0 +1,56 @@
+{
+  "name": "36kr data collections",
+  "aglet": "..",
+  "steps": [
+    {
+      "action": "data.create",
+      "params": {
+        "collection": "hot_items",
+        "data": {
+          "guid": "hot-1",
+          "title": "8点1氪丨A股新版交易规则今起施行",
+          "url": "https://www.36kr.com/p/1",
+          "summary": "今日热点导览与 TOP3 大新闻。",
+          "published_at": "Mon, 06 Jul 2026 00:02:20 GMT",
+          "published_ts": 1783296140000,
+          "source": "36Kr Hot"
+        }
+      }
+    },
+    {
+      "action": "data.create",
+      "params": {
+        "collection": "newsflashes",
+        "data": {
+          "guid": "flash-1",
+          "title": "南向资金净买入额达100亿港元",
+          "url": "https://www.36kr.com/newsflashes/1",
+          "summary": "36氪获悉，截至目前，南向资金净买入额达100亿港元。",
+          "published_at": "Mon, 06 Jul 2026 03:56:56 GMT",
+          "published_ts": 1783310216000,
+          "source": "36Kr Newsflashes"
+        }
+      }
+    },
+    {
+      "action": "data.list",
+      "params": {
+        "collection": "hot_items"
+      },
+      "expect": {
+        "ok": true,
+        "items_len": 1
+      }
+    },
+    {
+      "action": "data.list",
+      "params": {
+        "collection": "newsflashes"
+      },
+      "expect": {
+        "ok": true,
+        "items_len": 1
+      }
+    }
+  ]
+}

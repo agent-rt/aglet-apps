@@ -1,0 +1,50 @@
+{
+  "name": "v2ex data collections",
+  "aglet": "..",
+  "steps": [
+    {
+      "action": "data.create",
+      "params": {
+        "collection": "latest_topics",
+        "data": {
+          "guid": "latest-1",
+          "title": "Claude code 需要 kyc 了，路堵死了。",
+          "url": "https://www.v2ex.com/t/1225269",
+          "summary": "上周被封了，今天尝试新号注册订阅，付款时卡需要 kyc。",
+          "author": "hebaogong",
+          "node": "程序员",
+          "published_at": "Mon, 06 Jul 2026 05:16:07 GMT",
+          "published_ts": 1783314967000,
+          "source": "V2EX Latest"
+        }
+      }
+    },
+    {
+      "action": "data.create",
+      "params": {
+        "collection": "hot_topics",
+        "data": {
+          "guid": "hot-1",
+          "title": "招聘遇到工作经历完全造假的 211",
+          "url": "https://www.v2ex.com/t/1225204",
+          "summary": "面试中遇到简历全面造假的候选人，引发关于招聘筛选流程的讨论。",
+          "author": "hoky",
+          "node": "职场话题",
+          "published_at": "Mon, 06 Jul 2026 02:20:35 GMT",
+          "published_ts": 1783304435000,
+          "source": "V2EX Hot"
+        }
+      }
+    },
+    {
+      "action": "data.list",
+      "params": { "collection": "latest_topics" },
+      "expect": { "ok": true, "items_len": 1 }
+    },
+    {
+      "action": "data.list",
+      "params": { "collection": "hot_topics" },
+      "expect": { "ok": true, "items_len": 1 }
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "tabIndex": "首页",
+  "tabMatrix": "Matrix",
+  "emptyIndexTitle": "还没有首页文章",
+  "emptyMatrixTitle": "还没有 Matrix 文章",
+  "emptyDesc": "后台刷新后会自动出现，也可以让 Agent 手动刷新少数派。",
+  "btnOpen": "打开",
+  "syncError": "刷新失败"
+}
