@@ -1,0 +1,117 @@
+const APP_ID = "v2ex";
+
+const FEEDS = [
+  {
+    collection: "latest_topics",
+    source: "V2EX Latest",
+    url: "https://rsshub.rssforever.com/v2ex/topics/latest",
+    limit: 50,
+  },
+  {
+    collection: "hot_topics",
+    source: "V2EX Hot",
+    url: "https://rsshub.rssforever.com/v2ex/topics/hot",
+    limit: 50,
+  },
+];
+
+function setSyncError(ctx, value) {
+  try {
+    if (ctx && ctx.setStateAt) ctx.setStateAt("/state/sync_error", value || "");
+  } catch (_e) {}
+}
+
+function decodeEntities(s) {
+  if (!s) return "";
+  return String(s)
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&\s*nbsp;/g, " ")
+    .replace(/&#39;/g, "'")
+    .replace(/&#x27;/g, "'");
+}
+
+function stripHtml(s) {
+  return decodeEntities(s)
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function excerpt(s, max) {
+  const clean = stripHtml(s);
+  if (clean.length <= max) return clean;
+  return clean.slice(0, max - 1).trim() + "…";
+}
+
+async function parseFeed(ctx, xml, limit) {
+  return await ctx.plugins.xml.rss({ text: xml, limit });
+}
+
+function cleanSummary(description, author) {
+  let s = stripHtml(description || "");
+  if (author && s.indexOf(author + ":") === 0) {
+    s = s.slice(author.length + 1).trim();
+  }
+  return excerpt(s, 260);
+}
+
+function normalizeItem(item, source) {
+  const url = item.link || item.url || item.guid || "";
+  const guid = item.guid || url || item.title;
+  const author = stripHtml(item.author || "");
+  const categories = item.categories || [];
+  const node = categories.length > 0 ? stripHtml(categories[0]) : "";
+  const published = item.pubDate || item.published || item.updated || "";
+  const ts = Date.parse(published);
+  const hasTime = !isNaN(ts);
+  return {
+    guid,
+    title: stripHtml(item.title || ""),
+    url,
+    summary: cleanSummary(item.description || item.summary || "", author),
+    author,
+    node,
+    published_at: hasTime ? new Date(ts).toISOString() : published,
+    published_ts: hasTime ? ts : 0,
+    source,
+  };
+}
+
+function upsertByGuid(collection, row, counters) {
+  if (!row.guid || !row.title) return;
+  const up = aglet.data.upsert(APP_ID, collection, "guid", row);
+  if (up.upserted === "created") counters.added++;
+  else counters.updated++;
+}
+
+export default {
+  async ingest(_args, ctx) {
+    let added = 0;
+    let updated = 0;
+    try {
+      for (const feed of FEEDS) {
+        const resp = fetch(feed.url);
+        if (!resp.ok) throw new Error(`${feed.source} HTTP ${resp.status}`);
+        const parsed = await parseFeed(ctx, resp.body || "", feed.limit);
+        const counters = { added: 0, updated: 0 };
+        for (const item of (parsed && parsed.items) || []) {
+          upsertByGuid(feed.collection, normalizeItem(item, feed.source), counters);
+        }
+        added += counters.added;
+        updated += counters.updated;
+      }
+      setSyncError(ctx, "");
+      return { added, updated };
+    } catch (e) {
+      const msg = String((e && e.message) || e).slice(0, 200);
+      setSyncError(ctx, msg);
+      throw e;
+    }
+  },
+};

@@ -1,0 +1,29 @@
+{
+  "name": "infoq data collection",
+  "aglet": "..",
+  "steps": [
+    {
+      "action": "data.create",
+      "params": {
+        "collection": "recommended_articles",
+        "data": {
+          "guid": "infoq-1",
+          "title": "Anthropic：Claude 已承担 95% 的内部数据分析查询工作",
+          "url": "https://www.infoq.cn/article/eHH8RTgeeOUWODLCLWXS",
+          "summary": "Anthropic 透露公司内部大量分析查询已由 Claude 自动完成。",
+          "author": "Renato Losio",
+          "category": "AI 工程化",
+          "categories": "AI 工程化",
+          "published_at": "2026-07-06T05:00:00.000Z",
+          "published_ts": 1783314000000,
+          "source": "InfoQ Recommend"
+        }
+      }
+    },
+    {
+      "action": "data.list",
+      "params": { "collection": "recommended_articles" },
+      "expect": { "ok": true, "items_len": 1 }
+    }
+  ]
+}

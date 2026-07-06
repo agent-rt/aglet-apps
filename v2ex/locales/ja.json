@@ -1,0 +1,9 @@
+{
+  "tabLatest": "最新",
+  "tabHot": "ホット",
+  "emptyLatestTitle": "最新トピックはまだありません",
+  "emptyHotTitle": "ホットトピックはまだありません",
+  "emptyDesc": "バックグラウンド更新後に表示されます。エージェントに V2EX の更新を依頼することもできます。",
+  "btnOpen": "開く",
+  "syncError": "更新に失敗しました"
+}

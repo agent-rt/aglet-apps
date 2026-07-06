@@ -1,0 +1,9 @@
+{
+  "tabIndex": "Home",
+  "tabMatrix": "Matrix",
+  "emptyIndexTitle": "No homepage articles yet",
+  "emptyMatrixTitle": "No Matrix articles yet",
+  "emptyDesc": "Items appear after the background refresh. You can also ask the agent to refresh SSPAI.",
+  "btnOpen": "Open",
+  "syncError": "Refresh failed"
+}

@@ -1,0 +1,83 @@
+{
+  "id": "36kr",
+  "name": {
+    "default": "36Kr",
+    "en": "36Kr",
+    "zh": "36氪",
+    "ja": "36Kr"
+  },
+  "description": {
+    "default": "36Kr hot list and newsflashes from RSSHub.",
+    "en": "36Kr hot list and newsflashes from RSSHub.",
+    "zh": "基于 RSSHub 的 36氪热榜与快讯。",
+    "ja": "RSSHub から 36Kr のホットリストと速報を表示します。"
+  },
+  "docs": "# 36Kr\n\n36氪阅读小工具。后台 job 从 RSSHub 拉取两个 feed：\n\n- `https://rsshub.rssforever.com/36kr/hot-list` → 热榜\n- `https://rsshub.rssforever.com/36kr/newsflashes` → 快讯\n\n## Tabs\n\n- **热榜**：36氪 24 小时热榜，适合浏览长文和综合热点。\n- **快讯**：36氪实时快讯，按发布时间倒序。\n\n## XML\n\n使用 `xml` wasm plugin 的 `xml.rss` 动作解析 RSS/Atom；开发时请 link `xml` 插件。\n",
+  "version": "0.1.0",
+  "min_runtime": "0.1.3",
+  "license": "MIT",
+  "renderer": "auto",
+  "author": "aglet-dev",
+  "category": "media",
+  "keywords": [
+    "36kr",
+    "rss",
+    "news",
+    "china",
+    "startup"
+  ],
+  "icon": "https://api.iconify.design/ph/newspaper-clipping-fill.svg?color=%23111111&width=256",
+  "permissions": [
+    "data:read",
+    "data:write"
+  ],
+  "requires": [
+    {
+      "plugin": "xml",
+      "range": ">=0.1.0"
+    }
+  ],
+  "window": {
+    "style": "phone",
+    "width": 420,
+    "height": 820,
+    "resizable": false
+  },
+  "jobs": [
+    {
+      "id": "ingest",
+      "run": "ingest",
+      "every": 300000,
+      "while": "always"
+    }
+  ],
+  "collections": {
+    "hot_items": {
+      "schema": {
+        "guid": { "type": "string" },
+        "title": { "type": "string" },
+        "url": { "type": "string" },
+        "summary": { "type": "string" },
+        "published_at": { "type": "string" },
+        "published_ts": { "type": "number" },
+        "source": { "type": "string" }
+      },
+      "indexes": ["guid", "published_ts"]
+    },
+    "newsflashes": {
+      "schema": {
+        "guid": { "type": "string" },
+        "title": { "type": "string" },
+        "url": { "type": "string" },
+        "summary": { "type": "string" },
+        "published_at": { "type": "string" },
+        "published_ts": { "type": "number" },
+        "source": { "type": "string" }
+      },
+      "indexes": ["guid", "published_ts"]
+    }
+  },
+  "state": {
+    "sync_error": ""
+  }
+}

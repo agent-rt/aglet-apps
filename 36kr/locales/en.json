@@ -1,0 +1,11 @@
+{
+  "tabHot": "Hot",
+  "tabFlash": "Flashes",
+  "emptyHotTitle": "No hot stories yet",
+  "emptyFlashTitle": "No newsflashes yet",
+  "emptyDesc": "Items appear after the background refresh. You can also ask the agent to refresh 36Kr.",
+  "btnOpen": "Open",
+  "badgeHot": "Hot",
+  "badgeFlash": "Flash",
+  "syncError": "Refresh failed"
+}

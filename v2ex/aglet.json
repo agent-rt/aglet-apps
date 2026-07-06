@@ -1,0 +1,87 @@
+{
+  "id": "v2ex",
+  "name": {
+    "default": "V2EX",
+    "en": "V2EX",
+    "zh": "V2EX",
+    "ja": "V2EX"
+  },
+  "description": {
+    "default": "V2EX latest and hot topics from RSSHub.",
+    "en": "V2EX latest and hot topics from RSSHub.",
+    "zh": "基于 RSSHub 的 V2EX 最新与最热主题。",
+    "ja": "RSSHub から V2EX の最新・ホットトピックを表示します。"
+  },
+  "docs": "# V2EX\n\nV2EX 阅读小工具。后台 job 从 RSSHub 拉取两个 feed：\n\n- `https://rsshub.rssforever.com/v2ex/topics/latest` → 最新主题\n- `https://rsshub.rssforever.com/v2ex/topics/hot` → 最热主题\n\n## Tabs\n\n- **最新**：V2EX 最新主题，按发布时间倒序。\n- **最热**：V2EX 当前热门主题。\n\n优先使用 `xml` wasm plugin 的 `xml.rss` 解析 RSS/Atom；开发时用 `aglet dev v2ex --link <xml-plugin-dir>`。\n",
+  "version": "0.1.0",
+  "min_runtime": "0.1.3",
+  "license": "MIT",
+  "renderer": "auto",
+  "author": "aglet-dev",
+  "category": "media",
+  "keywords": [
+    "v2ex",
+    "rss",
+    "forum",
+    "developer",
+    "topics"
+  ],
+  "icon": "https://api.iconify.design/ph/chats-circle-fill.svg?color=%232f6fed&width=256",
+  "permissions": [
+    "data:read",
+    "data:write"
+  ],
+  "requires": [
+    {
+      "plugin": "xml",
+      "range": ">=0.1.0"
+    }
+  ],
+  "window": {
+    "style": "phone",
+    "width": 420,
+    "height": 820,
+    "resizable": false
+  },
+  "jobs": [
+    {
+      "id": "ingest",
+      "run": "ingest",
+      "every": 300000,
+      "while": "always"
+    }
+  ],
+  "collections": {
+    "latest_topics": {
+      "schema": {
+        "guid": { "type": "string" },
+        "title": { "type": "string" },
+        "url": { "type": "string" },
+        "summary": { "type": "string" },
+        "author": { "type": "string" },
+        "node": { "type": "string" },
+        "published_at": { "type": "string" },
+        "published_ts": { "type": "number" },
+        "source": { "type": "string" }
+      },
+      "indexes": ["guid", "published_ts", "node", "author"]
+    },
+    "hot_topics": {
+      "schema": {
+        "guid": { "type": "string" },
+        "title": { "type": "string" },
+        "url": { "type": "string" },
+        "summary": { "type": "string" },
+        "author": { "type": "string" },
+        "node": { "type": "string" },
+        "published_at": { "type": "string" },
+        "published_ts": { "type": "number" },
+        "source": { "type": "string" }
+      },
+      "indexes": ["guid", "published_ts", "node", "author"]
+    }
+  },
+  "state": {
+    "sync_error": ""
+  }
+}
