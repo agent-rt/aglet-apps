@@ -135,5 +135,14 @@
         ]
       }
     ]
+  },
+  "shots": {
+    "seed": "hn.shots.seed.json",
+    "locales": ["en", "zh"],
+    "frames": [
+      { "id": "feed", "caption": { "default": "Your feeds, beautifully native", "zh": "原生质感的信息流" } },
+      { "id": "liked", "state": { "/state/_ui/tabs/main": "liked" }, "caption": { "default": "Keep what you love", "zh": "收藏你喜欢的" } },
+      { "id": "blocked", "state": { "/state/_ui/tabs/main": "blocked" }, "caption": { "default": "Mute the noise", "zh": "屏蔽噪音" } }
+    ]
   }
 }

@@ -1,0 +1,44 @@
+[
+  { "collection": "stories", "data": {
+    "hn_id": 48901001, "title": "Show HN: I built a Zig runtime for cross-platform native mini-apps",
+    "title_en": "Show HN: I built a Zig runtime for cross-platform native mini-apps",
+    "url": "https://github.com/aglet-dev/aglet", "domain": "github.com",
+    "author": "linguofeng", "points": 487, "comments": 132,
+    "summary": "One canonical IR renders to real SwiftUI / WinUI3 — no Electron, no webview chrome.",
+    "liked": true, "disliked": false } },
+  { "collection": "stories", "data": {
+    "hn_id": 48901002, "title": "The case against microservices for small teams",
+    "title_en": "The case against microservices for small teams",
+    "url": "https://martinfowler.com/articles/monolith-first.html", "domain": "martinfowler.com",
+    "author": "kentbeck", "points": 921, "comments": 604,
+    "summary": "Distributed complexity rarely pays off before product-market fit.",
+    "liked": true, "disliked": false } },
+  { "collection": "stories", "data": {
+    "hn_id": 48901003, "title": "SQLite is now the most deployed database engine on Earth",
+    "title_en": "SQLite is now the most deployed database engine on Earth",
+    "url": "https://www.sqlite.org/mostdeployed.html", "domain": "sqlite.org",
+    "author": "drh", "points": 1203, "comments": 288,
+    "summary": "Trillions of live databases across phones, browsers, and embedded devices.",
+    "liked": false, "disliked": false } },
+  { "collection": "stories", "data": {
+    "hn_id": 48901004, "title": "Rust 2024 edition: what actually changed",
+    "title_en": "Rust 2024 edition: what actually changed",
+    "url": "https://blog.rust-lang.org/2024-edition.html", "domain": "rust-lang.org",
+    "author": "steveklabnik", "points": 655, "comments": 210,
+    "summary": "Async closures, gen blocks, and a stricter capture model land by default.",
+    "liked": false, "disliked": false } },
+  { "collection": "stories", "data": {
+    "hn_id": 48901005, "title": "Ask HN: How do you keep focus while working solo?",
+    "title_en": "Ask HN: How do you keep focus while working solo?",
+    "url": "https://news.ycombinator.com/item?id=48901005", "domain": "news.ycombinator.com",
+    "author": "quietbuilder", "points": 342, "comments": 415,
+    "summary": "Founders and indie devs share rituals for deep work without a team around.",
+    "liked": false, "disliked": false } },
+  { "collection": "stories", "data": {
+    "hn_id": 48901006, "title": "Crypto miner disguised as a VS Code extension",
+    "title_en": "Crypto miner disguised as a VS Code extension",
+    "url": "https://spam.example.com/x", "domain": "spam.example.com",
+    "author": "sketchy", "points": 12, "comments": 3,
+    "summary": "Low-signal spam — exactly what the Blocked list is for.",
+    "liked": false, "disliked": true } }
+]
