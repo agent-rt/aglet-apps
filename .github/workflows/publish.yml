@@ -46,7 +46,7 @@ jobs:
           fi
           manifest="$APP/aglet.json"
           [ -f "$manifest" ] || { echo "✗ $manifest missing"; exit 1; }
-          MANIFEST_VER=$(jq -r '.manifest.version // .version' "$manifest")
+          MANIFEST_VER=$(jq -r '.version' "$manifest")
           if [ "$MANIFEST_VER" != "$VERSION" ]; then
             echo "✗ tag $VERSION ≠ manifest.version $MANIFEST_VER"; exit 1
           fi
