@@ -40,11 +40,11 @@ function stripHtml(s) {
 }
 
 // OpenAI-compat chat completion(sync fetch,同本文件 Phase1 风格)。失败返空串。
-function llmcall(endpoint, model, key, system, user) {
+async function llmcall(endpoint, model, key, system, user) {
   try {
     const headers = { "Content-Type": "application/json" };
     if (key) headers["Authorization"] = "Bearer " + key;
-    const r = fetch(endpoint, {
+    const r = await fetch(endpoint, {
       method: "POST",
       headers,
       body: JSON.stringify({
@@ -74,7 +74,7 @@ export default {
   async ingest(args, _ctx) {
     const MAX = (args && args.max) || DEFAULT_MAX;
 
-    const ids_resp = fetch("https://hacker-news.firebaseio.com/v0/topstories.json");
+    const ids_resp = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json");
     if (!ids_resp.ok) throw new Error(`topstories fetch failed: ${ids_resp.status}`);
     const ids = JSON.parse(ids_resp.body).slice(0, MAX);
 
@@ -85,7 +85,7 @@ export default {
     let refreshed = 0;
     const pending = []; // { id, title_en }
     // 官方源没有批量接口,30 个 item 用 fetchAll 并发抓(宿主侧并行,~1 个往返而非 30×)。
-    const itemResps = fetchAll(ids.map((id) => `https://hacker-news.firebaseio.com/v0/item/${id}.json`));
+    const itemResps = await fetchAll(ids.map((id) => `https://hacker-news.firebaseio.com/v0/item/${id}.json`));
     for (let i = 0; i < ids.length; i++) {
       const id = ids[i];
       const r = itemResps[i];
@@ -142,11 +142,11 @@ export default {
         ranges.push({ start: commentUrls.length, count: need ? p.kids.length : 0 });
         if (need) for (const kid of p.kids) commentUrls.push(`https://hacker-news.firebaseio.com/v0/item/${kid}.json`);
       }
-      const commentResps = commentUrls.length > 0 ? fetchAll(commentUrls) : [];
+      const commentResps = commentUrls.length > 0 ? await fetchAll(commentUrls) : [];
 
       for (let i = 0; i < pending.length; i++) {
         const p = pending[i];
-        const tzh = llmcall(endpoint, model, key, titlePrompt, p.title_en);
+        const tzh = await llmcall(endpoint, model, key, titlePrompt, p.title_en);
 
         // 摘要内容来源:自帖正文 > top 评论拼接 > 无(不脑补)。
         let content = "";
@@ -169,7 +169,7 @@ export default {
 
         let szh = "";
         if (content) {
-          szh = llmcall(endpoint, model, key, summaryPrompt, `标题：${p.title_en}\n\n讨论/正文：\n${content}`);
+          szh = await llmcall(endpoint, model, key, summaryPrompt, `标题：${p.title_en}\n\n讨论/正文：\n${content}`);
         }
 
         const patch = {};

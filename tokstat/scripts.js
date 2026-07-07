@@ -92,10 +92,10 @@ async function readCred(ctx, provider) {
   }
 }
 
-// 同步 fetch(宿主 fetch 是同步)。429/非2xx/网断/body 非预期 → { transient:true }。
-function getJson(url, headers) {
+// 异步 fetch(宿主 fetch 现返回 Promise)。429/非2xx/网断/body 非预期 → { transient:true }。
+async function getJson(url, headers) {
   let r;
-  try { r = fetch(url, { headers }); }
+  try { r = await fetch(url, { headers }); }
   catch (e) { console.warn(`[tokstat] fetch ${url} threw:`, String(e)); return { transient: true }; }
   if (r.status === 429 || !r.ok) return { transient: true, status: r.status };
   let d;
@@ -112,9 +112,9 @@ function claudeWindow(w) {
   return { used_pct: pct, resets_at_ms: Number.isFinite(ms) ? ms : undefined };
 }
 
-function fetchClaude(cred) {
+async function fetchClaude(cred) {
   if (!cred) return { needs_auth: true };
-  const res = getJson("https://api.anthropic.com/api/oauth/usage", {
+  const res = await getJson("https://api.anthropic.com/api/oauth/usage", {
     Authorization: "Bearer " + cred.access_token,
     Accept: "application/json",
     "User-Agent": "tokstat",
@@ -135,7 +135,7 @@ function codexWindow(w) {
   return { used_pct: pct, resets_at_ms: secs !== undefined ? secs * 1000 : undefined };
 }
 
-function fetchCodex(cred) {
+async function fetchCodex(cred) {
   if (!cred) return { needs_auth: true };
   const headers = {
     Authorization: "Bearer " + cred.access_token,
@@ -143,7 +143,7 @@ function fetchCodex(cred) {
     "User-Agent": "tokstat",
   };
   if (cred.account_id) headers["ChatGPT-Account-Id"] = cred.account_id;
-  const res = getJson("https://chatgpt.com/backend-api/wham/usage", headers);
+  const res = await getJson("https://chatgpt.com/backend-api/wham/usage", headers);
   if (res.status === 401 || res.status === 403) return { needs_auth: true }; // token 过期/失效 → 提示重登
   if (!res.ok) return res;
   const rl = res.data.rate_limit;
@@ -280,7 +280,7 @@ async function runRefresh(ctx) {
       continue;
     }
     const cred = await readCred(ctx, p.id);
-    const side = p.fetch(cred);
+    const side = await p.fetch(cred);
     if (side.ok) {
       await upsertProvider(p, side, ts, ctx);
     } else if (side.needs_auth) {

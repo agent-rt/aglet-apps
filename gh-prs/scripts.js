@@ -59,9 +59,9 @@ function repoFromUrl(u) {
   return parts[parts.length - 2] + "/" + parts[parts.length - 1];
 }
 
-function viaRest(token, q) {
+async function viaRest(token, q) {
   const url = "https://api.github.com/search/issues?per_page=100&q=" + encodeURIComponent(q);
-  const r = fetch(url, {
+  const r = await fetch(url, {
     headers: {
       Authorization: "Bearer " + token,
       Accept: "application/vnd.github+json",
@@ -125,8 +125,8 @@ export default {
         reviews = viaCli("--review-requested=@me");
         mine = viaCli("--author=@me");
       } else {
-        reviews = viaRest(token, "is:pr is:open review-requested:@me");
-        mine = viaRest(token, "is:pr is:open author:@me");
+        reviews = await viaRest(token, "is:pr is:open review-requested:@me");
+        mine = await viaRest(token, "is:pr is:open author:@me");
       }
     } catch (e) {
       setState(ctx, "/state/sync_error", String((e && e.message) || e).slice(0, 200));

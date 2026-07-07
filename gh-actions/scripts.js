@@ -58,13 +58,13 @@ function headers(token) {
     "X-GitHub-Api-Version": "2022-11-28",
   };
 }
-function ghGet(token, path) {
-  const r = fetch(API + path, { headers: headers(token) });
+async function ghGet(token, path) {
+  const r = await fetch(API + path, { headers: headers(token) });
   if (!r.ok) throw new Error(`GitHub HTTP ${r.status} GET ${path}`);
   return r.json();
 }
-function ghPost(token, path, bodyObj) {
-  const r = fetch(API + path, { method: "POST", headers: headers(token), body: JSON.stringify(bodyObj || {}) });
+async function ghPost(token, path, bodyObj) {
+  const r = await fetch(API + path, { method: "POST", headers: headers(token), body: JSON.stringify(bodyObj || {}) });
   return { ok: r.ok, status: r.status, body: r.body || "" };
 }
 
@@ -151,18 +151,19 @@ function pruneOrphans(activeRepoNames, counters) {
 
 // 候选仓:手动 pin 覆盖;否则 /user/repos 按 pushed 排,**权限过滤(默认只留我能写的)**,取前 N。
 // 返回 [{ name, owner, default_branch }]。
-function candidateRepos(token) {
+async function candidateRepos(token) {
   const pinned = cfg("repos").split("\n").map((s) => s.trim()).filter(Boolean);
   if (pinned.length > 0) {
-    return pinned.map((name) => {
+    // fetch 真异步 → 各 pin 仓并发拉(Promise.all)。
+    return await Promise.all(pinned.map(async (name) => {
       let db = "main"; let owner = name.split("/")[0] || "";
-      try { const r = ghGet(token, `/repos/${name}`); db = r.default_branch || "main"; owner = (r.owner && r.owner.login) || owner; } catch (_e) {}
+      try { const r = await ghGet(token, `/repos/${name}`); db = r.default_branch || "main"; owner = (r.owner && r.owner.login) || owner; } catch (_e) {}
       return { name, owner, default_branch: db };
-    });
+    }));
   }
   const max = Number(cfg("max_repos")) || 30;
   const showAll = cfgBool("show_all_repos");
-  const repos = ghGet(token, "/user/repos?sort=pushed&per_page=100&affiliation=owner,collaborator,organization_member");
+  const repos = await ghGet(token, "/user/repos?sort=pushed&per_page=100&affiliation=owner,collaborator,organization_member");
   const filtered = (repos || []).filter((r) => {
     if (showAll) return true;
     const p = r.permissions || {};
@@ -184,18 +185,18 @@ function knownRepos() {
 }
 
 // 当前登录用户 login(判「我近期有活动」用)。失败返空串。
-function myLogin(token) {
-  try { return ghGet(token, "/user").login || ""; } catch (_e) { return ""; }
+async function myLogin(token) {
+  try { return (await ghGet(token, "/user")).login || ""; } catch (_e) { return ""; }
 }
 
 // 拉一仓最近 runs(≤15)→ mapped(API 已按最近优先,runs[0]=最新)。不 upsert。
-function fetchRepoRuns(token, repo) {
-  const data = ghGet(token, `/repos/${repo}/actions/runs?per_page=15`);
+async function fetchRepoRuns(token, repo) {
+  const data = await ghGet(token, `/repos/${repo}/actions/runs?per_page=15`);
   return (data.workflow_runs || []).map((rn) => mapRun(rn, repo));
 }
 // 拉 + upsert(refreshRuns / execAndRefresh 用)。返回 mapped runs。
-function syncRepoRuns(token, repo, seen, counters) {
-  const runs = fetchRepoRuns(token, repo);
+async function syncRepoRuns(token, repo, seen, counters) {
+  const runs = await fetchRepoRuns(token, repo);
   for (const r of runs) upsertBy("runs", "run_id", r, seen, counters);
   return runs;
 }
@@ -239,10 +240,10 @@ export default {
     setState(ctx, "/state/source", source);
 
     let repos;
-    try { repos = candidateRepos(token); } catch (e) { setState(ctx, "/state/sync_error", msg(e)); return { error: true }; }
+    try { repos = await candidateRepos(token); } catch (e) { setState(ctx, "/state/sync_error", msg(e)); return { error: true }; }
 
     const showAll = cfgBool("show_all_repos");
-    const me = showAll ? "" : myLogin(token); // 活动过滤需要我的 login(showAll 跳过)
+    const me = showAll ? "" : await myLogin(token); // 活动过滤需要我的 login(showAll 跳过)
 
     const counters = { added: 0, updated: 0, removed: 0 };
     const seenWf = new Set();
@@ -254,14 +255,14 @@ export default {
       // 1) workflows:没有 → 该仓没 Actions,跳过。
       let wfs;
       try {
-        const data = ghGet(token, `/repos/${r.name}/actions/workflows?per_page=100`);
+        const data = await ghGet(token, `/repos/${r.name}/actions/workflows?per_page=100`);
         wfs = (data.workflows || []).filter((w) => w.state === "active").map((w) => mapWorkflow(w, r.name, r.default_branch));
       } catch (_e) { continue; }
       if (wfs.length === 0) continue;
 
       // 2) runs:取来既判「我近期有活动」也做聚合(showAll 时不判,全留)。
       let runs = [];
-      try { runs = fetchRepoRuns(token, r.name); } catch (_e) {}
+      try { runs = await fetchRepoRuns(token, r.name); } catch (_e) {}
       if (!showAll && !activeForMe(me, r.owner, runs)) continue; // 我没参与 → 不入库
 
       // 3) 命中 → 落 workflows + runs + repo 聚合行。
@@ -294,7 +295,7 @@ export default {
     const seen = new Set();
     const repoSet = new Set(repos);
     for (const repo of repos) {
-      try { const runs = syncRepoRuns(token, repo, seen, counters); updateRepoStatus(repo, runs); } catch (_e) {}
+      try { const runs = await syncRepoRuns(token, repo, seen, counters); updateRepoStatus(repo, runs); } catch (_e) {}
     }
     pruneStaleRuns(repoSet, seen, counters);
     setState(ctx, "/state/sync_error", "");
@@ -335,12 +336,12 @@ export default {
 };
 
 // 执行一个副作用调用 + 立即刷新该仓 runs/聚合回填;失败写 /state/action_error。
-function execAndRefresh(ctx, repo, doPost) {
+async function execAndRefresh(ctx, repo, doPost) {
   setState(ctx, "/state/action_error", "");
   const { token } = resolveToken();
   if (!token) { setState(ctx, "/state/needs_auth", true); return { needs_auth: true }; }
   let res;
-  try { res = doPost(); } catch (e) { setState(ctx, "/state/action_error", msg(e)); return { error: true }; }
+  try { res = await doPost(); } catch (e) { setState(ctx, "/state/action_error", msg(e)); return { error: true }; }
   if (!res.ok) {
     setState(ctx, "/state/action_error", `GitHub HTTP ${res.status}`); // 422 常见:无 workflow_dispatch / 不可重跑
     return { error: true, status: res.status };
@@ -349,7 +350,7 @@ function execAndRefresh(ctx, repo, doPost) {
     const seen = new Set();
     const counters = { added: 0, updated: 0, removed: 0 };
     try {
-      const runs = syncRepoRuns(token, repo, seen, counters);
+      const runs = await syncRepoRuns(token, repo, seen, counters);
       pruneStaleRuns(new Set([repo]), seen, counters);
       updateRepoStatus(repo, runs);
     } catch (_e) {}
