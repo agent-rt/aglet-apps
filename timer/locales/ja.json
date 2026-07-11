@@ -1,0 +1,8 @@
+{
+  "stateRunning": "計測中",
+  "statePaused": "一時停止",
+  "stateDone": "終了",
+  "btnStart": "開始",
+  "btnPause": "停止",
+  "btnReset": "リセット"
+}

@@ -1,0 +1,107 @@
+{
+  "name": "timer preset → start → reset E2E (state-driven)",
+  "aglet": "..",
+  "_comment": "全 state.waitfor 断言 /state/{display,running,done}；click Button 用 select.props (label literal / icon)。",
+  "steps": [
+    {
+      "_comment": "初始 paused + display=1:00",
+      "action": "state.waitfor",
+      "timeout": 3000,
+      "expect": {
+        "ok": true,
+        "data": {
+          "state": {
+            "display": "1:00",
+            "running": false
+          }
+        }
+      }
+    },
+    {
+      "_comment": "切预设 30s — Button label='30s'",
+      "action": "intent.fire",
+      "select": {
+        "role": "button",
+        "props": {
+          "label": "30s"
+        }
+      },
+      "expect": {
+        "ok": true,
+        "data": {
+          "clicked": true
+        }
+      }
+    },
+    {
+      "action": "state.waitfor",
+      "timeout": 3000,
+      "expect": {
+        "ok": true,
+        "data": {
+          "state": {
+            "display": "0:30",
+            "preset": "30s"
+          }
+        }
+      }
+    },
+    {
+      "_comment": "Start —— icon=play",
+      "action": "intent.fire",
+      "select": {
+        "role": "button",
+        "props": {
+          "icon": "play"
+        }
+      },
+      "expect": {
+        "ok": true,
+        "data": {
+          "clicked": true
+        }
+      }
+    },
+    {
+      "action": "state.waitfor",
+      "timeout": 3000,
+      "expect": {
+        "ok": true,
+        "data": {
+          "state": {
+            "running": true
+          }
+        }
+      }
+    },
+    {
+      "_comment": "Reset —— icon=arrow-counter-clockwise",
+      "action": "intent.fire",
+      "select": {
+        "role": "button",
+        "props": {
+          "icon": "arrow-counter-clockwise"
+        }
+      },
+      "expect": {
+        "ok": true,
+        "data": {
+          "clicked": true
+        }
+      }
+    },
+    {
+      "action": "state.waitfor",
+      "timeout": 3000,
+      "expect": {
+        "ok": true,
+        "data": {
+          "state": {
+            "running": false,
+            "display": "0:30"
+          }
+        }
+      }
+    }
+  ]
+}

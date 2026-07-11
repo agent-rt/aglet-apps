@@ -1,0 +1,8 @@
+{
+  "stateRunning": "Running",
+  "statePaused": "Paused",
+  "stateDone": "Done",
+  "btnStart": "Start",
+  "btnPause": "Pause",
+  "btnReset": "Reset"
+}

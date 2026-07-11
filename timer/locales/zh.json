@@ -1,0 +1,8 @@
+{
+  "stateRunning": "进行中",
+  "statePaused": "已暂停",
+  "stateDone": "已结束",
+  "btnStart": "开始",
+  "btnPause": "暂停",
+  "btnReset": "重置"
+}
