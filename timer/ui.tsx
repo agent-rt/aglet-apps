@@ -2,22 +2,21 @@
 html, body { overscroll-behavior: none; }
 </style>
 
-<Page className="min-h-screen p-6 flex flex-col items-center justify-center select-none">
-<VStack gap={2} className="items-center mb-10">
-    <Heading
-      level={1}
-      content={state.display}
-      className="text-8xl font-light tabular-nums tracking-tight"/>
-    <HStack gap={3} className="items-center mt-2">
-      <Badge
-        content={state.done ? t.stateDone : (state.running ? t.stateRunning : t.statePaused)}
-        color={state.done ? "warning" : (state.running ? "success" : undefined)}
-        icon={state.done ? "check-circle" : (state.running ? "play-circle" : "pause-circle")}/>
-      <Text muted className="text-xs uppercase tracking-wider">{state.preset}</Text>
-    </HStack>
-  </VStack>
+<Page className="p-7 flex flex-col items-center gap-6 select-none">
+  <Progress
+    variant="ring"
+    size="lg"
+    value={state.remaining}
+    max={state.seconds}
+    label={state.display}
+    color={state.ringColor}/>
 
-<HStack gap={3} className="mb-10">
+  <Badge
+    content={state.done ? t.stateDone : (state.running ? t.stateRunning : t.statePaused)}
+    color={state.done ? "success" : (state.running ? "warning" : undefined)}
+    icon={state.done ? "check-circle" : (state.running ? "play-circle" : "pause-circle")}/>
+
+  <HStack gap={2} className="items-center">
     <Button label="30s"
       variant="bordered" size="sm"
       pressed={state.preset == "30s"}
@@ -36,7 +35,7 @@ html, body { overscroll-behavior: none; }
       onClick={() => scripts.preset({s: 600, label: "10m"})}/>
   </HStack>
 
-<HStack gap={4}>
+  <HStack gap={4}>
     {state.running ?
       <Button label={t.btnPause}
         icon="pause"

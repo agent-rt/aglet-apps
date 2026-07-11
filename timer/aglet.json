@@ -22,7 +22,7 @@
     "stopwatch"
   ],
   "window": {
-    "style": "phone",
+    "style": "panel",
     "width": 320,
     "height": 480
   },
@@ -32,7 +32,8 @@
     "display": "1:00",
     "preset": "1m",
     "running": false,
-    "done": false
+    "done": false,
+    "ringColor": "#4FD1C5"
   },
   "keys": {
     "Enter": "toggle",
