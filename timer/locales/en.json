@@ -1,4 +1,5 @@
 {
+  "stateReady": "Ready",
   "stateRunning": "Running",
   "statePaused": "Paused",
   "stateDone": "Done",

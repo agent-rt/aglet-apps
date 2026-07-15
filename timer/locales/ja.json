@@ -1,4 +1,5 @@
 {
+  "stateReady": "準備完了",
   "stateRunning": "計測中",
   "statePaused": "一時停止",
   "stateDone": "終了",

@@ -12,9 +12,9 @@ html, body { overscroll-behavior: none; }
     color={state.ringColor}/>
 
   <Badge
-    content={state.done ? t.stateDone : (state.running ? t.stateRunning : t.statePaused)}
+    content={state.done ? t.stateDone : (state.running ? t.stateRunning : (state.started ? t.statePaused : t.stateReady))}
     color={state.done ? "success" : (state.running ? "warning" : undefined)}
-    icon={state.done ? "check-circle" : (state.running ? "play-circle" : "pause-circle")}/>
+    icon={state.done ? "check-circle" : (state.running ? "play-circle" : (state.started ? "pause-circle" : "timer"))}/>
 
   <HStack gap={2} className="items-center">
     <Button label="30s"

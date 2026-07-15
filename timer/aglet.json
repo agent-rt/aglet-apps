@@ -33,6 +33,7 @@
     "preset": "1m",
     "running": false,
     "done": false,
+    "started": false,
     "ringColor": "#4FD1C5"
   },
   "keys": {

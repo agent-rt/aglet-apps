@@ -1,4 +1,5 @@
 {
+  "stateReady": "就绪",
   "stateRunning": "进行中",
   "statePaused": "已暂停",
   "stateDone": "已结束",

@@ -35,7 +35,10 @@ export default (aglet) => {
     const next = remaining - 1;
     if (next <= 0) {
       stop();
-      aglet.setState({ remaining: 0, display: fmt(0), running: false, done: true, ringColor: colorFor(0, sec, true) });
+      // 完成态:环自然消耗到空(remaining=0 → frac=0 空环);完成由下方 Done 徽章指示。
+      // **不设 ringColor**(保留最后的红)→ 避免最后小弧在 0.3s 动画里红→绿闪动(用户不要那个);
+      // 环空了颜色也看不到,无所谓。
+      aglet.setState({ remaining: 0, display: fmt(0), running: false, done: true });
       return;
     }
     aglet.setState({ remaining: next, display: fmt(next), ringColor: colorFor(next, sec, false) });
@@ -45,7 +48,7 @@ export default (aglet) => {
     // 选预设：停表并重置到该秒数。
     preset({ s, label }) {
       stop();
-      aglet.setState({ seconds: s, remaining: s, display: fmt(s), preset: label, running: false, done: false, ringColor: colorFor(s, s, false) });
+      aglet.setState({ seconds: s, remaining: s, display: fmt(s), preset: label, running: false, done: false, started: false, ringColor: colorFor(s, s, false) });
     },
 
     // 开始/暂停切换。开始 → setInterval(tick,1000)；暂停 → clearInterval。
@@ -60,7 +63,7 @@ export default (aglet) => {
       const rem = (Number(aglet.getState("/state/remaining")) || 0) > 0
         ? Number(aglet.getState("/state/remaining"))
         : sec;
-      aglet.setState({ remaining: rem, display: fmt(rem), running: true, done: false, ringColor: colorFor(rem, sec, false) });
+      aglet.setState({ remaining: rem, display: fmt(rem), running: true, done: false, started: true, ringColor: colorFor(rem, sec, false) });
       intervalId = setInterval(tick, 1000);
     },
 
@@ -68,7 +71,7 @@ export default (aglet) => {
     reset() {
       stop();
       const s = Number(aglet.getState("/state/seconds")) || 60;
-      aglet.setState({ remaining: s, display: fmt(s), running: false, done: false, ringColor: colorFor(s, s, false) });
+      aglet.setState({ remaining: s, display: fmt(s), running: false, done: false, started: false, ringColor: colorFor(s, s, false) });
     },
   };
 };
