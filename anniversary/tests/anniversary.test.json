@@ -1,0 +1,21 @@
+{
+  "name": "anniversary — refresh 派生计算(时间无关断言)",
+  "_note": "常驻 runtime 的 aglet.now() 无 scenario time-override(app_js_runtime.zig 注释),故不断言随今天漂移的 days_until/milestone;只断言与今天无关的稳定派生:next_at(事件月/日)+ refresh count。verify derive 的 parseYMD / nxt 月日 / t('nextAt') 插值 / 写回。",
+  "aglet": "..",
+  "steps": [
+    { "action": "data.create", "params": { "collection": "events", "data": { "title": "宝宝", "date": "2025-08-15", "kind": "birthday", "recurring": true } }, "expect": { "ok": true } },
+    { "action": "data.create", "params": { "collection": "events", "data": { "title": "小明", "date": "1990-12-25", "kind": "birthday", "recurring": true } }, "expect": { "ok": true } },
+    { "action": "data.create", "params": { "collection": "events", "data": { "title": "结婚", "date": "2020-06-05", "kind": "anniversary", "recurring": true } }, "expect": { "ok": true } },
+
+    { "action": "scripts.call", "params": { "fn": "refresh" }, "expect": { "ok": true, "data_eq": { "result": { "count": 3 } } } },
+
+    { "action": "data.list", "params": { "collection": "events", "query": { "where": { "title": "结婚" } } },
+      "expect": { "ok": true, "items_len": 1, "data_eq": { "items": [ { "data": { "next_at": "6/5" } } ] } } },
+
+    { "action": "data.list", "params": { "collection": "events", "query": { "where": { "title": "宝宝" } } },
+      "expect": { "ok": true, "items_len": 1, "data_eq": { "items": [ { "data": { "next_at": "8/15" } } ] } } },
+
+    { "action": "data.list", "params": { "collection": "events", "query": { "where": { "title": "小明" } } },
+      "expect": { "ok": true, "items_len": 1, "data_eq": { "items": [ { "data": { "next_at": "12/25" } } ] } } }
+  ]
+}

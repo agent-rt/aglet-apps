@@ -1,0 +1,35 @@
+{
+  "id": "anniversary",
+  "name": { "default": "Anniversary", "zh": "纪念日", "ja": "記念日" },
+  "description": {
+    "default": "Track anniversaries (birthdays, milestones) with a live countdown to the next occurrence.",
+    "zh": "记录纪念日（生日、里程碑），实时倒数到下一次。",
+    "ja": "記念日（誕生日・節目）を登録し、次の発生までをカウントダウン。"
+  },
+  "version": "0.1.0",
+  "min_runtime": "0.1.3",
+  "license": "MIT",
+  "renderer": "auto",
+  "author": "aglet-dev",
+  "default_locale": "en",
+  "category": "utilities",
+  "keywords": ["anniversary", "birthday", "countdown", "reminder"],
+  "permissions": ["data:read", "data:write"],
+  "window": { "style": "phone", "width": 400, "height": 720 },
+  "collections": {
+    "events": {
+      "schema": {
+        "title": { "type": "string" },
+        "date": { "type": "string" },
+        "kind": { "type": "string" },
+        "recurring": { "type": "boolean" },
+        "created_at": { "type": "string" },
+        "days_until": { "type": "number" },
+        "next_at": { "type": "string" },
+        "milestone": { "type": "string" },
+        "age_label": { "type": "string" }
+      },
+      "indexes": ["days_until", "kind"]
+    }
+  }
+}

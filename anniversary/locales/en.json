@@ -1,0 +1,21 @@
+{
+  "heading": "Anniversaries",
+  "empty": "No anniversaries yet",
+  "next": "Next",
+  "daysLeft": "days left",
+  "placeholderTitle": "Title (e.g. Mom's birthday)",
+  "labelDate": "Date",
+  "labelKind": "Type",
+  "optBirthday": "Birthday",
+  "optAnniversary": "Anniversary",
+  "optCustom": "Other",
+  "switchRecurring": "Repeat yearly",
+  "btnAdd": "Add",
+  "btnDelete": "Delete",
+  "msBirthday": "Turns {n}",
+  "msBorn": "Born",
+  "msAnniversary": "{n} yr",
+  "ageDays": "{n} days old",
+  "ageMonths": "{n} mo old",
+  "nextAt": "{mo}/{d}"
+}

@@ -1,0 +1,21 @@
+{
+  "heading": "纪念日",
+  "empty": "还没有纪念日",
+  "next": "下一个",
+  "daysLeft": "天后",
+  "placeholderTitle": "标题（如 小明生日）",
+  "labelDate": "日期",
+  "labelKind": "类型",
+  "optBirthday": "生日",
+  "optAnniversary": "纪念日",
+  "optCustom": "其他",
+  "switchRecurring": "每年循环",
+  "btnAdd": "添加",
+  "btnDelete": "删除",
+  "msBirthday": "满 {n} 岁",
+  "msBorn": "出生",
+  "msAnniversary": "第 {n} 周年",
+  "ageDays": "出生 {n} 天",
+  "ageMonths": "{n} 个月",
+  "nextAt": "{mo}月{d}日"
+}

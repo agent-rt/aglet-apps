@@ -1,0 +1,21 @@
+{
+  "heading": "記念日",
+  "empty": "記念日がまだありません",
+  "next": "次",
+  "daysLeft": "日後",
+  "placeholderTitle": "タイトル（例：母の誕生日）",
+  "labelDate": "日付",
+  "labelKind": "種類",
+  "optBirthday": "誕生日",
+  "optAnniversary": "記念日",
+  "optCustom": "その他",
+  "switchRecurring": "毎年繰り返す",
+  "btnAdd": "追加",
+  "btnDelete": "削除",
+  "msBirthday": "{n} 歳",
+  "msBorn": "誕生",
+  "msAnniversary": "{n} 周年",
+  "ageDays": "生後 {n} 日",
+  "ageMonths": "生後 {n} か月",
+  "nextAt": "{mo}月{d}日"
+}
