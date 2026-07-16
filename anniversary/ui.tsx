@@ -58,14 +58,12 @@
     trigger={<Button icon="plus" color="#ff5e8a" size="lg"/>}>
     <DataForm collection="events">
       <Input name="title" placeholder={t.placeholderTitle}/>
-      <HStack gap={3} className="items-end">
-        <DatePicker name="date" label={t.labelDate}/>
-        <SegmentedControl name="kind" label={t.labelKind} defaultValue="birthday" options={[
-          { value: "birthday", label: t.optBirthday, icon: "cake" },
-          { value: "anniversary", label: t.optAnniversary, icon: "heart" },
-          { value: "custom", label: t.optCustom, icon: "star" }
-        ]}/>
-      </HStack>
+      <DatePicker name="date" label={t.labelDate}/>
+      <SegmentedControl name="kind" label={t.labelKind} defaultValue="birthday" options={[
+        { value: "birthday", label: t.optBirthday, icon: "cake" },
+        { value: "anniversary", label: t.optAnniversary, icon: "heart" },
+        { value: "custom", label: t.optCustom, icon: "star" }
+      ]}/>
       <HStack justify="between" className="items-center mt-1">
         <Switch name="recurring" label={t.switchRecurring} checked={true}/>
         <Button label={t.btnAdd} color="#ff5e8a" icon="plus" disabled={!form.title}
