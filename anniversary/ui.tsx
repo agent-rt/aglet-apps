@@ -27,28 +27,28 @@
     {/* ALL —— 全部纪念日,按天数升序 */}
     <DataList collection="events" query={{ orderBy: [{ field: "days_until", direction: "asc" }] }}>
       <Item>
-        <Card className="rounded-2xl">
-          <HStack justify="between" className="items-center">
-            <VStack gap={1}>
-              <Heading level={3}>{item.title}</Heading>
-              <HStack gap={5} className="items-center">
-                <Text muted className="text-xs">{item.next_at}</Text>
-                {item.milestone && <Badge content={item.milestone} color="secondary"/>}
-                {item.age_label && <Badge content={item.age_label} color="success"/>}
-              </HStack>
-            </VStack>
-            <HStack gap={3} className="items-center">
+        {/* 右键卡片 → 删除(桌面端习惯,去掉常驻 ⋯ 按钮让卡片更干净)。 */}
+        <Menu id="rowmenu" on="context" trigger={
+          <Card className="rounded-2xl">
+            <HStack justify="between" className="items-center">
+              <VStack gap={1}>
+                <Heading level={3}>{item.title}</Heading>
+                <HStack gap={5} className="items-center">
+                  <Text muted className="text-xs">{item.next_at}</Text>
+                  {item.milestone && <Badge content={item.milestone} color="secondary"/>}
+                  {item.age_label && <Badge content={item.age_label} color="success"/>}
+                </HStack>
+              </VStack>
               <VStack gap={0} className="items-end">
-                <Heading level={3} className="tabular-nums">{item.days_until}</Heading>
+                <Heading level={2} className="tabular-nums">{item.days_until}</Heading>
                 <Text muted className="text-xs">{t.daysLeft}</Text>
               </VStack>
-              <Menu id="rowmenu" trigger={<Button icon="dots-three" variant="flat" size="sm"/>}>
-                <MenuItem value="delete" label={t.btnDelete} icon="trash" danger
-                  onClick={() => data.delete({ collection: "events", id: item.id })}/>
-              </Menu>
             </HStack>
-          </HStack>
-        </Card>
+          </Card>
+        }>
+          <MenuItem value="delete" label={t.btnDelete} icon="trash" danger
+            onClick={() => data.delete({ collection: "events", id: item.id })}/>
+        </Menu>
       </Item>
     </DataList>
   </VStack>
