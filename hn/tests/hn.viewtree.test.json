@@ -1,0 +1,14 @@
+{
+  "name": "hn view-tree headless render + tab switch",
+  "aglet": "..",
+  "steps": [
+    { "action": "view.tree", "params": { "app_id": "hn" },
+      "expect": { "ok": true, "tree_has": { "t": "TabButton", "p": { "label": "Feed", "active": true } } } },
+    { "action": "state.mutate", "params": { "app_id": "hn", "path": "/state/_ui/tabs/main", "value": "liked", "emit": true },
+      "expect": { "ok": true } },
+    { "action": "view.tree", "params": { "app_id": "hn" },
+      "expect": { "ok": true, "tree_has": { "t": "TabButton", "p": { "label": "Liked", "active": true } } } },
+    { "action": "view.tree", "params": { "app_id": "hn" },
+      "expect": { "ok": true, "tree_missing": { "t": "TabButton", "p": { "label": "Feed", "active": true } } } }
+  ]
+}
