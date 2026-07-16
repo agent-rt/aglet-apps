@@ -58,11 +58,10 @@ export default (aglet) => {
   const t = (k, p) => aglet.t(k, p);
 
   // 重算所有 events 的派生字段。app 打开(onEnter) + 添加后触发。
+  // 表单初始默认(kind=birthday / recurring=on)走 widget 声明式默认(ui.tsx 的
+  // SegmentedControl defaultValue / Switch checked),不在此 seed —— /form 是 window scope,
+  // app-scoped script 写不进(见 view_tree formBindPath 缺省回退 checked/defaultValue)。
   function refresh() {
-    // 表单默认(让 sheet 里分段控件/开关有初始态):仅在未设时种,不覆盖用户输入。
-    if (!aglet.getState("/form/kind")) aglet.setStateAt("/form/kind", "birthday");
-    if (aglet.getState("/form/recurring") == null) aglet.setStateAt("/form/recurring", true);
-
     const nowMs = aglet.now();
     const resp = aglet.data.list("events", {});
     const items = (resp && resp.items) || [];
@@ -84,9 +83,7 @@ export default (aglet) => {
       recurring: aglet.getState("/form/recurring") !== false,
       created_at: new Date(aglet.now()).toISOString(),
     });
-    aglet.setStateAt("/form/title", "");
-    aglet.setStateAt("/form/date", "");
-    aglet.setStateAt("/state/_ui/drawers/add", false); // 关闭底部 sheet
+    aglet.setStateAt("/state/_ui/drawers/add", false); // 关闭底部 sheet(/state 可写)
     refresh();
     return { ok: true };
   }
