@@ -96,7 +96,7 @@ export default {
     let updated = 0;
     try {
       for (const feed of FEEDS) {
-        const resp = fetch(feed.url);
+        const resp = await fetch(feed.url);
         if (!resp.ok) throw new Error(`${feed.source} HTTP ${resp.status}`);
         const parsed = await parseFeed(ctx, resp.body || "", feed.limit);
         const counters = { added: 0, updated: 0 };

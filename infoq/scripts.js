@@ -81,7 +81,7 @@ export default {
   async ingest(_args, ctx) {
     const counters = { added: 0, updated: 0 };
     try {
-      const resp = fetch(FEED.url);
+      const resp = await fetch(FEED.url);
       if (!resp.ok) throw new Error(`${FEED.source} HTTP ${resp.status}`);
       const parsed = await parseFeed(ctx, resp.body || "", FEED.limit);
       for (const item of (parsed && parsed.items) || []) {
