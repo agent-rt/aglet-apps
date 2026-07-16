@@ -1,0 +1,69 @@
+{
+  "id": "gallery",
+  "name": {
+    "default": "Components",
+    "zh": "组件库",
+    "ja": "コンポーネント"
+  },
+  "description": {
+    "default": "Live gallery of every official Aglet UI component × states/variants — the thin-renderer acceptance surface.",
+    "zh": "Aglet 全部官方 UI 组件 × 状态/变体的实时展廊 —— 薄渲染器验收台。",
+    "ja": "Aglet の全公式 UI コンポーネント × 状態/バリアントの一覧 —— 薄レンダラー検収台。"
+  },
+  "docs": "# Aglet Components\n\n每个官方组件 × 状态/变体的可视化验收台。改渲染器 / 调主题后对着它截图做回归。renderer=auto → macOS 走薄原生渲染器(clients/platforms/apple RenderNodeView),内核 view_tree 物化 → 类型映射。数据组件(DataList/Table/Chart/Sparkline/Map/Pagination)由 onEnter 的 seed() 填 memory 集合。",
+  "version": "0.1.0",
+  "min_runtime": "0.1.0",
+  "license": "MIT",
+  "renderer": "auto",
+  "author": "aglet-dev",
+  "category": "developer-tools",
+  "keywords": [
+    "gallery",
+    "components",
+    "design",
+    "showcase",
+    "dogfood"
+  ],
+  "icon": "https://api.iconify.design/ph/swatches-fill.svg?color=%233a6ea5&width=256",
+  "permissions": [
+    "data:read",
+    "data:write"
+  ],
+  "window": {
+    "style": "desktop",
+    "width": 960,
+    "height": 820
+  },
+  "collections": {
+    "people": {
+      "storage": "memory",
+      "schema": {
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "city": { "type": "string" },
+        "score": { "type": "number" },
+        "n": { "type": "number" }
+      },
+      "indexes": ["n", "score"]
+    },
+    "metrics": {
+      "storage": "memory",
+      "schema": {
+        "ts": { "type": "number" },
+        "cpu": { "type": "number" },
+        "mem": { "type": "number" }
+      },
+      "indexes": ["ts"]
+    },
+    "places": {
+      "storage": "memory",
+      "schema": {
+        "name": { "type": "string" },
+        "lat": { "type": "number" },
+        "lng": { "type": "number" },
+        "n": { "type": "number" }
+      },
+      "indexes": ["n"]
+    }
+  }
+}
