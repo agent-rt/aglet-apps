@@ -71,16 +71,18 @@ export default (aglet) => {
     return { count: items.length };
   }
 
-  // 从表单加一条(form scope = /form/*),然后重算 + 清表单。
-  function addEvent() {
-    const title = ((aglet.getState("/form/title") || "") + "").trim();
-    const date = aglet.getState("/form/date") || "";
+  // 从表单加一条。form 值由 UI 作为 payload 传入(ui.tsx onClick 传 {title,date,kind,recurring})
+  // —— /form 是 window scope,app-scoped script 的 getState/setStateAt 读写不到,必须走 payload。
+  function addEvent(payload) {
+    const p = payload || {};
+    const title = ((p.title || "") + "").trim();
+    const date = p.date || "";
     if (!title || !date) return { ok: false, reason: "need title + date" };
     aglet.data.create("events", {
       title,
       date,
-      kind: aglet.getState("/form/kind") || "birthday",
-      recurring: aglet.getState("/form/recurring") !== false,
+      kind: p.kind || "birthday",
+      recurring: p.recurring !== false,
       created_at: new Date(aglet.now()).toISOString(),
     });
     aglet.setStateAt("/state/_ui/drawers/add", false); // 关闭底部 sheet(/state 可写)

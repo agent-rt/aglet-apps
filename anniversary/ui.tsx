@@ -67,7 +67,7 @@
       <HStack justify="between" className="items-center mt-1">
         <Switch name="recurring" label={t.switchRecurring} checked={true}/>
         <Button label={t.btnAdd} color="#ff5e8a" icon="plus" disabled={!form.title}
-          onClick={() => scripts.addEvent()}/>
+          onClick={() => scripts.addEvent({ title: form.title, date: form.date, kind: form.kind, recurring: form.recurring })}/>
       </HStack>
     </DataForm>
   </Drawer>
