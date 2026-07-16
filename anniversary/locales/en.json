@@ -1,7 +1,9 @@
 {
   "heading": "Anniversaries",
   "empty": "No anniversaries yet",
-  "next": "Next",
+  "emptyHint": "Tap + to add your first one",
+  "sheetTitle": "New anniversary",
+  "next": "Next up",
   "daysLeft": "days left",
   "placeholderTitle": "Title (e.g. Mom's birthday)",
   "labelDate": "Date",

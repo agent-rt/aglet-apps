@@ -1,7 +1,9 @@
 {
   "heading": "纪念日",
   "empty": "还没有纪念日",
-  "next": "下一个",
+  "emptyHint": "点 + 添加第一个",
+  "sheetTitle": "新纪念日",
+  "next": "即将到来",
   "daysLeft": "天后",
   "placeholderTitle": "标题（如 小明生日）",
   "labelDate": "日期",

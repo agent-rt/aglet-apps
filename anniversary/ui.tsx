@@ -1,67 +1,76 @@
 <Page onEnter={() => scripts.refresh()}>
-  <VStack className="p-5 gap-4 select-none">
-    <Heading level={1}>{t.heading}</Heading>
-
+  <VStack className="p-5 gap-4">
+    {/* HERO —— 最近一个纪念日:大字倒数 = thesis */}
     <DataList collection="events" query={{ orderBy: [{ field: "days_until", direction: "asc" }], limit: 1 }}>
-      <Empty><EmptyState title={t.empty} icon="calendar"/></Empty>
+      <Empty>
+        <VStack className="items-center gap-2 py-16">
+          <EmptyState title={t.empty} description={t.emptyHint} icon="calendar"/>
+        </VStack>
+      </Empty>
       <Item>
-        <Card className="bg-indigo-500 text-white">
-          <Text className="text-xs uppercase tracking-widest opacity-80">{t.next}</Text>
-          <HStack justify="between" className="items-end mt-1">
-            <VStack gap={2}>
+        <Card className="bg-gradient-to-br from-[#ff8a6b] to-[#ff5e8a] text-[#2a0f18] rounded-3xl p-5">
+          <Text className="text-xs uppercase tracking-widest opacity-70">{t.next}</Text>
+          <HStack justify="between" className="items-end mt-2">
+            <VStack gap={1}>
               <Heading level={2}>{item.title}</Heading>
-              <Text className="opacity-90">{item.next_at} · {item.milestone}</Text>
+              <Text className="text-sm opacity-80">{item.next_at} · {item.milestone}</Text>
             </VStack>
             <VStack gap={0} className="items-end">
               <Heading level={1} className="text-5xl tabular-nums">{item.days_until}</Heading>
-              <Text className="opacity-90 text-sm">{t.daysLeft}</Text>
+              <Text className="text-xs uppercase tracking-wider opacity-70">{t.daysLeft}</Text>
             </VStack>
           </HStack>
         </Card>
       </Item>
     </DataList>
 
-    <Card>
-      <DataForm collection="events">
-        <Input name="title" placeholder={t.placeholderTitle}/>
-        <HStack gap={3}>
-          <DatePicker name="date" label={t.labelDate}/>
-          <Select name="kind" label={t.labelKind} placeholder={t.labelKind}>
-            <Option value="birthday" label={t.optBirthday}/>
-            <Option value="anniversary" label={t.optAnniversary}/>
-            <Option value="custom" label={t.optCustom}/>
-          </Select>
-        </HStack>
-        <HStack justify="between" className="items-center">
-          <Switch name="recurring" label={t.switchRecurring}/>
-          <Button label={t.btnAdd} color="primary" icon="plus" disabled={!form.title} onClick={() => scripts.addEvent()}/>
-        </HStack>
-      </DataForm>
-    </Card>
-
+    {/* ALL —— 全部纪念日,按天数升序 */}
     <DataList collection="events" query={{ orderBy: [{ field: "days_until", direction: "asc" }] }}>
-      <Empty><EmptyState title={t.empty} icon="calendar"/></Empty>
       <Item>
-        <Card>
+        <Card className="rounded-2xl">
           <HStack justify="between" className="items-center">
-            <VStack gap={2}>
+            <VStack gap={1}>
               <Heading level={3}>{item.title}</Heading>
-              <HStack gap={6} className="items-center">
+              <HStack gap={5} className="items-center">
                 <Text muted className="text-xs">{item.next_at}</Text>
                 {item.milestone && <Badge content={item.milestone} color="secondary"/>}
                 {item.age_label && <Badge content={item.age_label} color="success"/>}
               </HStack>
             </VStack>
-            <HStack gap={4} className="items-center">
+            <HStack gap={3} className="items-center">
               <VStack gap={0} className="items-end">
                 <Heading level={3} className="tabular-nums">{item.days_until}</Heading>
                 <Text muted className="text-xs">{t.daysLeft}</Text>
               </VStack>
-              <Button label={t.btnDelete} color="danger" size="sm" onClick={() => data.delete({ collection: "events", id: item.id })}/>
+              <Menu id="rowmenu" trigger={<Button icon="dots-three" variant="flat" size="sm"/>}>
+                <MenuItem value="delete" label={t.btnDelete} icon="trash" danger
+                  onClick={() => data.delete({ collection: "events", id: item.id })}/>
+              </Menu>
             </HStack>
           </HStack>
         </Card>
       </Item>
     </DataList>
   </VStack>
+
+  {/* FAB —— 浮动 + 按钮,点击从底部弹出添加 sheet */}
+  <Drawer id="add" side="bottom" title={t.sheetTitle} className="absolute bottom-5 right-5"
+    trigger={<Button icon="plus" color="#ff5e8a" size="lg"/>}>
+    <DataForm collection="events">
+      <Input name="title" placeholder={t.placeholderTitle}/>
+      <HStack gap={3} className="items-end">
+        <DatePicker name="date" label={t.labelDate}/>
+        <SegmentedControl name="kind" label={t.labelKind} options={[
+          { value: "birthday", label: t.optBirthday, icon: "cake" },
+          { value: "anniversary", label: t.optAnniversary, icon: "heart" },
+          { value: "custom", label: t.optCustom, icon: "star" }
+        ]}/>
+      </HStack>
+      <HStack justify="between" className="items-center mt-1">
+        <Switch name="recurring" label={t.switchRecurring}/>
+        <Button label={t.btnAdd} color="#ff5e8a" icon="plus" disabled={!form.title}
+          onClick={() => scripts.addEvent()}/>
+      </HStack>
+    </DataForm>
+  </Drawer>
 </Page>

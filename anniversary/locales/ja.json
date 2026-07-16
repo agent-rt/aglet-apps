@@ -1,7 +1,9 @@
 {
   "heading": "記念日",
   "empty": "記念日がまだありません",
-  "next": "次",
+  "emptyHint": "+ をタップして追加",
+  "sheetTitle": "新しい記念日",
+  "next": "次の記念日",
   "daysLeft": "日後",
   "placeholderTitle": "タイトル（例：母の誕生日）",
   "labelDate": "日付",
