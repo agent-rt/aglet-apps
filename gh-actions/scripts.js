@@ -18,10 +18,11 @@
 //
 // 执行(UI 按钮):rerunRun / cancelRun / runWorkflow。点击即 human-in-loop。
 //
-// 注:fetchAll GET-only 无 header(见 scripts-fetch-concurrency),GitHub 要 Authorization,
-// 故串行 ghGet(只取我管理的仓后,数量通常很小,后台跑可接受)。
+// 注:GitHub 要 Authorization header,逐仓 ghGet 串行(只取我管理的仓后,数量通常很小,
+// 后台跑可接受);要并发可 Promise.all(repos.map(ghGet)),此处保守串行。
 
-const APP_ID = "gh-actions";
+// per-app 常驻模型:default export = setup 函数 (aglet)=>({...})。顶层 helper 用全局 aglet
+// (installAppCtx 后 = app-bound,data/secrets/settings 不用手传 app_id;setStateAt 直接调)。
 const API = "https://api.github.com";
 
 // ── 凭据 ─────────────────────────────────────────────────────────────────────
@@ -33,7 +34,7 @@ function ghCliToken() {
   try { const r = host.spawn("gh", ["auth", "token"]); return r && r.ok ? (r.stdout || "").trim() : ""; } catch (_e) { return ""; }
 }
 function pat() {
-  try { return aglet.secrets.get(APP_ID, "github_token").value || ""; } catch (_e) { return ""; }
+  try { return aglet.secrets.get("github_token").value || ""; } catch (_e) { return ""; }
 }
 function resolveToken() {
   const p = pat();
@@ -42,9 +43,9 @@ function resolveToken() {
   return { token: "", source: "" };
 }
 
-function cfg(key) { try { return aglet.settings.get(APP_ID, key).value || ""; } catch (_e) { return ""; } }
+function cfg(key) { try { return aglet.settings.get(key).value || ""; } catch (_e) { return ""; } }
 function cfgBool(key) { const v = cfg(key); return v === true || v === "true" || v === 1; }
-function setState(ctx, path, v) { if (ctx && ctx.setStateAt) ctx.setStateAt(path, v); }
+function setState(path, v) { aglet.setStateAt(path, v); }
 function msg(e) { return String((e && e.message) || e).slice(0, 200); }
 function shortName(full) { const i = full.indexOf("/"); return i >= 0 ? full.slice(i + 1) : full; }
 
@@ -117,21 +118,21 @@ function mapWorkflow(w, repo, defaultBranch) {
 
 function upsertBy(collection, key, row, seen, counters) {
   seen.add(row[key]);
-  const ex = aglet.data.list(APP_ID, collection, { where: { [key]: row[key] }, limit: 1 });
+  const ex = aglet.data.list(collection, { where: { [key]: row[key] }, limit: 1 });
   if (ex.items.length > 0) {
-    aglet.data.update(APP_ID, collection, ex.items[0].id, row);
+    aglet.data.update(collection, ex.items[0].id, row);
     counters.updated++;
   } else {
-    aglet.data.create(APP_ID, collection, row);
+    aglet.data.create(collection, row);
     counters.added++;
   }
 }
 // 删指定 key-set 内本轮未命中的行(只动 repoSet 内的 runs → execute 单仓刷新安全)。
 function pruneStaleRuns(repoSet, seen, counters) {
-  const all = aglet.data.list(APP_ID, "runs", { limit: 1000 });
+  const all = aglet.data.list("runs", { limit: 1000 });
   for (const row of all.items) {
     if (repoSet.has(row.data.repo) && !seen.has(row.data.run_id)) {
-      aglet.data.delete(APP_ID, "runs", row.id);
+      aglet.data.delete("runs", row.id);
       counters.removed++;
     }
   }
@@ -140,9 +141,9 @@ function pruneStaleRuns(repoSet, seen, counters) {
 function pruneOrphans(activeRepoNames, counters) {
   const active = new Set(activeRepoNames);
   for (const coll of ["runs", "workflows", "repos"]) {
-    const all = aglet.data.list(APP_ID, coll, { limit: 1000 });
+    const all = aglet.data.list(coll, { limit: 1000 });
     for (const row of all.items) {
-      if (!active.has(row.data.repo)) { aglet.data.delete(APP_ID, coll, row.id); counters.removed++; }
+      if (!active.has(row.data.repo)) { aglet.data.delete(coll, row.id); counters.removed++; }
     }
   }
 }
@@ -178,7 +179,7 @@ async function candidateRepos(token) {
 
 // workflows 表里去重仓(refreshRuns 用)。
 function knownRepos() {
-  const wfs = aglet.data.list(APP_ID, "workflows", { limit: 1000 });
+  const wfs = aglet.data.list("workflows", { limit: 1000 });
   const s = new Set();
   for (const w of wfs.items) s.add(w.data.repo);
   return [...s];
@@ -223,24 +224,24 @@ function upsertRepoRow(repoObj, wfCount, runs, seen, counters) {
 // 只更新已存在 repo 行的 last_status/last_run_at(refreshRuns 用,不碰 wf_count)。
 function updateRepoStatus(repo, runs) {
   if (runs.length === 0) return;
-  const rows = aglet.data.list(APP_ID, "repos", { where: { repo }, limit: 1 });
+  const rows = aglet.data.list("repos", { where: { repo }, limit: 1 });
   if (rows.items.length === 0) return;
   const top = runs[0];
-  aglet.data.update(APP_ID, "repos", rows.items[0].id, { last_status: top.state_emoji, last_run_at: top.updated_at });
+  aglet.data.update("repos", rows.items[0].id, { last_status: top.state_emoji, last_run_at: top.updated_at });
 }
 
 // ── handlers ──────────────────────────────────────────────────────────────────
 
-export default {
+export default (aglet) => ({
   // 发现仓 + workflows + runs + repo 聚合。每 30 分钟 + 启动即跑。
-  async discover(_args, ctx) {
+  async discover(_args) {
     const { token, source } = resolveToken();
-    if (!token) { setState(ctx, "/state/needs_auth", true); return { needs_auth: true }; }
-    setState(ctx, "/state/needs_auth", false);
-    setState(ctx, "/state/source", source);
+    if (!token) { setState("/state/needs_auth", true); return { needs_auth: true }; }
+    setState("/state/needs_auth", false);
+    setState("/state/source", source);
 
     let repos;
-    try { repos = await candidateRepos(token); } catch (e) { setState(ctx, "/state/sync_error", msg(e)); return { error: true }; }
+    try { repos = await candidateRepos(token); } catch (e) { setState("/state/sync_error", msg(e)); return { error: true }; }
 
     const showAll = cfgBool("show_all_repos");
     const me = showAll ? "" : await myLogin(token); // 活动过滤需要我的 login(showAll 跳过)
@@ -273,21 +274,21 @@ export default {
     }
 
     // 删本轮未命中的 workflows + runs(仓内被移除)+ 孤儿仓(不再命中)。
-    const allWf = aglet.data.list(APP_ID, "workflows", { limit: 1000 });
+    const allWf = aglet.data.list("workflows", { limit: 1000 });
     for (const row of allWf.items) {
-      if (!seenWf.has(row.data.wf_id)) { aglet.data.delete(APP_ID, "workflows", row.id); counters.removed++; }
+      if (!seenWf.has(row.data.wf_id)) { aglet.data.delete("workflows", row.id); counters.removed++; }
     }
     pruneStaleRuns(new Set(active), seenRuns, counters);
     pruneOrphans(active, counters);
 
-    setState(ctx, "/state/sync_error", "");
+    setState("/state/sync_error", "");
     return { repos: active.length, ...counters };
   },
 
   // 刷已知仓的 runs + repo 的 last_status(高频)。
-  async refreshRuns(_args, ctx) {
+  async refreshRuns(_args) {
     const { token } = resolveToken();
-    if (!token) { setState(ctx, "/state/needs_auth", true); return { needs_auth: true }; }
+    if (!token) { setState("/state/needs_auth", true); return { needs_auth: true }; }
     const repos = knownRepos();
     if (repos.length === 0) return { repos: 0 };
 
@@ -298,7 +299,7 @@ export default {
       try { const runs = await syncRepoRuns(token, repo, seen, counters); updateRepoStatus(repo, runs); } catch (_e) {}
     }
     pruneStaleRuns(repoSet, seen, counters);
-    setState(ctx, "/state/sync_error", "");
+    setState("/state/sync_error", "");
     return { repos: repos.length, ...counters };
   },
 
@@ -307,43 +308,43 @@ export default {
   // 守卫会编出无 when 的 If → web 渲染器照显、native 渲染器隐藏 → 实测列表整片空白)。
   // 故用 browsing(真值布尔)守列表、repo(非空字符串真值)守详情,两态都正向;
   // 切换要同时改两个 state,经 handler 原子设置(onClick 单调用 + ctx.setStateAt)。
-  async openRepo(args, ctx) {
-    setState(ctx, "/state/repo", (args && args.repo) || "");
-    setState(ctx, "/state/browsing", false);
+  async openRepo(args) {
+    setState("/state/repo", (args && args.repo) || "");
+    setState("/state/browsing", false);
     return { ok: true };
   },
-  async backToList(_args, ctx) {
-    setState(ctx, "/state/repo", "");
-    setState(ctx, "/state/browsing", true);
+  async backToList(_args) {
+    setState("/state/repo", "");
+    setState("/state/browsing", true);
     return { ok: true };
   },
 
   // ── 执行(按钮触发)──────────────────────────────────────────────────────────
 
-  async rerunRun(args, ctx) {
-    return execAndRefresh(ctx, args && args.repo, () =>
+  async rerunRun(args) {
+    return execAndRefresh(args && args.repo, () =>
       ghPost(resolveToken().token, `/repos/${args.repo}/actions/runs/${args.run_id}/rerun`));
   },
-  async cancelRun(args, ctx) {
-    return execAndRefresh(ctx, args && args.repo, () =>
+  async cancelRun(args) {
+    return execAndRefresh(args && args.repo, () =>
       ghPost(resolveToken().token, `/repos/${args.repo}/actions/runs/${args.run_id}/cancel`));
   },
-  async runWorkflow(args, ctx) {
+  async runWorkflow(args) {
     const ref = (args && args.ref) || "main";
-    return execAndRefresh(ctx, args && args.repo, () =>
+    return execAndRefresh(args && args.repo, () =>
       ghPost(resolveToken().token, `/repos/${args.repo}/actions/workflows/${args.wf_id}/dispatches`, { ref }));
   },
-};
+});
 
 // 执行一个副作用调用 + 立即刷新该仓 runs/聚合回填;失败写 /state/action_error。
-async function execAndRefresh(ctx, repo, doPost) {
-  setState(ctx, "/state/action_error", "");
+async function execAndRefresh(repo, doPost) {
+  setState("/state/action_error", "");
   const { token } = resolveToken();
-  if (!token) { setState(ctx, "/state/needs_auth", true); return { needs_auth: true }; }
+  if (!token) { setState("/state/needs_auth", true); return { needs_auth: true }; }
   let res;
-  try { res = await doPost(); } catch (e) { setState(ctx, "/state/action_error", msg(e)); return { error: true }; }
+  try { res = await doPost(); } catch (e) { setState("/state/action_error", msg(e)); return { error: true }; }
   if (!res.ok) {
-    setState(ctx, "/state/action_error", `GitHub HTTP ${res.status}`); // 422 常见:无 workflow_dispatch / 不可重跑
+    setState("/state/action_error", `GitHub HTTP ${res.status}`); // 422 常见:无 workflow_dispatch / 不可重跑
     return { error: true, status: res.status };
   }
   if (repo && token) {

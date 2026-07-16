@@ -6,8 +6,9 @@
 //
 // 两条查询:review-requested:@me / author:@me,落 reviewed_by_me / authored_by_me 旗标。
 // 同 PR 命中两条 → merge。dedup by pr_id="<owner/repo>#<number>"。本轮未命中 → 删。
-
-const APP_ID = "gh-prs";
+//
+// per-app 常驻模型:default export = setup 函数 (aglet)=>({...})。顶层 helper 用全局 aglet
+// (installAppCtx 后 = app-bound,data.*/secrets.* 不用手传 app_id);host.spawn/fetch 全局照旧。
 
 // ── 凭据探测 ─────────────────────────────────────────────────────────────────
 
@@ -22,10 +23,10 @@ function ghCliReady() {
 }
 
 function pat() {
-  try { return aglet.secrets.get(APP_ID, "github_token").value || ""; } catch (_e) { return ""; }
+  try { return aglet.secrets.get("github_token").value || ""; } catch (_e) { return ""; }
 }
 
-function setState(ctx, path, v) { if (ctx && ctx.setStateAt) ctx.setStateAt(path, v); }
+function setState(path, v) { aglet.setStateAt(path, v); }
 
 // ── gh CLI 路径 ──────────────────────────────────────────────────────────────
 
@@ -91,7 +92,7 @@ function upsert(row, kind, seen, counters) {
   seen.add(row.pr_id);
   let reviewed = kind === "review";
   let authored = kind === "mine";
-  const existing = aglet.data.list(APP_ID, "prs", { where: { pr_id: row.pr_id }, limit: 1 });
+  const existing = aglet.data.list("prs", { where: { pr_id: row.pr_id }, limit: 1 });
   if (existing.items.length > 0) {
     const ex = existing.items[0].data;
     if (ex.reviewed_by_me) reviewed = true;
@@ -99,25 +100,25 @@ function upsert(row, kind, seen, counters) {
   }
   const data = { ...row, reviewed_by_me: reviewed, authored_by_me: authored };
   if (existing.items.length > 0) {
-    aglet.data.update(APP_ID, "prs", existing.items[0].id, data);
+    aglet.data.update("prs", existing.items[0].id, data);
     counters.updated++;
   } else {
-    aglet.data.create(APP_ID, "prs", data);
+    aglet.data.create("prs", data);
     counters.added++;
   }
 }
 
-export default {
-  async ingest(_args, ctx) {
+export default (aglet) => ({
+  async ingest(_args) {
     // 自动探测:gh CLI > PAT > needs_auth。
     const cli = ghCliReady();
     const token = cli ? "" : pat();
     if (!cli && !token) {
-      setState(ctx, "/state/needs_auth", true); // 宿主据此弹登录门(填 token)
+      setState("/state/needs_auth", true); // 宿主据此弹登录门(填 token)
       return { needs_auth: true };
     }
-    setState(ctx, "/state/needs_auth", false);
-    setState(ctx, "/state/source", cli ? "gh-cli" : "token");
+    setState("/state/needs_auth", false);
+    setState("/state/source", cli ? "gh-cli" : "token");
 
     let reviews, mine;
     try {
@@ -129,23 +130,23 @@ export default {
         mine = await viaRest(token, "is:pr is:open author:@me");
       }
     } catch (e) {
-      setState(ctx, "/state/sync_error", String((e && e.message) || e).slice(0, 200));
+      setState("/state/sync_error", String((e && e.message) || e).slice(0, 200));
       return { error: true };
     }
-    setState(ctx, "/state/sync_error", "");
+    setState("/state/sync_error", "");
 
     const counters = { added: 0, updated: 0, removed: 0 };
     const seen = new Set();
     for (const pr of reviews) upsert(pr, "review", seen, counters);
     for (const pr of mine) upsert(pr, "mine", seen, counters);
 
-    const all = aglet.data.list(APP_ID, "prs", { limit: 500 });
+    const all = aglet.data.list("prs", { limit: 500 });
     for (const row of all.items) {
       if (!seen.has(row.data.pr_id)) {
-        aglet.data.delete(APP_ID, "prs", row.id);
+        aglet.data.delete("prs", row.id);
         counters.removed++;
       }
     }
     return { reviewed: reviews.length, mine: mine.length, ...counters };
   },
-};
+});

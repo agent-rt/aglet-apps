@@ -13,8 +13,9 @@
 //
 // 加新 provider(gemini…)：PROVIDERS 加一条 + aicreds 支持其 token + settings 两组
 // 各加一个开关 + ui.tsx 加一组 logo/bar 与弹层块。
-
-const APP_ID = "tokstat";
+//
+// per-app 常驻模型:default export = setup 函数 (aglet)=>({...})。顶层 helper 用全局 aglet
+// (installAppCtx 后 = app-bound,dispatch/now/plugins/data/settings 不用手传 app_id/ctx)。
 
 // ── 展示格式化 ─────────────────────────────────────────────────────────────
 
@@ -48,7 +49,7 @@ function resetLine(ms) { return untilText(ms) || "—"; }
 // settings bool(存成 "true"/"false" 串或 bool)。未设 = 默认。
 function boolSetting(key, def) {
   try {
-    const v = aglet.settings.get(APP_ID, key).value;
+    const v = aglet.settings.get(key).value;
     if (v === undefined || v === null || v === "") return def;
     return v === true || v === "true";
   } catch (_e) { return def; }
@@ -57,7 +58,7 @@ function boolSetting(key, def) {
 // settings number(存成串)。未设/非数 = 默认。
 function numSetting(key, def) {
   try {
-    const v = aglet.settings.get(APP_ID, key).value;
+    const v = aglet.settings.get(key).value;
     if (v === undefined || v === null || v === "") return def;
     const n = Number(v);
     return Number.isFinite(n) ? n : def;
@@ -68,7 +69,7 @@ function numSetting(key, def) {
 // 品牌 label + 窗口 emoji(⏱会话/📅每周)+ 百分比 + ↺重置时间。id 稳定 → 重发替换不堆叠。
 async function warnNotify(ctx, p, win, emoji, pct, resetText) {
   try {
-    await ctx.dispatch("notifications.schedule", {
+    await aglet.dispatch("notifications.schedule", {
       id: `warn-${p.id}-${win}`,
       title: `${p.label} ${emoji} ${pct}%`,
       body: resetText && resetText !== "—" ? `↺ ${resetText}` : "",
@@ -83,7 +84,7 @@ async function warnNotify(ctx, p, win, emoji, pct, resetText) {
 // aicreds 插件：只读凭据 → { access_token, account_id? }。读不到(未登录)返回 null。
 async function readCred(ctx, provider) {
   try {
-    const c = await ctx.plugins.aicreds.read({ provider });
+    const c = await aglet.plugins.aicreds.read({ provider });
     if (c && typeof c.access_token === "string" && c.access_token) return c;
     return null;
   } catch (e) {
@@ -172,7 +173,7 @@ async function upsertProvider(p, side, ts, ctx) {
   // 重置用量归零)→ 复位标志,下次再越线可再通知。标志随 row 存回(否则每次 upsert 会丢)。
   let old = {};
   try {
-    const r = aglet.data.list(APP_ID, "current", { where: { source: p.id }, limit: 1 });
+    const r = aglet.data.list("current", { where: { source: p.id }, limit: 1 });
     if (r && r.items && r.items.length) old = r.items[0].data;
   } catch (_e) {}
   let nS = !!old.notified_session;
@@ -209,12 +210,12 @@ async function upsertProvider(p, side, ts, ctx) {
     weekly_reset_text: resetLine(week.resets_at_ms),
   };
   try {
-    await ctx.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
+    await aglet.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
   } catch (e) {
     console.warn(`[tokstat] upsert current(${p.id}) failed:`, e);
   }
   try {
-    await ctx.dispatch("data.create", {
+    await aglet.dispatch("data.create", {
       collection: "samples",
       data: {
         ts, source: p.id, ok: true,
@@ -234,10 +235,10 @@ async function upsertProvider(p, side, ts, ctx) {
 // 设置守卫隐藏),值保留 → 再启用时即便 fetch 命中 429 也能立刻显示上次真值,历史不丢。
 async function setEnabled(id, enabled, ctx) {
   try {
-    const r = aglet.data.list(APP_ID, "current", { where: { source: id }, limit: 1 });
+    const r = aglet.data.list("current", { where: { source: id }, limit: 1 });
     if (r && r.items && r.items.length) {
       const row = { ...r.items[0].data, enabled };
-      await ctx.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
+      await aglet.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
       return true;
     }
   } catch (e) {
@@ -251,7 +252,7 @@ async function setEnabled(id, enabled, ctx) {
 // 派生字段(text/color/reset)从 sample 原始值重算。返回是否重建成功。
 async function restoreFromSample(p, ctx) {
   try {
-    const r = aglet.data.list(APP_ID, "samples", { where: { source: p.id }, orderBy: [{ field: "ts", direction: "desc" }], limit: 1 });
+    const r = aglet.data.list("samples", { where: { source: p.id }, orderBy: [{ field: "ts", direction: "desc" }], limit: 1 });
     const s = r && r.items && r.items[0] && r.items[0].data;
     if (!s) return false;
     const row = {
@@ -262,7 +263,7 @@ async function restoreFromSample(p, ctx) {
       weekly_pct: numOr0(s.weekly_pct), weekly_pct_text: pctText(s.weekly_pct),
       weekly_reset_text: resetLine(s.weekly_resets_ms),
     };
-    await ctx.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
+    await aglet.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
     return true;
   } catch (e) {
     console.warn(`[tokstat] restoreFromSample(${p.id}) failed:`, String(e));
@@ -273,7 +274,7 @@ async function restoreFromSample(p, ctx) {
 // ── 一拍 ───────────────────────────────────────────────────────────────────
 
 async function runRefresh(ctx) {
-  const ts = ctx.now ? ctx.now() : Date.now();
+  const ts = aglet.now ? aglet.now() : Date.now();
   for (const p of PROVIDERS) {
     if (!boolSetting("enable_" + p.id, true)) {
       await setEnabled(p.id, false, ctx); // 未启用：不轮询,标记隐藏,保留缓存值
@@ -300,20 +301,20 @@ async function runRefresh(ctx) {
 async function markNeedsAuth(p, ctx) {
   let base = {};
   try {
-    const r = aglet.data.list(APP_ID, "current", { where: { source: p.id }, limit: 1 });
+    const r = aglet.data.list("current", { where: { source: p.id }, limit: 1 });
     if (r && r.items && r.items.length) base = r.items[0].data;
   } catch (_e) {}
   const row = { ...base, source: p.id, label: p.label, abbrev: p.abbrev, order: p.order, enabled: true, ok: false, needs_auth: true };
   try {
-    await ctx.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
+    await aglet.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
   } catch (e) {
     console.warn(`[tokstat] markNeedsAuth(${p.id}) failed:`, String(e));
   }
 }
 
-export default {
+export default (aglet) => ({
   // 定时 job(every 5min)+ 开窗即刷。
-  async refresh(_payload, ctx) { await runRefresh(ctx); },
+  async refresh(_payload) { await runRefresh(); },
   // 右键菜单 "Refresh now"。
-  async refreshNow(_payload, ctx) { await runRefresh(ctx); },
-};
+  async refreshNow(_payload) { await runRefresh(); },
+});
