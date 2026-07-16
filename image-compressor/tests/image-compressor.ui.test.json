@@ -1,0 +1,35 @@
+{
+  "name": "image-compressor quality presets",
+  "aglet": "..",
+  "_comment": "点质量预设按钮 → state.quality 切换（走真实 view.click → resident setPreset）。EN locale。压缩本身需 image 插件 + 真图，归手动 dev 验证，这里只覆盖纯逻辑（无真实文件）。",
+  "steps": [
+    {
+      "_comment": "默认 quality 80",
+      "action": "state.waitfor",
+      "expect": { "ok": true, "data": { "state": { "quality": 80 } } },
+      "timeout": 2000
+    },
+    {
+      "_comment": "点 Light 预设 → 90",
+      "action": "intent.fire",
+      "select": { "role": "button", "props": { "label": "Light" } },
+      "expect": { "ok": true, "data": { "clicked": true } }
+    },
+    {
+      "action": "state.waitfor",
+      "expect": { "ok": true, "data": { "state": { "quality": 90 } } },
+      "timeout": 2000
+    },
+    {
+      "_comment": "点 Heavy 预设 → 50",
+      "action": "intent.fire",
+      "select": { "role": "button", "props": { "label": "Heavy" } },
+      "expect": { "ok": true, "data": { "clicked": true } }
+    },
+    {
+      "action": "state.waitfor",
+      "expect": { "ok": true, "data": { "state": { "quality": 50 } } },
+      "timeout": 2000
+    }
+  ]
+}

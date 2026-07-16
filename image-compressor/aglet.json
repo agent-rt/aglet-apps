@@ -1,0 +1,58 @@
+{
+  "id": "image-compressor",
+  "name": { "default": "Compact", "zh": "图片压缩", "ja": "画像圧縮" },
+  "description": {
+    "default": "A focused, private image compressor — pick a photo, tune quality, save a smaller WebP. All local.",
+    "zh": "专注本地的图片压缩：选一张图、调质量、存一份更小的 WebP。全程本地处理。",
+    "ja": "ローカル完結の画像圧縮：写真を選び、品質を調整して、より小さな WebP を保存。すべて端末内で処理。"
+  },
+  "version": "1.0.0",
+  "min_runtime": "0.1.3",
+  "renderer": "native",
+  "default_locale": "en",
+  "category": "productivity",
+  "permissions": ["fs:read", "fs:write"],
+  "requires": [{ "plugin": "image" }, { "plugin": "fs" }],
+  "window": { "style": "desktop", "width": 440, "height": "auto" },
+  "settings": {
+    "groups": [
+      {
+        "title": { "default": "Compression", "zh": "压缩", "ja": "圧縮" },
+        "help": {
+          "default": "Higher quality keeps more detail and a larger file. Default 80.",
+          "zh": "质量越高，细节越多、文件越大。默认 80。",
+          "ja": "品質が高いほど細部が残り、ファイルは大きくなります。既定 80。"
+        },
+        "fields": [
+          {
+            "key": "quality",
+            "type": "slider",
+            "default": "80",
+            "min": 40,
+            "max": 95,
+            "step": 5,
+            "label": { "default": "Quality", "zh": "质量", "ja": "品質" }
+          }
+        ]
+      }
+    ]
+  },
+  "state": {
+    "srcPath": "",
+    "srcName": "",
+    "srcUrl": "",
+    "quality": 80,
+    "working": false,
+    "hasFile": false,
+    "hasResult": false,
+    "canCompress": false,
+    "hasError": false,
+    "status": "",
+    "sizeBefore": "",
+    "sizeAfter": "",
+    "savedText": "",
+    "savedColor": "success",
+    "outName": "",
+    "errorText": ""
+  }
+}
