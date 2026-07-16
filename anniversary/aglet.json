@@ -22,12 +22,17 @@
         "title": { "type": "string" },
         "date": { "type": "string" },
         "kind": { "type": "string" },
+        "calendar": { "type": "string" },
+        "note": { "type": "string" },
         "recurring": { "type": "boolean" },
         "created_at": { "type": "string" },
         "days_until": { "type": "number" },
         "next_at": { "type": "string" },
         "milestone": { "type": "string" },
-        "age_label": { "type": "string" }
+        "age_label": { "type": "string" },
+        "which": { "type": "string" },
+        "secondary": { "type": "string" },
+        "cal_badge": { "type": "string" }
       },
       "indexes": ["days_until", "kind"]
     }

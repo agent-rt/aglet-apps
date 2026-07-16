@@ -1,6 +1,6 @@
 <Page onEnter={() => scripts.refresh()}>
   <VStack className="p-5 gap-4">
-    {/* HERO —— 最近一个纪念日:大字倒数 = thesis */}
+    {/* HERO —— 最近一个纪念日 */}
     <DataList collection="events" query={{ orderBy: [{ field: "days_until", direction: "asc" }], limit: 1 }}>
       <Empty>
         <VStack className="items-center gap-2 py-16">
@@ -14,6 +14,7 @@
             <VStack gap={1}>
               <Heading level={2}>{item.title}</Heading>
               <Text className="text-sm opacity-80">{item.next_at} · {item.milestone}</Text>
+              {item.note && <Text className="text-sm opacity-70">{item.note}</Text>}
             </VStack>
             <VStack gap={0} className="items-end">
               <Heading level={1} className="text-5xl tabular-nums">{item.days_until}</Heading>
@@ -24,20 +25,24 @@
       </Item>
     </DataList>
 
-    {/* ALL —— 全部纪念日,按天数升序 */}
+    {/* ALL —— 右键卡片:编辑 / 删除 */}
     <DataList collection="events" query={{ orderBy: [{ field: "days_until", direction: "asc" }] }}>
       <Item>
-        {/* 右键卡片 → 删除(桌面端习惯,去掉常驻 ⋯ 按钮让卡片更干净)。 */}
         <Menu id="rowmenu" on="context" trigger={
           <Card className="rounded-2xl">
             <HStack justify="between" className="items-center">
               <VStack gap={1}>
-                <Heading level={3}>{item.title}</Heading>
+                <HStack gap={2} className="items-center">
+                  <Heading level={3}>{item.title}</Heading>
+                  {item.cal_badge && <Badge content={item.cal_badge} color="secondary"/>}
+                </HStack>
                 <HStack gap={5} className="items-center">
                   <Text muted className="text-xs">{item.next_at}</Text>
                   {item.milestone && <Badge content={item.milestone} color="secondary"/>}
                   {item.age_label && <Badge content={item.age_label} color="success"/>}
                 </HStack>
+                {item.note && <Text muted className="text-xs">{item.note}</Text>}
+                {item.secondary && <Text muted className="text-xs opacity-70">{item.secondary}</Text>}
               </VStack>
               <VStack gap={0} className="items-end">
                 <Heading level={2} className="tabular-nums">{item.days_until}</Heading>
@@ -46,29 +51,37 @@
             </HStack>
           </Card>
         }>
+          <MenuItem value="edit" label={t.btnEdit} icon="pencil"
+            onClick={() => scripts.openEdit({ id: item.id, title: item.title, date: item.date, kind: item.kind, calendar: item.calendar, note: item.note, recurring: item.recurring })}/>
           <MenuItem value="delete" label={t.btnDelete} icon="trash" danger
-            onClick={() => data.delete({ collection: "events", id: item.id })}/>
+            onClick={() => scripts.removeEvent({ id: item.id })}/>
         </Menu>
       </Item>
     </DataList>
   </VStack>
 
-  {/* FAB —— 浮动 + 按钮,点击从底部弹出添加 sheet */}
-  <Drawer id="add" side="bottom" title={t.sheetTitle} className="absolute bottom-5 right-5"
-    trigger={<Button icon="plus" color="#ff5e8a" size="lg"/>}>
-    <DataForm collection="events">
-      <Input name="title" placeholder={t.placeholderTitle}/>
-      <DatePicker name="date" label={t.labelDate}/>
-      <SegmentedControl name="kind" label={t.labelKind} defaultValue="birthday" options={[
-        { value: "birthday", label: t.optBirthday, icon: "cake" },
-        { value: "anniversary", label: t.optAnniversary, icon: "heart" },
-        { value: "custom", label: t.optCustom, icon: "star" }
-      ]}/>
-      <HStack justify="between" className="items-center mt-1">
-        <Switch name="recurring" label={t.switchRecurring} checked={true}/>
-        <Button label={t.btnAdd} color="#ff5e8a" icon="plus" disabled={!form.title}
-          onClick={() => scripts.addEvent({ title: form.title, date: form.date, kind: form.kind, recurring: form.recurring })}/>
-      </HStack>
-    </DataForm>
+  {/* FAB —— 独立浮动按钮,点击开新增 sheet(openAdd 清 draft) */}
+  <Button icon="plus" color="#ff5e8a" size="lg" className="absolute bottom-5 right-5"
+    onClick={() => scripts.openAdd()}/>
+
+  {/* 底部 sheet —— 状态驱动(无 trigger);表单绑 /state/draft/*,add/edit 复用 */}
+  <Drawer id="add" side="bottom" title={t.sheetTitle} className="absolute">
+    <Input bind="/state/draft/title" placeholder={t.placeholderTitle}/>
+    <Input bind="/state/draft/note" placeholder={t.placeholderNote}/>
+    <DatePicker bind="/state/draft/date" label={t.labelDate}/>
+    <SegmentedControl bind="/state/draft/kind" label={t.labelKind} defaultValue="birthday" options={[
+      { value: "birthday", label: t.optBirthday, icon: "cake" },
+      { value: "anniversary", label: t.optAnniversary, icon: "heart" },
+      { value: "custom", label: t.optCustom, icon: "star" }
+    ]}/>
+    <SegmentedControl bind="/state/draft/calendar" label={t.labelCalendar} defaultValue="solar" options={[
+      { value: "solar", label: t.calSolar },
+      { value: "lunar", label: t.calLunar },
+      { value: "both", label: t.calBoth }
+    ]}/>
+    <HStack justify="between" className="items-center mt-1">
+      <Switch bind="/state/draft/recurring" checked={true} label={t.switchRecurring}/>
+      <Button label={t.btnSave} color="#ff5e8a" icon="check" onClick={() => scripts.saveEvent()}/>
+    </HStack>
   </Drawer>
 </Page>
