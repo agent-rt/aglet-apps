@@ -23,11 +23,15 @@
                 <Heading level={3}>{item.title || item.title_en}</Heading>
                 <Badge content={item.points} color="warning" icon="fire"/>
               </HStack>
-              <HStack gap="sm" align="center">
+              <HStack gap={5} align="center">
                 <Text muted>{item.domain} · {item.author}</Text>
                 <HStack gap={1} align="center">
                   <Icon symbol="chat-circle" size="sm" color="secondary"/>
                   <Text muted>{item.comments}</Text>
+                </HStack>
+                <HStack gap={1} align="center">
+                  <Icon symbol="clock" size="sm" color="secondary"/>
+                  <Text muted>{item.time | relative}</Text>
                 </HStack>
               </HStack>
               <Text>{item.summary}</Text>

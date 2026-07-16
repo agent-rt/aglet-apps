@@ -12,7 +12,9 @@
 // 翻译：title_en → title + 一句 summary，走 llmctl (local provider)。
 // 幂等：data.upsert(by_field: "hn_id") 原子 dedup；用户字段 liked/disliked 仅 create 初始化。
 
-const APP_ID = "hn";
+// per-app 常驻模型:default export = setup 函数 (aglet)=>({...})。顶层 helper 用全局 aglet
+// (installAppCtx 后 = app-bound,settings/secrets/data 不用手传 app_id);fetch 全局照旧,
+// 并发抓用原生 Promise.all(urls.map(fetch))(fetchAll 别名已删,见 PER_APP_SCRIPTS_MODEL)。
 const DEFAULT_MAX = 30;
 
 function domainOf(u) {
@@ -23,8 +25,8 @@ function domainOf(u) {
 
 // 翻译可配(settings):LLM 端点/模型/提示词/key。**不再硬依赖 llmctl CLI**。
 // 没配端点 → 跳过翻译(纯英文榜)。endpoint/model/prompts 走 settings,key 走 secrets。
-function cfg(key) { try { return aglet.settings.get(APP_ID, key).value || ""; } catch (_e) { return ""; } }
-function apiKey() { try { return aglet.secrets.get(APP_ID, "api_key").value || ""; } catch (_e) { return ""; } }
+function cfg(key) { try { return aglet.settings.get(key).value || ""; } catch (_e) { return ""; } }
+function apiKey() { try { return aglet.secrets.get("api_key").value || ""; } catch (_e) { return ""; } }
 
 const DEF_TITLE_PROMPT = "把英文 HN 标题翻成中文。技术名词（Rust / Kafka / GPU / OAuth 等）保留英文。仅输出译文一行，不加引号、不加前后缀。";
 const DEF_SUMMARY_PROMPT = "下面给出一条 HN story 的标题和它的正文或评论讨论。基于这些内容用 1 句中文（≤60 字）写看点：核心结论、争议点或值得看的地方。不要复述标题、不要脑补内容里没有的信息。仅输出一行中文。";
@@ -70,8 +72,8 @@ async function llmcall(endpoint, model, key, system, user) {
 }
 
 // data.list 在 script 侧返回 { items: [...] }（call 解 envelope.data）。容错处理。
-export default {
-  async ingest(args, _ctx) {
+export default (aglet) => ({
+  async ingest(args) {
     const MAX = (args && args.max) || DEFAULT_MAX;
 
     const ids_resp = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json");
@@ -84,8 +86,10 @@ export default {
     let added = 0;
     let refreshed = 0;
     const pending = []; // { id, title_en }
-    // 官方源没有批量接口,30 个 item 用 fetchAll 并发抓(宿主侧并行,~1 个往返而非 30×)。
-    const itemResps = await fetchAll(ids.map((id) => `https://hacker-news.firebaseio.com/v0/item/${id}.json`));
+    // 官方源没有批量接口,30 个 item 用 Promise.all 并发抓(fetch 真异步,~1 个往返而非 30×)。
+    const itemResps = await Promise.all(
+      ids.map((id) => fetch(`https://hacker-news.firebaseio.com/v0/item/${id}.json`)),
+    );
     for (let i = 0; i < ids.length; i++) {
       const id = ids[i];
       const r = itemResps[i];
@@ -97,7 +101,7 @@ export default {
       const kids = Array.isArray(item.kids) ? item.kids.slice(0, 5) : [];
       const selfText = item.text || "";
 
-      const up = aglet.data.upsert(APP_ID, "stories", "hn_id", {
+      const up = aglet.data.upsert("stories", "hn_id", {
         hn_id: id,
         title_en: item.title,
         url: item.url || `https://news.ycombinator.com/item?id=${id}`,
@@ -105,11 +109,12 @@ export default {
         author: item.by || "",
         points: item.score || 0,
         comments: item.descendants || 0,
+        time: item.time || 0, // HN 发布 Unix 秒 → UI `| relative` 渲成「几分钟前」
       });
 
       if (up.upserted === "created") {
         // 初次见到：初始化用户字段 + 留空 title/summary 给 Phase 2 翻译补。
-        aglet.data.update(APP_ID, "stories", up.id, {
+        aglet.data.update("stories", up.id, {
           title: "",
           summary: "",
           liked: false,
@@ -142,7 +147,7 @@ export default {
         ranges.push({ start: commentUrls.length, count: need ? p.kids.length : 0 });
         if (need) for (const kid of p.kids) commentUrls.push(`https://hacker-news.firebaseio.com/v0/item/${kid}.json`);
       }
-      const commentResps = commentUrls.length > 0 ? await fetchAll(commentUrls) : [];
+      const commentResps = commentUrls.length > 0 ? await Promise.all(commentUrls.map((u) => fetch(u))) : [];
 
       for (let i = 0; i < pending.length; i++) {
         const p = pending[i];
@@ -176,7 +181,7 @@ export default {
         if (tzh) patch.title = tzh;
         if (szh) patch.summary = szh;
         if (Object.keys(patch).length > 0) {
-          aglet.data.update(APP_ID, "stories", p.id, patch);
+          aglet.data.update("stories", p.id, patch);
           translated++;
         }
       }
@@ -184,4 +189,4 @@ export default {
 
     return { fetched: ids.length, added, refreshed, translated, llm: endpoint ? "on" : "off" };
   },
-};
+});
