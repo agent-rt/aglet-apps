@@ -188,22 +188,26 @@ export default (aglet) => {
     return { ok: true };
   }
   // 保存:editingId 有则 update 否则 create;存后清 draft + 关 sheet。
+  // ⚠️ 只给「当前这条」内联算 derive 后写一次 —— 不再调全表 refresh()(那会把每条记录都
+  // data.update,狂点 Save 时 N×全表重写叠加 → 常驻 runtime 写风暴卡死/白屏)。狂点安全:
+  // 第 1 次真写后 clearDraft 置空 title,后续点击命中下面 !title 守卫直接 no-op(单次写)。
   function saveEvent() {
     const title = ((dGet("title") || "") + "").trim();
     const date = dGet("date") || "";
     if (!title || !date) return { ok: false, reason: "need title + date" };
-    const rec = {
+    const nowMs = aglet.now();
+    const base = {
       title, date, note: (dGet("note") || "") + "",
       kind: dGet("kind") || "birthday", calendar: dGet("calendar") || "solar",
       recurring: dGet("recurring") !== false,
     };
+    const rec = Object.assign({}, base, derive(base, nowMs, t)); // 派生字段内联,单条
     const editingId = aglet.getState("/state/editingId");
     if (editingId) aglet.data.update("events", editingId, rec);
-    else { rec.created_at = new Date(aglet.now()).toISOString(); aglet.data.create("events", rec); }
+    else { rec.created_at = new Date(nowMs).toISOString(); aglet.data.create("events", rec); }
     aglet.setStateAt("/state/_ui/drawers/add", false);
     aglet.setStateAt("/state/editingId", "");
     clearDraft();
-    refresh();
     return { ok: true };
   }
   function removeEvent(p) { if (p && p.id) aglet.data.delete("events", p.id); return { ok: true }; }
