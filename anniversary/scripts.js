@@ -210,25 +210,12 @@ export default (aglet) => {
     clearDraft();
     return { ok: true };
   }
-  // 删除确认(app.confirm 在 native 是占位 no-op,故自建状态驱动 confirm sheet):
-  // 右键 Delete → askDelete 记 id + 开 sheet;Delete 按钮 → confirmDelete 删;Cancel → cancelDelete。
-  function askDelete(p) {
-    aglet.setStateAt("/state/pendingDeleteId", (p && p.id) || "");
-    aglet.setStateAt("/state/_ui/drawers/confirmDel", true);
-    return { ok: true };
-  }
-  function cancelDelete() {
-    aglet.setStateAt("/state/_ui/drawers/confirmDel", false);
-    aglet.setStateAt("/state/pendingDeleteId", "");
-    return { ok: true };
-  }
-  function confirmDelete() {
-    const id = aglet.getState("/state/pendingDeleteId");
-    if (id) aglet.data.delete("events", id);
-    aglet.setStateAt("/state/_ui/drawers/confirmDel", false);
-    aglet.setStateAt("/state/pendingDeleteId", "");
+  // 删除:走框架级声明式 app.confirm(ui.tsx 里 MenuItem 的 onConfirm 调这个)。
+  // 确认框由内核注入的 __ag_confirm Drawer 提供,OK 时才派发到这里,直接按 id 删。
+  function removeEvent(p) {
+    if (p && p.id) aglet.data.delete("events", p.id);
     return { ok: true };
   }
 
-  return { refresh, openAdd, openEdit, saveEvent, askDelete, cancelDelete, confirmDelete };
+  return { refresh, openAdd, openEdit, saveEvent, removeEvent };
 };
