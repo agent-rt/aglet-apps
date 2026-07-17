@@ -21,6 +21,7 @@
   "btnSave": "保存",
   "btnEdit": "编辑",
   "btnDelete": "删除",
+  "toastDeleted": "已删除",
   "btnCancel": "取消",
   "confirmDelTitle": "删除这个纪念日?",
   "confirmDelDesc": "删除后无法恢复。",

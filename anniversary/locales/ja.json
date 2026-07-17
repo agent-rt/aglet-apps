@@ -21,6 +21,7 @@
   "btnSave": "保存",
   "btnEdit": "編集",
   "btnDelete": "削除",
+  "toastDeleted": "削除しました",
   "btnCancel": "キャンセル",
   "confirmDelTitle": "この記念日を削除?",
   "confirmDelDesc": "削除すると元に戻せません。",

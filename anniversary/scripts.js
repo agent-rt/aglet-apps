@@ -213,7 +213,10 @@ export default (aglet) => {
   // 删除:走框架级声明式 app.confirm(ui.tsx 里 MenuItem 的 onConfirm 调这个)。
   // 确认框由内核注入的 __ag_confirm Drawer 提供,OK 时才派发到这里,直接按 id 删。
   function removeEvent(p) {
-    if (p && p.id) aglet.data.delete("events", p.id);
+    if (p && p.id) {
+      aglet.data.delete("events", p.id);
+      aglet.app.toast({ title: t("toastDeleted"), color: "success", position: "top" });
+    }
     return { ok: true };
   }
 

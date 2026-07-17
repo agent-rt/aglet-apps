@@ -21,6 +21,7 @@
   "btnSave": "Save",
   "btnEdit": "Edit",
   "btnDelete": "Delete",
+  "toastDeleted": "Deleted",
   "btnCancel": "Cancel",
   "confirmDelTitle": "Delete this anniversary?",
   "confirmDelDesc": "This can't be undone.",
