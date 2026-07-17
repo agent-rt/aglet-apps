@@ -54,7 +54,7 @@
           <MenuItem value="edit" label={t.btnEdit} icon="pencil"
             onClick={() => scripts.openEdit({ id: item.id, title: item.title, date: item.date, kind: item.kind, calendar: item.calendar, note: item.note, recurring: item.recurring })}/>
           <MenuItem value="delete" label={t.btnDelete} icon="trash" danger
-            onClick={() => scripts.removeEvent({ id: item.id })}/>
+            onClick={() => scripts.askDelete({ id: item.id, title: item.title })}/>
         </Menu>
       </Item>
     </DataList>
@@ -82,6 +82,15 @@
     <HStack justify="between" className="items-center mt-1">
       <Switch bind="/state/draft/recurring" checked={true} label={t.switchRecurring}/>
       <Button label={t.btnSave} color="#ff5e8a" icon="check" onClick={() => scripts.saveEvent()}/>
+    </HStack>
+  </Drawer>
+
+  {/* 删除确认 —— 状态驱动 sheet(app.confirm 在 native 是占位,故自建);askDelete 开、confirmDelete 删、cancelDelete 取消 */}
+  <Drawer id="confirmDel" side="bottom" title={t.confirmDelTitle} className="absolute">
+    <Text>{t.confirmDelDesc}</Text>
+    <HStack justify="between" className="items-center mt-2">
+      <Button label={t.btnCancel} variant="flat" onClick={() => scripts.cancelDelete()}/>
+      <Button label={t.btnDelete} color="danger" icon="trash" onClick={() => scripts.confirmDelete()}/>
     </HStack>
   </Drawer>
 </Page>
