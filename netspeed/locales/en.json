@@ -1,0 +1,9 @@
+{
+  "title": "Network Speed",
+  "down": "Download",
+  "up": "Upload",
+  "totalDown": "Total received",
+  "totalUp": "Total sent",
+  "menuRefresh": "Refresh now",
+  "menuQuit": "Quit"
+}

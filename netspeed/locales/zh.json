@@ -1,0 +1,9 @@
+{
+  "title": "网络速度",
+  "down": "下行",
+  "up": "上行",
+  "totalDown": "累计接收",
+  "totalUp": "累计发送",
+  "menuRefresh": "立即刷新",
+  "menuQuit": "退出"
+}

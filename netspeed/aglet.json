@@ -1,0 +1,85 @@
+{
+  "id": "netspeed",
+  "name": {
+    "default": "NetSpeed",
+    "zh": "网速",
+    "ja": "ネット速度"
+  },
+  "description": {
+    "default": "Live network speed in your menu bar. Down/up throughput, refreshed every second.",
+    "zh": "菜单栏实时网速。每秒刷新上下行吞吐。",
+    "ja": "メニューバーにリアルタイムのネット速度。毎秒、上下の通信量を更新。"
+  },
+  "version": "0.1.0",
+  "license": "MIT",
+  "renderer": "auto",
+  "requires": [
+    {
+      "plugin": "sysmon",
+      "version": ">=0.1.0"
+    }
+  ],
+  "jobs": [
+    {
+      "id": "sample",
+      "run": "sample",
+      "every": "1s",
+      "while": "always"
+    }
+  ],
+  "permissions": [
+    "system:read",
+    "data:read",
+    "data:write"
+  ],
+  "author": "agent-rt",
+  "category": "utilities",
+  "keywords": [
+    "network",
+    "speed",
+    "bandwidth",
+    "monitor",
+    "menubar"
+  ],
+  "collections": {
+    "samples": {
+      "schema": {
+        "ts": { "type": "number" },
+        "down": { "type": "number" },
+        "up": { "type": "number" }
+      }
+    }
+  },
+  "settings": {
+    "groups": [
+      {
+        "title": { "default": "Menu bar", "zh": "菜单栏", "ja": "メニューバー" },
+        "fields": [
+          {
+            "key": "tray_style",
+            "type": "select",
+            "default": "text",
+            "label": { "default": "Style", "zh": "样式", "ja": "スタイル" },
+            "options": [
+              { "value": "text", "label": { "default": "Text (2 lines)", "zh": "双行文字", "ja": "2行テキスト" } },
+              { "value": "graph", "label": { "default": "Graph", "zh": "实时图", "ja": "グラフ" } },
+              { "value": "combined", "label": { "default": "Graph + text", "zh": "图 + 文字", "ja": "グラフ+テキスト" } }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "state": {
+    "down": 0,
+    "up": 0,
+    "rxTotal": 0,
+    "txTotal": 0,
+    "downText": "…",
+    "upText": "…"
+  },
+  "window": {
+    "width": 260,
+    "height": 220
+  }
+}
