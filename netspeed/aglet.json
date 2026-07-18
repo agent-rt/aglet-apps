@@ -19,14 +19,6 @@
       "version": ">=0.1.0"
     }
   ],
-  "jobs": [
-    {
-      "id": "sample",
-      "run": "sample",
-      "every": "1s",
-      "while": "always"
-    }
-  ],
   "permissions": [
     "system:read",
     "data:read",

@@ -1,7 +1,7 @@
-// NetSpeed —— per-app 常驻模型（default export = setup 函数）。
-// 采样节奏由 manifest.jobs 驱动：{id:"sample", run:"sample", every:"1s", while:"always"}
-// —— host 事件驱动调度器每秒调 sample()，窗口关了也跑（while:always 持久后台）。
-// 安装即纳入后台活跃集（install 时 setBackgroundActive），无需先手动打开，daemon 重启也续跑。
+// NetSpeed —— 纯会话 tray app（**无 jobs**）。采样是会话内工作（Layer 1）：
+// 启动（open / tray 菜单 / store → 宿主 onLaunch 强制载入常驻 runtime → 跑本 setup）时
+// 起 setInterval 每秒采样；退出（右键 Quit → quitApp 销常驻 runtime）即停。
+// 不后台常驻、不随宿主自启、daemon 重启不自动出现 —— 只在用户主动开着时跑。
 // 速率由 sysmon 插件（stdio native）持上一刻累计 bytes 做差：首拍返 0（无基线），第二拍起是真速率。
 // 每拍还把 {ts,down,up} append 进 samples collection（裁到最近 CAP 点），给菜单栏 sparkline 用。
 
@@ -38,9 +38,12 @@ export default (aglet) => {
     } catch (_e) {}
   };
 
+  // 会话启动即采一拍（tray 立即出数，不必等第一个 interval），随后每秒。setInterval 注册在
+  // setup 体内，随常驻 runtime 存活而后台 pump、随 quitApp 销毁而停 —— 无需 jobs / 后台活跃集。
+  sample();
+  setInterval(sample, 1000);
+
   return {
-    // job {run:"sample", every:"1s"} 每秒调这个 —— 采样 + 写 state + append sparkline 点。
-    sample,
     // 右键菜单「Refresh now」——手动补一拍。
     refresh: sample,
   };
