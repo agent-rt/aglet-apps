@@ -1,9 +1,13 @@
 {
-  "title": "Network Speed",
+  "title": "System Monitor",
   "down": "Download",
   "up": "Upload",
+  "memory": "Memory",
+  "cpu": "CPU",
+  "network": "Network",
+  "user": "User",
+  "sys": "Sys",
   "totalDown": "Total received",
   "totalUp": "Total sent",
-  "menuRefresh": "Refresh now",
   "menuQuit": "Quit"
 }

@@ -1,0 +1,13 @@
+{
+  "title": "系统监控",
+  "down": "下行",
+  "up": "上行",
+  "memory": "内存",
+  "cpu": "CPU",
+  "network": "网络",
+  "user": "用户",
+  "sys": "系统",
+  "totalDown": "累计接收",
+  "totalUp": "累计发送",
+  "menuQuit": "退出"
+}

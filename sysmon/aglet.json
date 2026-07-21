@@ -1,0 +1,112 @@
+{
+  "id": "sysmon",
+  "name": {
+    "default": "Sysmon",
+    "zh": "系统监控",
+    "ja": "システムモニター"
+  },
+  "description": {
+    "default": "Live system vitals in your menu bar — network speed, memory and CPU. Toggle each metric on or off.",
+    "zh": "菜单栏实时系统监控——网速、内存、CPU，每项可独立开关。",
+    "ja": "メニューバーにリアルタイムのシステム状態——ネット速度・メモリ・CPU。各項目を個別にオン/オフ。"
+  },
+  "version": "0.2.0",
+  "license": "MIT",
+  "min_runtime": "0.1.7",
+  "renderer": "auto",
+  "requires": [
+    {
+      "plugin": "sysmon",
+      "version": ">=0.1.0"
+    }
+  ],
+  "permissions": [
+    "system:read",
+    "data:read",
+    "data:write"
+  ],
+  "author": "agent-rt",
+  "category": "utilities",
+  "keywords": [
+    "system",
+    "monitor",
+    "cpu",
+    "memory",
+    "network",
+    "menubar"
+  ],
+  "settings": {
+    "groups": [
+      {
+        "title": { "default": "Metrics", "zh": "采集", "ja": "計測" },
+        "fields": [
+          {
+            "key": "enable_net",
+            "type": "bool",
+            "default": "true",
+            "label": { "default": "Network", "zh": "网速", "ja": "ネット速度" },
+            "help": { "default": "Show up/down throughput", "zh": "显示上下行速率", "ja": "上下の通信速度を表示" }
+          },
+          {
+            "key": "enable_mem",
+            "type": "bool",
+            "default": "true",
+            "label": { "default": "Memory", "zh": "内存", "ja": "メモリ" },
+            "help": { "default": "Show memory usage", "zh": "显示内存占用", "ja": "メモリ使用率を表示" }
+          },
+          {
+            "key": "enable_cpu",
+            "type": "bool",
+            "default": "true",
+            "label": { "default": "CPU", "zh": "CPU", "ja": "CPU" },
+            "help": { "default": "Show CPU usage or temperature", "zh": "显示 CPU 占用或温度", "ja": "CPU 使用率または温度を表示" }
+          },
+          {
+            "key": "cpu_mode",
+            "type": "select",
+            "default": "usage",
+            "label": { "default": "CPU metric", "zh": "CPU 指标", "ja": "CPU 指標" },
+            "options": [
+              { "value": "usage", "label": { "default": "Usage %", "zh": "占用率 %", "ja": "使用率 %" } },
+              { "value": "temp", "label": { "default": "Temperature °", "zh": "温度 °", "ja": "温度 °" } }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "collections": {
+    "samples": {
+      "schema": {
+        "ts": { "type": "number" },
+        "down": { "type": "number" },
+        "up": { "type": "number" },
+        "cpu": { "type": "number" },
+        "mem": { "type": "number" }
+      }
+    }
+  },
+  "state": {
+    "down": 0,
+    "up": 0,
+    "rxTotal": 0,
+    "txTotal": 0,
+    "downText": "…",
+    "upText": "…",
+    "memPct": 0,
+    "memText": "…",
+    "memUsed": 0,
+    "memTotal": 0,
+    "cpuVal": 0,
+    "cpuText": "…",
+    "cpuUnit": "%",
+    "cpuUser": 0,
+    "cpuSys": 0,
+    "cpuTemp": 0,
+    "cpuTempText": ""
+  },
+  "window": {
+    "width": 260,
+    "height": 300
+  }
+}

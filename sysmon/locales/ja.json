@@ -1,0 +1,13 @@
+{
+  "title": "システムモニター",
+  "down": "ダウンロード",
+  "up": "アップロード",
+  "memory": "メモリ",
+  "cpu": "CPU",
+  "network": "ネットワーク",
+  "user": "ユーザー",
+  "sys": "システム",
+  "totalDown": "累計受信",
+  "totalUp": "累計送信",
+  "menuQuit": "終了"
+}

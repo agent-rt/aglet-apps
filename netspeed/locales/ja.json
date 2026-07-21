@@ -1,9 +1,0 @@
-{
-  "title": "ネットワーク速度",
-  "down": "ダウンロード",
-  "up": "アップロード",
-  "totalDown": "累計受信",
-  "totalUp": "累計送信",
-  "menuRefresh": "今すぐ更新",
-  "menuQuit": "終了"
-}
