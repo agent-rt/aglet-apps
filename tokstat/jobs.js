@@ -164,6 +164,14 @@ const PROVIDERS = [
 
 // ── 入库 ───────────────────────────────────────────────────────────────────
 
+// 刷新时刻 → 本地 HH:MM(绝对时间,不随时间变旧;前缀「更新于」由 ui.tsx {t.updated} 按 locale 补)。
+function clockText(ms) {
+  const d = new Date(typeof ms === "number" ? ms : Date.now());
+  const h = String(d.getHours()).padStart(2, "0");
+  const m = String(d.getMinutes()).padStart(2, "0");
+  return `${h}:${m}`;
+}
+
 async function upsertProvider(p, side, ts, ctx) {
   const sess = side.session ?? {};
   const week = side.weekly ?? {};
@@ -197,6 +205,7 @@ async function upsertProvider(p, side, ts, ctx) {
     abbrev: p.abbrev,
     order: p.order,
     ts,
+    refreshed_text: clockText(ts),
     enabled: true,
     ok: true,
     needs_auth: false,

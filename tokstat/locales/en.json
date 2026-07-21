@@ -6,5 +6,6 @@
   "resets": "resets in",
   "empty": "No providers enabled — turn one on in Settings.",
   "expired": "Sign-in expired. Re-login via the codex CLI, then refresh.",
-  "reauth": "Refresh"
+  "reauth": "Refresh",
+  "updated": "Updated"
 }

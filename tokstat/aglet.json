@@ -12,7 +12,7 @@
   },
   "version": "0.3.0",
   "license": "MIT",
-  "min_runtime": "0.1.3",
+  "min_runtime": "0.1.6",
   "renderer": "auto",
   "requires": [
     {
@@ -144,6 +144,7 @@
         "order": { "type": "integer" },
         "enabled": { "type": "boolean" },
         "ts": { "type": "integer" },
+        "refreshed_text": { "type": "string" },
         "ok": { "type": "boolean" },
         "needs_auth": { "type": "boolean" },
         "notified_session": { "type": "boolean" },
