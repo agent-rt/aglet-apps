@@ -1,0 +1,79 @@
+{
+  "id": "worldclock",
+  "name": {
+    "default": "World Clock",
+    "zh": "世界时钟",
+    "ja": "世界時計"
+  },
+  "description": {
+    "default": "World clock in your menu bar. Add cities, delete them, and pin the ones you want shown in the menu bar.",
+    "zh": "菜单栏世界时钟。可新建/删除城市，并勾选要在菜单栏显示的城市。",
+    "ja": "メニューバーの世界時計。都市の追加・削除、メニューバーに表示する都市の選択ができます。"
+  },
+  "version": "0.2.0",
+  "license": "MIT",
+  "min_runtime": "0.1.7",
+  "renderer": "auto",
+  "permissions": [
+    "data:read",
+    "data:write"
+  ],
+  "author": "agent-rt",
+  "category": "utilities",
+  "keywords": [
+    "clock",
+    "time",
+    "timezone",
+    "world",
+    "menubar"
+  ],
+  "settings": {
+    "groups": [
+      {
+        "title": { "default": "Format", "zh": "格式", "ja": "形式" },
+        "fields": [
+          {
+            "key": "hour24",
+            "type": "bool",
+            "default": "true",
+            "label": { "default": "24-hour", "zh": "24 小时制", "ja": "24 時間制" },
+            "help": { "default": "Off = 12-hour with AM/PM", "zh": "关 = 12 小时制带 AM/PM", "ja": "オフ = 12 時間制 (AM/PM)" }
+          }
+        ]
+      }
+    ]
+  },
+  "collections": {
+    "cities": {
+      "schema": {
+        "name": { "type": "string" },
+        "tz": { "type": "string" },
+        "code": { "type": "string" },
+        "menubar": { "type": "boolean" },
+        "order": { "type": "number" },
+        "time": { "type": "string" },
+        "date": { "type": "string" },
+        "star": { "type": "string" },
+        "dn": { "type": "string" },
+        "dnColor": { "type": "string" },
+        "diff": { "type": "string" },
+        "sub": { "type": "string" }
+      }
+    },
+    "catalog": {
+      "schema": {
+        "name": { "type": "string" },
+        "tz": { "type": "string" },
+        "code": { "type": "string" }
+      }
+    }
+  },
+  "state": {
+    "menubarText": "…",
+    "draft": { "tz": "" }
+  },
+  "window": {
+    "width": 280,
+    "height": 420
+  }
+}
