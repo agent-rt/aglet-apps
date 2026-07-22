@@ -7,11 +7,11 @@
       {settings.enable_net !== "false" && (
         <VStack justify="evenly" align="center" className="min-w-[80px]">
           <HStack justify="between" className="min-w-[70px]">
-            <Text color="#F5B14C" className="text-xs font-normal">↑</Text>
+            <Text className="text-xs font-normal text-[#F5B14C]">↑</Text>
             <Text className="text-xs tabular-nums font-normal">{state.upText}</Text>
           </HStack>
           <HStack justify="between" className="min-w-[70px]">
-            <Text color="#4FD1C5" className="text-xs font-normal">↓</Text>
+            <Text className="text-xs font-normal text-[#4FD1C5]">↓</Text>
             <Text className="text-xs tabular-nums font-normal">{state.downText}</Text>
           </HStack>
         </VStack>
@@ -43,7 +43,7 @@
         <VStack gap={2}>
           <HStack className="items-center justify-between">
             <HStack gap={5} className="items-center">
-              <Icon symbol="cpu" size="sm" color="#98989D"/>
+              <Icon symbol="cpu" size="sm" color="secondary"/>
               <Text className="text-[11px] font-semibold uppercase tracking-wider opacity-55">{t.cpu}</Text>
             </HStack>
             <HStack gap={6} className="items-center">
@@ -68,7 +68,7 @@
         <VStack gap={2}>
           <HStack className="items-center justify-between">
             <HStack gap={5} className="items-center">
-              <Icon symbol="memory" size="sm" color="#98989D"/>
+              <Icon symbol="memory" size="sm" color="secondary"/>
               <Text className="text-[11px] font-semibold uppercase tracking-wider opacity-55">{t.memory}</Text>
             </HStack>
             <Text className="text-sm font-semibold tabular-nums">
@@ -91,16 +91,16 @@
       {settings.enable_net !== "false" && (
         <VStack gap={2}>
           <HStack gap={5} className="items-center">
-            <Icon symbol="network" size="sm" color="#98989D"/>
+            <Icon symbol="network" size="sm" color="secondary"/>
             <Text className="text-[11px] font-semibold uppercase tracking-wider opacity-55">{t.network}</Text>
           </HStack>
           <HStack className="items-center justify-between">
             <HStack gap={4} className="items-center">
-              <Icon symbol="arrow-down" color="#4FD1C5"/>
+              <Icon symbol="arrow-down" color="success"/>
               <Text className="text-sm font-semibold tabular-nums">{state.downText}</Text>
             </HStack>
             <HStack gap={4} className="items-center">
-              <Icon symbol="arrow-up" color="#F5B14C"/>
+              <Icon symbol="arrow-up" color="warning"/>
               <Text className="text-sm font-semibold tabular-nums">{state.upText}</Text>
             </HStack>
           </HStack>
