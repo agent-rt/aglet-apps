@@ -6,8 +6,8 @@
     "zh": "记录纪念日（生日、里程碑），实时倒数到下一次。",
     "ja": "記念日（誕生日・節目）を登録し、次の発生までをカウントダウン。"
   },
-  "version": "0.1.0",
-  "min_runtime": "0.1.3",
+  "version": "0.1.1",
+  "min_runtime": "0.1.7",
   "license": "MIT",
   "renderer": "auto",
   "author": "aglet-dev",

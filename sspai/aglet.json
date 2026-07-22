@@ -13,8 +13,8 @@
     "ja": "RSSHub から少数派のホームと Matrix 記事を表示します。"
   },
   "docs": "# 少数派\n\n少数派阅读小工具。后台 job 从 RSSHub 拉取两个 feed：\n\n- `https://rsshub.rssforever.com/sspai/index` → 首页文章\n- `https://rsshub.rssforever.com/sspai/matrix` → Matrix 文章\n\n优先使用 `xml` wasm plugin 的 `xml.rss` 解析 RSS；开发时用 `aglet dev sspai --link <xml-plugin-dir>`。\n",
-  "version": "0.1.0",
-  "min_runtime": "0.1.3",
+  "version": "0.1.1",
+  "min_runtime": "0.1.7",
   "license": "MIT",
   "renderer": "auto",
   "author": "aglet-dev",

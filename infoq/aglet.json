@@ -13,8 +13,8 @@
     "ja": "RSSHub から InfoQ 中国語のおすすめ記事を表示します。"
   },
   "docs": "# InfoQ 中文\n\nInfoQ 中文推荐阅读小工具。后台 job 从 RSSHub 拉取 feed：\n\n- `https://rsshub.rssforever.com/infoq/recommend` → 推荐文章\n\n优先使用 `xml` wasm plugin 的 `xml.rss` 解析 RSS；开发时用 `aglet dev infoq --link <xml-plugin-dir>`。\n",
-  "version": "0.1.0",
-  "min_runtime": "0.1.3",
+  "version": "0.1.1",
+  "min_runtime": "0.1.7",
   "license": "MIT",
   "renderer": "auto",
   "author": "aglet-dev",

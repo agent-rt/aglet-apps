@@ -8,8 +8,8 @@
     "zh": "把捕获的 app 窗口截图合成成 App Store 风格营销图。",
     "ja": "取得したアプリ画面を App Store 風のマーケティング画像に合成。"
   },
-  "version": "0.1.0",
-  "min_runtime": "0.1.3",
+  "version": "0.1.1",
+  "min_runtime": "0.1.7",
   "renderer": "web",
   "icon": "https://api.iconify.design/ph/image-square-fill.svg?color=%232f6fed&width=256",
   "permissions": ["data:read", "data:write"],
