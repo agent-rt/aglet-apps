@@ -26,7 +26,10 @@
     "developer",
     "topics"
   ],
-  "icon": "https://api.iconify.design/ph/chats-circle-fill.svg?color=%232f6fed&width=256",
+  "icon": {
+    "fg": "chats-circle-fill",
+    "bg": "#2f6fed"
+  },
   "permissions": [
     "data:read",
     "data:write"
@@ -54,31 +57,77 @@
   "collections": {
     "latest_topics": {
       "schema": {
-        "guid": { "type": "string" },
-        "title": { "type": "string" },
-        "url": { "type": "string" },
-        "summary": { "type": "string" },
-        "author": { "type": "string" },
-        "node": { "type": "string" },
-        "published_at": { "type": "string" },
-        "published_ts": { "type": "number" },
-        "source": { "type": "string" }
+        "guid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "node": {
+          "type": "string"
+        },
+        "published_at": {
+          "type": "string"
+        },
+        "published_ts": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        }
       },
-      "indexes": ["guid", "published_ts", "node", "author"]
+      "indexes": [
+        "guid",
+        "published_ts",
+        "node",
+        "author"
+      ]
     },
     "hot_topics": {
       "schema": {
-        "guid": { "type": "string" },
-        "title": { "type": "string" },
-        "url": { "type": "string" },
-        "summary": { "type": "string" },
-        "author": { "type": "string" },
-        "node": { "type": "string" },
-        "published_at": { "type": "string" },
-        "published_ts": { "type": "number" },
-        "source": { "type": "string" }
+        "guid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "node": {
+          "type": "string"
+        },
+        "published_at": {
+          "type": "string"
+        },
+        "published_ts": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        }
       },
-      "indexes": ["guid", "published_ts", "node", "author"]
+      "indexes": [
+        "guid",
+        "published_ts",
+        "node",
+        "author"
+      ]
     }
   },
   "state": {
@@ -86,11 +135,35 @@
   },
   "shots": {
     "seed": "v2ex.shots.seed.json",
-    "locales": ["en", "zh"],
-    "themes": ["dark", "light"],
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
     "frames": [
-      { "id": "latest", "state": { "/state/_ui/tabs/main": "latest" }, "caption": { "default": "Latest topics from V2EX", "zh": "V2EX 最新主题" } },
-      { "id": "hot", "state": { "/state/_ui/tabs/main": "hot" }, "caption": { "default": "What's hot right now", "zh": "当前最热讨论" } }
+      {
+        "id": "latest",
+        "state": {
+          "/state/_ui/tabs/main": "latest"
+        },
+        "caption": {
+          "default": "Latest topics from V2EX",
+          "zh": "V2EX 最新主题"
+        }
+      },
+      {
+        "id": "hot",
+        "state": {
+          "/state/_ui/tabs/main": "hot"
+        },
+        "caption": {
+          "default": "What's hot right now",
+          "zh": "当前最热讨论"
+        }
+      }
     ]
   }
 }

@@ -99,5 +99,9 @@
         }
       }
     ]
+  },
+  "icon": {
+    "fg": "image-square-fill",
+    "bg": "#14b8a6"
   }
 }

@@ -26,7 +26,10 @@
     "translated",
     "chinese"
   ],
-  "icon": "https://api.iconify.design/ph/fire-fill.svg?color=%23ff6600&width=256",
+  "icon": {
+    "fg": "fire-fill",
+    "bg": "#ff6600"
+  },
   "permissions": [
     "data:read",
     "data:write",
@@ -98,39 +101,83 @@
   "settings": {
     "groups": [
       {
-        "title": { "default": "Translation", "zh": "翻译", "ja": "翻訳" },
-        "help": { "default": "Translate titles & summaries via an OpenAI-compatible LLM. Blank endpoint = keep English.", "zh": "用兼容 OpenAI 的 LLM 翻译标题与摘要。端点留空＝保留英文。", "ja": "OpenAI 互換 LLM で見出し・要約を翻訳。エンドポイント空＝英語のまま。" },
+        "title": {
+          "default": "Translation",
+          "zh": "翻译",
+          "ja": "翻訳"
+        },
+        "help": {
+          "default": "Translate titles & summaries via an OpenAI-compatible LLM. Blank endpoint = keep English.",
+          "zh": "用兼容 OpenAI 的 LLM 翻译标题与摘要。端点留空＝保留英文。",
+          "ja": "OpenAI 互換 LLM で見出し・要約を翻訳。エンドポイント空＝英語のまま。"
+        },
         "fields": [
           {
             "key": "llm_endpoint",
-            "label": { "default": "Endpoint", "zh": "端点", "ja": "エンドポイント" },
+            "label": {
+              "default": "Endpoint",
+              "zh": "端点",
+              "ja": "エンドポイント"
+            },
             "type": "text",
             "placeholder": "https://api.openai.com/v1/chat/completions"
           },
           {
             "key": "llm_model",
-            "label": { "default": "Model", "zh": "模型", "ja": "モデル" },
+            "label": {
+              "default": "Model",
+              "zh": "模型",
+              "ja": "モデル"
+            },
             "type": "text",
             "placeholder": "gpt-4o-mini",
-            "help": { "default": "Some servers require it", "zh": "部分服务需要", "ja": "一部のサーバで必須" }
+            "help": {
+              "default": "Some servers require it",
+              "zh": "部分服务需要",
+              "ja": "一部のサーバで必須"
+            }
           },
           {
             "key": "api_key",
-            "label": { "default": "API key", "zh": "API 密钥", "ja": "API キー" },
+            "label": {
+              "default": "API key",
+              "zh": "API 密钥",
+              "ja": "API キー"
+            },
             "type": "secret",
-            "help": { "default": "Hosted APIs only; blank for local", "zh": "托管 API 才需要；本地留空", "ja": "ホスト型 API のみ、ローカルは空" }
+            "help": {
+              "default": "Hosted APIs only; blank for local",
+              "zh": "托管 API 才需要；本地留空",
+              "ja": "ホスト型 API のみ、ローカルは空"
+            }
           },
           {
             "key": "title_prompt",
-            "label": { "default": "Title prompt", "zh": "标题提示词", "ja": "見出しプロンプト" },
+            "label": {
+              "default": "Title prompt",
+              "zh": "标题提示词",
+              "ja": "見出しプロンプト"
+            },
             "type": "textarea",
-            "help": { "default": "Blank = built-in", "zh": "留空＝内置", "ja": "空＝組み込み" }
+            "help": {
+              "default": "Blank = built-in",
+              "zh": "留空＝内置",
+              "ja": "空＝組み込み"
+            }
           },
           {
             "key": "summary_prompt",
-            "label": { "default": "Summary prompt", "zh": "摘要提示词", "ja": "要約プロンプト" },
+            "label": {
+              "default": "Summary prompt",
+              "zh": "摘要提示词",
+              "ja": "要約プロンプト"
+            },
             "type": "textarea",
-            "help": { "default": "Blank = built-in", "zh": "留空＝内置", "ja": "空＝組み込み" }
+            "help": {
+              "default": "Blank = built-in",
+              "zh": "留空＝内置",
+              "ja": "空＝組み込み"
+            }
           }
         ]
       }
@@ -138,12 +185,42 @@
   },
   "shots": {
     "seed": "hn.shots.seed.json",
-    "locales": ["en", "zh"],
-    "themes": ["dark", "light"],
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
     "frames": [
-      { "id": "feed", "caption": { "default": "Your feeds, beautifully native", "zh": "原生质感的信息流" } },
-      { "id": "liked", "state": { "/state/_ui/tabs/main": "liked" }, "caption": { "default": "Keep what you love", "zh": "收藏你喜欢的" } },
-      { "id": "blocked", "state": { "/state/_ui/tabs/main": "blocked" }, "caption": { "default": "Mute the noise", "zh": "屏蔽噪音" } }
+      {
+        "id": "feed",
+        "caption": {
+          "default": "Your feeds, beautifully native",
+          "zh": "原生质感的信息流"
+        }
+      },
+      {
+        "id": "liked",
+        "state": {
+          "/state/_ui/tabs/main": "liked"
+        },
+        "caption": {
+          "default": "Keep what you love",
+          "zh": "收藏你喜欢的"
+        }
+      },
+      {
+        "id": "blocked",
+        "state": {
+          "/state/_ui/tabs/main": "blocked"
+        },
+        "caption": {
+          "default": "Mute the noise",
+          "zh": "屏蔽噪音"
+        }
+      }
     ]
   }
 }

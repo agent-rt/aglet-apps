@@ -103,5 +103,9 @@
       }
     ],
     "seed": "anniversary.shots.seed.json"
+  },
+  "icon": {
+    "fg": "gift-fill",
+    "bg": "#ec4899"
   }
 }

@@ -26,7 +26,10 @@
     "matrix",
     "chinese"
   ],
-  "icon": "https://api.iconify.design/ph/article-medium-fill.svg?color=%23d71920&width=256",
+  "icon": {
+    "fg": "article-medium-fill",
+    "bg": "#d71920"
+  },
   "permissions": [
     "data:read",
     "data:write"
@@ -54,29 +57,69 @@
   "collections": {
     "index_articles": {
       "schema": {
-        "guid": { "type": "string" },
-        "title": { "type": "string" },
-        "url": { "type": "string" },
-        "summary": { "type": "string" },
-        "author": { "type": "string" },
-        "published_at": { "type": "string" },
-        "published_ts": { "type": "number" },
-        "source": { "type": "string" }
+        "guid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "published_at": {
+          "type": "string"
+        },
+        "published_ts": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        }
       },
-      "indexes": ["guid", "published_ts", "author"]
+      "indexes": [
+        "guid",
+        "published_ts",
+        "author"
+      ]
     },
     "matrix_articles": {
       "schema": {
-        "guid": { "type": "string" },
-        "title": { "type": "string" },
-        "url": { "type": "string" },
-        "summary": { "type": "string" },
-        "author": { "type": "string" },
-        "published_at": { "type": "string" },
-        "published_ts": { "type": "number" },
-        "source": { "type": "string" }
+        "guid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "published_at": {
+          "type": "string"
+        },
+        "published_ts": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        }
       },
-      "indexes": ["guid", "published_ts", "author"]
+      "indexes": [
+        "guid",
+        "published_ts",
+        "author"
+      ]
     }
   },
   "state": {
@@ -84,11 +127,32 @@
   },
   "shots": {
     "seed": "sspai.shots.seed.json",
-    "locales": ["en", "zh"],
-    "themes": ["dark", "light"],
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
     "frames": [
-      { "id": "index", "caption": { "default": "Read SSPAI, natively", "zh": "原生阅读少数派" } },
-      { "id": "matrix", "state": { "/state/_ui/tabs/main": "matrix" }, "caption": { "default": "Dive into Matrix stories", "zh": "沉浸阅读 Matrix 专栏" } }
+      {
+        "id": "index",
+        "caption": {
+          "default": "Read SSPAI, natively",
+          "zh": "原生阅读少数派"
+        }
+      },
+      {
+        "id": "matrix",
+        "state": {
+          "/state/_ui/tabs/main": "matrix"
+        },
+        "caption": {
+          "default": "Dive into Matrix stories",
+          "zh": "沉浸阅读 Matrix 专栏"
+        }
+      }
     ]
   }
 }

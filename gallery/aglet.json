@@ -24,7 +24,10 @@
     "showcase",
     "dogfood"
   ],
-  "icon": "https://api.iconify.design/ph/swatches-fill.svg?color=%233a6ea5&width=256",
+  "icon": {
+    "fg": "swatches-fill",
+    "bg": "#3a6ea5"
+  },
   "permissions": [
     "data:read",
     "data:write"

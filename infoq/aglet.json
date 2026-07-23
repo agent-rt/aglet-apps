@@ -26,7 +26,10 @@
     "developer",
     "chinese"
   ],
-  "icon": "https://api.iconify.design/ph/newspaper-clipping-fill.svg?color=%230f766e&width=256",
+  "icon": {
+    "fg": "newspaper-clipping-fill",
+    "bg": "#0f766e"
+  },
   "permissions": [
     "data:read",
     "data:write"
@@ -54,18 +57,43 @@
   "collections": {
     "recommended_articles": {
       "schema": {
-        "guid": { "type": "string" },
-        "title": { "type": "string" },
-        "url": { "type": "string" },
-        "summary": { "type": "string" },
-        "author": { "type": "string" },
-        "category": { "type": "string" },
-        "categories": { "type": "string" },
-        "published_at": { "type": "string" },
-        "published_ts": { "type": "number" },
-        "source": { "type": "string" }
+        "guid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "author": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string"
+        },
+        "categories": {
+          "type": "string"
+        },
+        "published_at": {
+          "type": "string"
+        },
+        "published_ts": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        }
       },
-      "indexes": ["guid", "published_ts", "category", "author"]
+      "indexes": [
+        "guid",
+        "published_ts",
+        "category",
+        "author"
+      ]
     }
   },
   "state": {
@@ -73,10 +101,22 @@
   },
   "shots": {
     "seed": "infoq.shots.seed.json",
-    "locales": ["en", "zh"],
-    "themes": ["dark", "light"],
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
     "frames": [
-      { "id": "main", "caption": { "default": "InfoQ Chinese, natively yours", "zh": "InfoQ 中文，原生阅读体验" } }
+      {
+        "id": "main",
+        "caption": {
+          "default": "InfoQ Chinese, natively yours",
+          "zh": "InfoQ 中文，原生阅读体验"
+        }
+      }
     ]
   }
 }

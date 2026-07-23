@@ -1,0 +1,26 @@
+{
+  "id": "icon-studio",
+  "name": "Icon Studio",
+  "name_i18n": { "default": "Icon Studio", "zh": "图标工作室", "ja": "アイコンスタジオ" },
+  "description": "Generate built-in app icons — a Phosphor glyph on a rounded brand-color badge, captured 512² for the store/tray.",
+  "description_i18n": {
+    "default": "Generate built-in app icons — a Phosphor glyph on a rounded brand-color badge.",
+    "zh": "生成内置 app 图标 —— 品牌色圆角徽标上摆 Phosphor 符号。",
+    "ja": "内蔵アプリアイコンを生成 —— 角丸ブランドカラー地に Phosphor グリフ。"
+  },
+  "version": "0.1.0",
+  "min_runtime": "0.1.7",
+  "renderer": "web",
+  "icon": "https://api.iconify.design/ph/app-window-fill.svg?color=%232f6fed&width=256",
+  "permissions": ["data:read", "data:write"],
+  "window": { "style": "desktop", "width": 512, "height": 512, "resizable": false },
+  "collections": {
+    "icon": {
+      "schema": {
+        "glyph": { "type": "string" },
+        "color": { "type": "string" },
+        "style": { "type": "string" }
+      }
+    }
+  }
+}

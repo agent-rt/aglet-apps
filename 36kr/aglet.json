@@ -26,7 +26,10 @@
     "china",
     "startup"
   ],
-  "icon": "https://api.iconify.design/ph/newspaper-clipping-fill.svg?color=%23111111&width=256",
+  "icon": {
+    "fg": "newspaper-clipping-fill",
+    "bg": "#111111"
+  },
   "permissions": [
     "data:read",
     "data:write"
@@ -54,27 +57,61 @@
   "collections": {
     "hot_items": {
       "schema": {
-        "guid": { "type": "string" },
-        "title": { "type": "string" },
-        "url": { "type": "string" },
-        "summary": { "type": "string" },
-        "published_at": { "type": "string" },
-        "published_ts": { "type": "number" },
-        "source": { "type": "string" }
+        "guid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "published_at": {
+          "type": "string"
+        },
+        "published_ts": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        }
       },
-      "indexes": ["guid", "published_ts"]
+      "indexes": [
+        "guid",
+        "published_ts"
+      ]
     },
     "newsflashes": {
       "schema": {
-        "guid": { "type": "string" },
-        "title": { "type": "string" },
-        "url": { "type": "string" },
-        "summary": { "type": "string" },
-        "published_at": { "type": "string" },
-        "published_ts": { "type": "number" },
-        "source": { "type": "string" }
+        "guid": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "published_at": {
+          "type": "string"
+        },
+        "published_ts": {
+          "type": "number"
+        },
+        "source": {
+          "type": "string"
+        }
       },
-      "indexes": ["guid", "published_ts"]
+      "indexes": [
+        "guid",
+        "published_ts"
+      ]
     }
   },
   "state": {
@@ -82,11 +119,32 @@
   },
   "shots": {
     "seed": "36kr.shots.seed.json",
-    "locales": ["en", "zh"],
-    "themes": ["dark", "light"],
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
     "frames": [
-      { "id": "hot", "caption": { "default": "China tech, ranked by the crowd", "zh": "24 小时科技热榜" } },
-      { "id": "flash", "state": { "/state/_ui/tabs/main": "flash" }, "caption": { "default": "Real-time startup newsflashes", "zh": "实时创投快讯" } }
+      {
+        "id": "hot",
+        "caption": {
+          "default": "China tech, ranked by the crowd",
+          "zh": "24 小时科技热榜"
+        }
+      },
+      {
+        "id": "flash",
+        "state": {
+          "/state/_ui/tabs/main": "flash"
+        },
+        "caption": {
+          "default": "Real-time startup newsflashes",
+          "zh": "实时创投快讯"
+        }
+      }
     ]
   }
 }

@@ -30,14 +30,26 @@
   "settings": {
     "groups": [
       {
-        "title": { "default": "Format", "zh": "格式", "ja": "形式" },
+        "title": {
+          "default": "Format",
+          "zh": "格式",
+          "ja": "形式"
+        },
         "fields": [
           {
             "key": "hour24",
             "type": "bool",
             "default": "true",
-            "label": { "default": "24-hour", "zh": "24 小时制", "ja": "24 時間制" },
-            "help": { "default": "Off = 12-hour with AM/PM", "zh": "关 = 12 小时制带 AM/PM", "ja": "オフ = 12 時間制 (AM/PM)" }
+            "label": {
+              "default": "24-hour",
+              "zh": "24 小时制",
+              "ja": "24 時間制"
+            },
+            "help": {
+              "default": "Off = 12-hour with AM/PM",
+              "zh": "关 = 12 小时制带 AM/PM",
+              "ja": "オフ = 12 時間制 (AM/PM)"
+            }
           }
         ]
       }
@@ -46,40 +58,86 @@
   "collections": {
     "cities": {
       "schema": {
-        "key": { "type": "string" },
-        "tz": { "type": "string" },
-        "code": { "type": "string" },
-        "menubar": { "type": "boolean" },
-        "order": { "type": "number" },
-        "gmtoff": { "type": "number" },
-        "star": { "type": "string" },
-        "dn": { "type": "string" },
-        "dnColor": { "type": "string" },
-        "diffLabel": { "type": "string" },
-        "h12": { "type": "boolean" }
+        "key": {
+          "type": "string"
+        },
+        "tz": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        },
+        "menubar": {
+          "type": "boolean"
+        },
+        "order": {
+          "type": "number"
+        },
+        "gmtoff": {
+          "type": "number"
+        },
+        "star": {
+          "type": "string"
+        },
+        "dn": {
+          "type": "string"
+        },
+        "dnColor": {
+          "type": "string"
+        },
+        "diffLabel": {
+          "type": "string"
+        },
+        "h12": {
+          "type": "boolean"
+        }
       }
     },
     "catalog": {
       "schema": {
-        "name": { "type": "string" },
-        "tz": { "type": "string" },
-        "code": { "type": "string" }
+        "name": {
+          "type": "string"
+        },
+        "tz": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
       }
     }
   },
   "state": {
     "menubarText": "…",
-    "draft": { "tz": "" }
+    "draft": {
+      "tz": ""
+    }
   },
   "window": {
     "width": 280,
     "height": 420
   },
   "shots": {
-    "locales": ["en", "zh"],
-    "themes": ["dark", "light"],
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
     "frames": [
-      { "id": "main", "caption": { "default": "The world, at a glance", "zh": "世界时间,一目了然" } }
+      {
+        "id": "main",
+        "caption": {
+          "default": "The world, at a glance",
+          "zh": "世界时间,一目了然"
+        }
+      }
     ]
+  },
+  "icon": {
+    "fg": "globe-fill",
+    "bg": "#0ea5e9"
   }
 }

@@ -23,7 +23,10 @@
     "review",
     "code"
   ],
-  "icon": "https://api.iconify.design/ph/git-pull-request-fill.svg?color=%231f883d&width=256",
+  "icon": {
+    "fg": "git-pull-request-fill",
+    "bg": "#1f883d"
+  },
   "screenshots": [
     {
       "url": "screenshots/01.png",
@@ -126,12 +129,42 @@
   },
   "shots": {
     "seed": "gh-prs.shots.seed.json",
-    "locales": ["en", "zh"],
-    "themes": ["dark", "light"],
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
     "frames": [
-      { "id": "review", "caption": { "default": "Your review queue, at a glance", "zh": "一眼看清待审队列" } },
-      { "id": "mine", "state": { "/state/_ui/tabs/main": "mine" }, "caption": { "default": "Track your open PRs", "zh": "跟进自己的 open PR" } },
-      { "id": "all", "state": { "/state/_ui/tabs/main": "all" }, "caption": { "default": "Every open PR in one list", "zh": "所有 open PR 一览" } }
+      {
+        "id": "review",
+        "caption": {
+          "default": "Your review queue, at a glance",
+          "zh": "一眼看清待审队列"
+        }
+      },
+      {
+        "id": "mine",
+        "state": {
+          "/state/_ui/tabs/main": "mine"
+        },
+        "caption": {
+          "default": "Track your open PRs",
+          "zh": "跟进自己的 open PR"
+        }
+      },
+      {
+        "id": "all",
+        "state": {
+          "/state/_ui/tabs/main": "all"
+        },
+        "caption": {
+          "default": "Every open PR in one list",
+          "zh": "所有 open PR 一览"
+        }
+      }
     ]
   }
 }

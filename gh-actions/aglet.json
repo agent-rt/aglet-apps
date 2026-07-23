@@ -24,7 +24,10 @@
     "workflow",
     "devops"
   ],
-  "icon": "https://api.iconify.design/ph/play-circle-fill.svg?color=%232088ff&width=256",
+  "icon": {
+    "fg": "play-circle-fill",
+    "bg": "#2088ff"
+  },
   "permissions": [
     "data:read",
     "data:write",
@@ -54,47 +57,118 @@
   "collections": {
     "repos": {
       "schema": {
-        "repo": { "type": "string" },
-        "owner": { "type": "string" },
-        "name_short": { "type": "string" },
-        "default_branch": { "type": "string" },
-        "wf_count": { "type": "number" },
-        "last_status": { "type": "string" },
-        "last_run_at": { "type": "string" },
-        "actions_url": { "type": "string" }
+        "repo": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "name_short": {
+          "type": "string"
+        },
+        "default_branch": {
+          "type": "string"
+        },
+        "wf_count": {
+          "type": "number"
+        },
+        "last_status": {
+          "type": "string"
+        },
+        "last_run_at": {
+          "type": "string"
+        },
+        "actions_url": {
+          "type": "string"
+        }
       },
-      "indexes": ["repo", "owner", "last_run_at"]
+      "indexes": [
+        "repo",
+        "owner",
+        "last_run_at"
+      ]
     },
     "workflows": {
       "schema": {
-        "wf_id": { "type": "string" },
-        "repo": { "type": "string" },
-        "name": { "type": "string" },
-        "state": { "type": "string" },
-        "default_branch": { "type": "string" },
-        "path": { "type": "string" },
-        "html_url": { "type": "string" }
+        "wf_id": {
+          "type": "string"
+        },
+        "repo": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "default_branch": {
+          "type": "string"
+        },
+        "path": {
+          "type": "string"
+        },
+        "html_url": {
+          "type": "string"
+        }
       },
-      "indexes": ["wf_id", "repo", "name"]
+      "indexes": [
+        "wf_id",
+        "repo",
+        "name"
+      ]
     },
     "runs": {
       "schema": {
-        "run_id": { "type": "string" },
-        "repo": { "type": "string" },
-        "workflow_name": { "type": "string" },
-        "status": { "type": "string" },
-        "conclusion": { "type": "string" },
-        "branch": { "type": "string" },
-        "event": { "type": "string" },
-        "actor": { "type": "string" },
-        "run_number": { "type": "number" },
-        "html_url": { "type": "string" },
-        "updated_at": { "type": "string" },
-        "can_rerun": { "type": "boolean" },
-        "can_cancel": { "type": "boolean" },
-        "state_emoji": { "type": "string" }
+        "run_id": {
+          "type": "string"
+        },
+        "repo": {
+          "type": "string"
+        },
+        "workflow_name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "conclusion": {
+          "type": "string"
+        },
+        "branch": {
+          "type": "string"
+        },
+        "event": {
+          "type": "string"
+        },
+        "actor": {
+          "type": "string"
+        },
+        "run_number": {
+          "type": "number"
+        },
+        "html_url": {
+          "type": "string"
+        },
+        "updated_at": {
+          "type": "string"
+        },
+        "can_rerun": {
+          "type": "boolean"
+        },
+        "can_cancel": {
+          "type": "boolean"
+        },
+        "state_emoji": {
+          "type": "string"
+        }
       },
-      "indexes": ["run_id", "repo", "status", "updated_at"]
+      "indexes": [
+        "run_id",
+        "repo",
+        "status",
+        "updated_at"
+      ]
     }
   },
   "state": {
@@ -152,11 +226,32 @@
   },
   "shots": {
     "seed": "gh-actions.shots.seed.json",
-    "locales": ["en", "zh"],
-    "themes": ["dark", "light"],
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
     "frames": [
-      { "id": "repos", "caption": { "default": "Every repo's CI at a glance", "zh": "一眼看清每个仓库的 CI" } },
-      { "id": "runs", "state": { "/state/_ui/tabs/main": "runs" }, "caption": { "default": "Re-run or cancel from anywhere", "zh": "随时重跑或取消运行" } }
+      {
+        "id": "repos",
+        "caption": {
+          "default": "Every repo's CI at a glance",
+          "zh": "一眼看清每个仓库的 CI"
+        }
+      },
+      {
+        "id": "runs",
+        "state": {
+          "/state/_ui/tabs/main": "runs"
+        },
+        "caption": {
+          "default": "Re-run or cancel from anywhere",
+          "zh": "随时重跑或取消运行"
+        }
+      }
     ]
   }
 }
