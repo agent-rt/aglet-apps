@@ -27,14 +27,14 @@
             <Item>
               <HStack gap={2} align="center" className="px-4 py-2">
                 <VStack gap={0} className="flex-1">
-                  <Text className="text-sm font-medium">{item.name}</Text>
-                  <Text className="text-[10px] tabular-nums opacity-45">{item.code} · {item.time}</Text>
+                  <Text className="text-sm font-medium">{t(item.key)}</Text>
+                  <Text className="text-[10px] tabular-nums opacity-45">{item.code} · {$now({offset: item.gmtoff, format: "time", hour12: item.h12})}</Text>
                 </VStack>
                 <Button icon={item.star} variant="light" size="sm"
                   onClick={() => scripts.toggleMenubar({ id: item.id, on: item.menubar })}/>
                 <Button icon="trash" variant="light" size="sm" className="opacity-60"
                   onClick={() => app.confirm({
-                    title: item.name,
+                    title: t(item.key),
                     description: t.removePrompt,
                     confirmLabel: t.removeCity,
                     cancelLabel: t.cancel,
@@ -64,12 +64,12 @@
                 <HStack gap={3} align="center" className="px-4 py-2.5">
                   <Icon symbol={item.dn} color={item.dnColor} size="sm"/>
                   <VStack gap={0} className="flex-1">
-                    <Text className="text-sm font-medium">{item.name}</Text>
-                    <Text className="text-xs tabular-nums opacity-45">{item.sub}</Text>
+                    <Text className="text-sm font-medium">{t(item.key)}</Text>
+                    <Text className="text-xs tabular-nums opacity-45">{$now({offset: item.gmtoff, format: "date"})}{item.diffLabel}</Text>
                   </VStack>
                   {/* 已在菜单栏显示 → 蓝色对勾(正向 item 守卫) */}
                   {item.menubar && <Icon symbol="check" color="#0a84ff" size="sm"/>}
-                  <Text className="text-xl tabular-nums font-normal">{item.time}</Text>
+                  <Text className="text-xl tabular-nums font-normal">{$now({offset: item.gmtoff, format: "time", hour12: item.h12})}</Text>
                 </HStack>
               </Item>
               <Empty>

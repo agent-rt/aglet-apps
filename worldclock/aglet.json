@@ -46,18 +46,17 @@
   "collections": {
     "cities": {
       "schema": {
-        "name": { "type": "string" },
+        "key": { "type": "string" },
         "tz": { "type": "string" },
         "code": { "type": "string" },
         "menubar": { "type": "boolean" },
         "order": { "type": "number" },
-        "time": { "type": "string" },
-        "date": { "type": "string" },
+        "gmtoff": { "type": "number" },
         "star": { "type": "string" },
         "dn": { "type": "string" },
         "dnColor": { "type": "string" },
-        "diff": { "type": "string" },
-        "sub": { "type": "string" }
+        "diffLabel": { "type": "string" },
+        "h12": { "type": "boolean" }
       }
     },
     "catalog": {
@@ -75,5 +74,12 @@
   "window": {
     "width": 280,
     "height": 420
+  },
+  "shots": {
+    "locales": ["en", "zh"],
+    "themes": ["dark", "light"],
+    "frames": [
+      { "id": "main", "caption": { "default": "The world, at a glance", "zh": "世界时间,一目了然" } }
+    ]
   }
 }

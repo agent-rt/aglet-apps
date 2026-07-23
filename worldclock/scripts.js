@@ -110,48 +110,60 @@ export default (aglet) => {
     ];
     let order = 0;
     for (const d of defs) {
-      const cat = byTz[d.tz] || { code: "LOC" };
-      try { aglet.data.upsert("cities", "tz", { tz: d.tz, name: nameOf(d.tz), code: cat.code, menubar: d.menubar, order: order++ }); } catch (_e) {}
+      const cat = byTz[d.tz] || { code: "LOC", key: "c_local" };
+      // 存**城市身份 key**(i18n 键),不存 localized name —— 名字渲染时 t(item.key) 本地化。
+      try { aglet.data.upsert("cities", "tz", { tz: d.tz, key: cat.key, code: cat.code, menubar: d.menubar, order: order++ }); } catch (_e) {}
     }
   };
 
-  // 刷新所有城市当前时间/日期/昼夜/时差/本地化名 + 重算菜单栏文本。
-  let lastLocaleFp = null;
-  const refresh = () => {
-    // 语言变了(本地名指纹变)→ 重 seed catalog 名字跟随语言。城市名逐行在下面重写。
-    const fp = nameOf("");
-    if (fp !== lastLocaleFp) { seedCatalog(); lastLocaleFp = fp; }
+  // 慢变派生(写 DB;seed + onEnter + 语言变时跑)。每城:GMT 偏移(给 render-time
+  // now({offset}) 算时区时间/日期)、昼夜图标、相对时差标签、12/24h 标志、菜单栏星标。
+  // **不写 time/date** —— 那俩是 render-time:ui.tsx 用 now({offset:item.gmtoff,format}) 渲染时
+  // 才算,不入库、不逐拍刷(根治「时间存 DB + 10s churn」;localized/formatted 值不当数据存)。
+  const refreshData = () => {
     const hour12 = !on("hour24");
     const nowMs = Date.now();
     const localOff = cityInfo("", nowMs).gmtoff;
-    const cities = listCities();
-    const mb = [];
-    for (const it of cities) {
+    for (const it of listCities()) {
       const r = rowOf(it);
-      const t = timeFmt(r.tz, hour12);
-      const d = dateFmt(r.tz);
       const info = cityInfo(r.tz, nowMs);
       const dn = dayNight(info.hour);
       const diff = diffLabel(info.gmtoff, localOff);
-      // 派生展示字段全走数据绑定(icon={item.x}),避开 JSX 条件守卫在 native 的假绿坑。
-      const star = r.menubar ? "star-fill" : "star";
-      // 主视图副标题:日期 · 时差(本地无时差只显日期)。
-      const sub = diff ? (d + "  ·  " + diff) : d;
       try {
         aglet.data.update("cities", it.id, {
-          name: nameOf(r.tz), time: t, date: d, star: star,
-          dn: dn.icon, dnColor: dn.color, diff: diff, sub: sub,
+          gmtoff: info.gmtoff || 0,
+          dn: dn.icon, dnColor: dn.color,
+          diffLabel: diff ? ("  ·  " + diff) : "",
+          h12: hour12,
+          star: r.menubar ? "star-fill" : "star",
         });
       } catch (_e) {}
-      if (r.menubar) mb.push(nameOf(r.tz) + " " + t);
     }
-    aglet.setState({ menubarText: mb.length ? mb.join("  ") : "" });
   };
+
+  // 活钟(setState,**非 DB**):逐拍刷让分钟跳。① 菜单栏文本(勾选城市=本地化名+时间,tray 无法
+  // render-time 故仍算)② _tick 触发 popover 重渲 → render-time now({offset}) 重烘时间/日期。零 DB 写。
+  const tick = () => {
+    const hour12 = !on("hour24");
+    const nowMs = Date.now();
+    const mb = [];
+    for (const it of listCities()) {
+      const r = rowOf(it);
+      if (r.menubar) mb.push(nameOf(r.tz) + " " + timeFmt(r.tz, hour12));
+    }
+    aglet.setState({ menubarText: mb.length ? mb.join("  ") : "", _tick: nowMs });
+  };
+
+  const refresh = () => { seedCatalog(); refreshData(); tick(); };
 
   seedCatalog();
   seedDefaultCities();
-  refresh();
-  setInterval(refresh, 10000);
+  refreshData();
+  tick();
+  setInterval(tick, 10000); // 活钟:setState 触发重渲(不写 DB)
+  // 语言变(set_locale)→ 重算菜单栏名(nameOf)+ 慢变数据;render-time 名(t(key))/日期(now)
+  // 自动随 /t 重烘,无需数据重刷。
+  try { aglet.subscribe("/t", function () { seedCatalog(); refreshData(); tick(); }); } catch (_e) {}
 
   return {
     refresh,
@@ -171,7 +183,7 @@ export default (aglet) => {
       if (!cat) return;
       const order = listCities().length;
       try {
-        aglet.data.upsert("cities", "tz", { tz: cat.tz, name: nameOf(cat.tz), code: cat.code, menubar: false, order: order });
+        aglet.data.upsert("cities", "tz", { tz: cat.tz, key: cat.key, code: cat.code, menubar: false, order: order });
       } catch (_e) {}
       aglet.setStateAt("/state/_ui/drawers/add", false);
       aglet.setStateAt("/state/draft/tz", "");
