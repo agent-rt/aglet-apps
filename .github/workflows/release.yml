@@ -1,0 +1,90 @@
+name: Release (batch)
+
+# 一次发布**所有 version 变化的 app** —— 免去逐个打 tag / 逐个 PR / 逐个手动 merge。
+# 痛点(每次发版都踩):per-app publish.yml = N tag + N run + N PR,还撞 GitHub「一次 >3 tag
+# 不触发」「concurrency 顶掉中间排队 run」。本 workflow 把整批收敛成【一个】registry PR。
+#
+# 流程:
+#   1. 自动检测:比对各 app manifest.version vs registry 当前 latest,不同(或未发布)即入队;
+#      也可用 inputs.apps 手动指定。
+#   2. 逐个【内联 validate】(C)+ `aglet publish --no-git`(只写 meta+assets 进 registry clone)。
+#   3. 汇成一个分支 + 一个 commit + **一个 PR** 到 aglet-dev/registry。
+#   4. 人工 merge 那一个 PR → regenerate-indexes 重建 index → done。
+#
+# 内联 validate 让本 workflow 成为校验门,不再依赖 registry 侧偶发不触发的 validate-pr。
+# 单 app / 老流程仍可用 publish.yml(tag `<id>-v<ver>`)。
+
+on:
+  workflow_dispatch:
+    inputs:
+      apps:
+        description: 'app ids 空格分隔(留空 = 自动检测 version 变化的)'
+        required: false
+
+# 与 publish.yml 同组串行,防两条一起推 registry 撞车。
+concurrency:
+  group: registry-publish
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    name: Release changed apps
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install aglet (from tap)
+        run: |
+          brew tap aglet-dev/tap
+          brew install aglet-dev/tap/aglet
+
+      - name: Detect · validate · publish → one PR
+        env:
+          GH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh auth setup-git
+
+          # ── 1. 决定要发哪些 app ────────────────────────────────────────────
+          if [ -n "${{ github.event.inputs.apps }}" ]; then
+            APPS="${{ github.event.inputs.apps }}"
+          else
+            IDX=$(curl -fsS "https://registry.aglet.dev/aglets/index.json" || echo '{}')
+            APPS=""
+            for f in */aglet.json; do
+              app=$(dirname "$f")
+              # 内部工具不发布(合成模板,非用户小工具)。
+              case "$app" in shots-studio|icon-studio) continue;; esac
+              mv=$(jq -r '.version' "$f")
+              rv=$(echo "$IDX" | jq -r --arg a "$app" '((.aglets // .)[]?) | select(.id==$a) | .latest' | head -1)
+              if [ "$mv" != "$rv" ]; then APPS="$APPS $app"; fi
+            done
+          fi
+          APPS=$(echo $APPS | xargs)
+          if [ -z "$APPS" ]; then echo "✓ 无 version 变化的 app,无需发布"; exit 0; fi
+          echo "要发布: $APPS"
+
+          # ── 2. clone registry(publish --no-git 只写这里)──────────────────
+          REG="$RUNNER_TEMP/registry"
+          git clone "https://github.com/aglet-dev/registry.git" "$REG"
+          BR="release-${{ github.run_id }}"
+          git -C "$REG" checkout -b "$BR"
+
+          # ── 3. 逐个内联 validate(C)+ publish(写 meta+assets)───────────────
+          for app in $APPS; do
+            echo "──────── $app ────────"
+            aglet validate "$app/aglet.json"
+            AGLET_REGISTRY_DIR="$REG" aglet publish "$app/aglet.json" --no-git
+          done
+
+          # ── 4. 一个 commit + 一个 PR(index.json 不进 PR,post-merge 由 regenerate-indexes 重建)──
+          git -C "$REG" add -A
+          git -C "$REG" -c user.name=aglet-dev-bot -c user.email=bot@aglet.dev \
+            commit -m "release: $APPS"
+          git -C "$REG" push -u origin "$BR"
+          gh pr create --repo aglet-dev/registry --base main --head "$BR" \
+            --title "release: $APPS" \
+            --body "批量发布(自动检测 version 变化,已内联 aglet validate)。apps: $APPS"
