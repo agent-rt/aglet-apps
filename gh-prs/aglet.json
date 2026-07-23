@@ -11,8 +11,8 @@
     "ja": "レビュー待ち + 自分の open PR。`gh` CLI を自動検出;なければ GitHub トークンで接続。"
   },
   "docs": "# GitHub PR 看板\n\nReview 队列 + 我的 open PR,只读看板。\n\n## 连接(自动探测,开箱即用)\n\n1. **`gh` CLI**:已装且 `gh auth login` 过 → 自动用它,零配置(开发者首选)。\n2. **GitHub token**:没有 gh CLI → 登录门里贴一个 PAT(去 https://github.com/settings/tokens 建,勾 `repo` scope)→ 走 GitHub REST API 直连。token 存平台 Keychain(secrets)。\n\n(OAuth 连接待官方 client_id;见 docs/OAUTH.md。)\n\n## 数据来源\n\n后台 job(每 15 分钟 + 开窗即刷)两条查询:\n\n```\nis:pr is:open review-requested:@me   → reviewed_by_me\nis:pr is:open author:@me             → authored_by_me\n```\n\n按 `pr_id`(owner/repo#number)upsert 进 `prs`;本轮未命中(已关/合)自动删。同 PR 命中两条 → merge 旗标。\n\n## Tabs\n\n- **Review**:被 request review 的 open PR\n- **我的**:我 author 的 open PR\n- **全部**:所有 open PR\n\n## 只读\n\nAgent 写库,用户浏览 + 跳 GitHub。\n",
-  "version": "0.1.2",
-  "min_runtime": "0.1.7",
+  "version": "0.1.3",
+  "min_runtime": "0.1.8",
   "license": "MIT",
   "renderer": "auto",
   "author": "aglet-dev",

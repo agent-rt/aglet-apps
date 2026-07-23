@@ -13,8 +13,8 @@
     "ja": "RSSHub から 36Kr のホットリストと速報を表示します。"
   },
   "docs": "# 36Kr\n\n36氪阅读小工具。后台 job 从 RSSHub 拉取两个 feed：\n\n- `https://rsshub.rssforever.com/36kr/hot-list` → 热榜\n- `https://rsshub.rssforever.com/36kr/newsflashes` → 快讯\n\n## Tabs\n\n- **热榜**：36氪 24 小时热榜，适合浏览长文和综合热点。\n- **快讯**：36氪实时快讯，按发布时间倒序。\n\n## XML\n\n使用 `xml` wasm plugin 的 `xml.rss` 动作解析 RSS/Atom；开发时请 link `xml` 插件。\n",
-  "version": "0.1.1",
-  "min_runtime": "0.1.7",
+  "version": "0.1.2",
+  "min_runtime": "0.1.8",
   "license": "MIT",
   "renderer": "auto",
   "author": "aglet-dev",

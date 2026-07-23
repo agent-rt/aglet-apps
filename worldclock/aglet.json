@@ -10,9 +10,9 @@
     "zh": "菜单栏世界时钟。可新建/删除城市，并勾选要在菜单栏显示的城市。",
     "ja": "メニューバーの世界時計。都市の追加・削除、メニューバーに表示する都市の選択ができます。"
   },
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
-  "min_runtime": "0.1.7",
+  "min_runtime": "0.1.8",
   "renderer": "auto",
   "permissions": [
     "data:read",
