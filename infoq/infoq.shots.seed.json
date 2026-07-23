@@ -1,0 +1,92 @@
+[
+  {
+    "collection": "recommended_articles",
+    "data": {
+      "guid": "infoq-cn-2026-0722-zig-runtime",
+      "title": "从 Electron 到原生：一个跨平台 Mini-App 运行时的架构演进",
+      "url": "https://www.infoq.cn/article/cross-platform-native-runtime",
+      "summary": "作者复盘了如何用单一中间表示(IR)同时驱动 SwiftUI 与 WinUI3 渲染，彻底摆脱 WebView 外壳，把内存占用降到 Electron 方案的十分之一。",
+      "author": "凌桓",
+      "category": "架构",
+      "categories": "架构 / 客户端",
+      "published_at": "@iso:-5m",
+      "published_ts": "@ms:-5m",
+      "source": "InfoQ Recommend"
+    }
+  },
+  {
+    "collection": "recommended_articles",
+    "data": {
+      "guid": "infoq-cn-2026-0722-llm-agent-eval",
+      "title": "大模型 Agent 上线之后：可观测性与线上评测体系怎么建",
+      "url": "https://www.infoq.cn/article/llm-agent-observability",
+      "summary": "面对不确定的推理链路，团队引入了轨迹回放、自动化打分与人审抽样三层评测，把线上回归从「凭感觉」变成可量化的指标。",
+      "author": "周岚",
+      "category": "AI",
+      "categories": "AI / 大模型",
+      "published_at": "@iso:-145m",
+      "published_ts": "@ms:-145m",
+      "source": "InfoQ Recommend"
+    }
+  },
+  {
+    "collection": "recommended_articles",
+    "data": {
+      "guid": "infoq-cn-2026-0721-sqlite-edge",
+      "title": "为什么越来越多团队把 SQLite 搬到了边缘",
+      "url": "https://www.infoq.cn/article/sqlite-at-the-edge",
+      "summary": "从嵌入式到 Serverless，SQLite 凭借零运维和单文件特性成为边缘数据层的默认选择，本文剖析 WAL 与复制方案的取舍。",
+      "author": "陈默",
+      "category": "数据库",
+      "categories": "数据库 / 云原生",
+      "published_at": "@iso:-1130m",
+      "published_ts": "@ms:-1130m",
+      "source": "InfoQ Recommend"
+    }
+  },
+  {
+    "collection": "recommended_articles",
+    "data": {
+      "guid": "infoq-cn-2026-0721-rust-2024",
+      "title": "Rust 2024 Edition 实战:异步闭包与所有权模型的那些坑",
+      "url": "https://www.infoq.cn/article/rust-2024-edition-in-practice",
+      "summary": "新版本默认启用更严格的捕获模型，作者结合真实项目讲清哪些改动会静默改变行为，以及迁移时最容易踩的三个雷区。",
+      "author": "李维",
+      "category": "编程语言",
+      "categories": "编程语言 / Rust",
+      "published_at": "@iso:-1395m",
+      "published_ts": "@ms:-1395m",
+      "source": "InfoQ Recommend"
+    }
+  },
+  {
+    "collection": "recommended_articles",
+    "data": {
+      "guid": "infoq-cn-2026-0720-monolith-first",
+      "title": "小团队反微服务:先把单体做好再谈拆分",
+      "url": "https://www.infoq.cn/article/monolith-first-for-small-teams",
+      "summary": "在产品尚未验证市场之前，分布式带来的复杂度往往得不偿失。作者用一次失败的拆分复盘，给出模块化单体的落地路径。",
+      "author": "吴桐",
+      "category": "架构",
+      "categories": "架构 / 微服务",
+      "published_at": "@iso:-2490m",
+      "published_ts": "@ms:-2490m",
+      "source": "InfoQ Recommend"
+    }
+  },
+  {
+    "collection": "recommended_articles",
+    "data": {
+      "guid": "infoq-cn-2026-0720-devex-metrics",
+      "title": "研发效能度量:别再用代码行数考核工程师",
+      "url": "https://www.infoq.cn/article/engineering-productivity-metrics",
+      "summary": "从 DORA 到 SPACE，本文梳理了主流效能框架的适用边界，并强调度量应服务于团队改进而非绩效排名。",
+      "author": "韩雪",
+      "category": "研发效能",
+      "categories": "研发效能 / 团队",
+      "published_at": "@iso:-2935m",
+      "published_ts": "@ms:-2935m",
+      "source": "InfoQ Recommend"
+    }
+  }
+]

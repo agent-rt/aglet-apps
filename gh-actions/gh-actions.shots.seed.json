@@ -1,0 +1,329 @@
+[
+  {
+    "collection": "repos",
+    "data": {
+      "repo": "acme/web",
+      "owner": "acme",
+      "name_short": "web",
+      "default_branch": "main",
+      "wf_count": 4,
+      "last_status": "✅",
+      "last_run_at": "@iso:-6m",
+      "actions_url": "https://github.com/acme/web/actions"
+    }
+  },
+  {
+    "collection": "repos",
+    "data": {
+      "repo": "acme/api",
+      "owner": "acme",
+      "name_short": "api",
+      "default_branch": "main",
+      "wf_count": 3,
+      "last_status": "❌",
+      "last_run_at": "@iso:-34m",
+      "actions_url": "https://github.com/acme/api/actions"
+    }
+  },
+  {
+    "collection": "repos",
+    "data": {
+      "repo": "acme/mobile",
+      "owner": "acme",
+      "name_short": "mobile",
+      "default_branch": "main",
+      "wf_count": 2,
+      "last_status": "🟡",
+      "last_run_at": "@iso:-41m",
+      "actions_url": "https://github.com/acme/mobile/actions"
+    }
+  },
+  {
+    "collection": "repos",
+    "data": {
+      "repo": "octo-labs/design-system",
+      "owner": "octo-labs",
+      "name_short": "design-system",
+      "default_branch": "main",
+      "wf_count": 2,
+      "last_status": "✅",
+      "last_run_at": "@iso:-224m",
+      "actions_url": "https://github.com/octo-labs/design-system/actions"
+    }
+  },
+  {
+    "collection": "repos",
+    "data": {
+      "repo": "octo-labs/infra",
+      "owner": "octo-labs",
+      "name_short": "infra",
+      "default_branch": "main",
+      "wf_count": 3,
+      "last_status": "⏳",
+      "last_run_at": "@iso:-5m",
+      "actions_url": "https://github.com/octo-labs/infra/actions"
+    }
+  },
+  {
+    "collection": "workflows",
+    "data": {
+      "wf_id": "9001",
+      "repo": "acme/web",
+      "name": "CI",
+      "state": "active",
+      "default_branch": "main",
+      "path": ".github/workflows/ci.yml",
+      "html_url": "https://github.com/acme/web/actions/workflows/ci.yml"
+    }
+  },
+  {
+    "collection": "workflows",
+    "data": {
+      "wf_id": "9002",
+      "repo": "acme/web",
+      "name": "Deploy",
+      "state": "active",
+      "default_branch": "main",
+      "path": ".github/workflows/deploy.yml",
+      "html_url": "https://github.com/acme/web/actions/workflows/deploy.yml"
+    }
+  },
+  {
+    "collection": "workflows",
+    "data": {
+      "wf_id": "9003",
+      "repo": "acme/web",
+      "name": "Lint",
+      "state": "active",
+      "default_branch": "main",
+      "path": ".github/workflows/lint.yml",
+      "html_url": "https://github.com/acme/web/actions/workflows/lint.yml"
+    }
+  },
+  {
+    "collection": "workflows",
+    "data": {
+      "wf_id": "9101",
+      "repo": "acme/api",
+      "name": "CI",
+      "state": "active",
+      "default_branch": "main",
+      "path": ".github/workflows/ci.yml",
+      "html_url": "https://github.com/acme/api/actions/workflows/ci.yml"
+    }
+  },
+  {
+    "collection": "workflows",
+    "data": {
+      "wf_id": "9102",
+      "repo": "acme/api",
+      "name": "Release",
+      "state": "active",
+      "default_branch": "main",
+      "path": ".github/workflows/release.yml",
+      "html_url": "https://github.com/acme/api/actions/workflows/release.yml"
+    }
+  },
+  {
+    "collection": "workflows",
+    "data": {
+      "wf_id": "9301",
+      "repo": "octo-labs/infra",
+      "name": "Terraform Plan",
+      "state": "active",
+      "default_branch": "main",
+      "path": ".github/workflows/terraform.yml",
+      "html_url": "https://github.com/octo-labs/infra/actions/workflows/terraform.yml"
+    }
+  },
+  {
+    "collection": "runs",
+    "data": {
+      "run_id": "70000901",
+      "repo": "octo-labs/infra",
+      "workflow_name": "Terraform Plan",
+      "status": "queued",
+      "conclusion": "",
+      "branch": "main",
+      "event": "pull_request",
+      "actor": "erin",
+      "run_number": 612,
+      "html_url": "https://github.com/octo-labs/infra/actions/runs/70000901",
+      "updated_at": "@iso:-5m",
+      "can_rerun": false,
+      "can_cancel": true,
+      "state_emoji": "⏳"
+    }
+  },
+  {
+    "collection": "runs",
+    "data": {
+      "run_id": "70000801",
+      "repo": "acme/web",
+      "workflow_name": "CI",
+      "status": "completed",
+      "conclusion": "success",
+      "branch": "main",
+      "event": "push",
+      "actor": "alice",
+      "run_number": 482,
+      "html_url": "https://github.com/acme/web/actions/runs/70000801",
+      "updated_at": "@iso:-6m",
+      "can_rerun": true,
+      "can_cancel": false,
+      "state_emoji": "✅"
+    }
+  },
+  {
+    "collection": "runs",
+    "data": {
+      "run_id": "70000802",
+      "repo": "acme/web",
+      "workflow_name": "Deploy",
+      "status": "in_progress",
+      "conclusion": "",
+      "branch": "main",
+      "event": "workflow_dispatch",
+      "actor": "alice",
+      "run_number": 77,
+      "html_url": "https://github.com/acme/web/actions/runs/70000802",
+      "updated_at": "@iso:-8m",
+      "can_rerun": false,
+      "can_cancel": true,
+      "state_emoji": "🟡"
+    }
+  },
+  {
+    "collection": "runs",
+    "data": {
+      "run_id": "70000701",
+      "repo": "acme/api",
+      "workflow_name": "CI",
+      "status": "completed",
+      "conclusion": "failure",
+      "branch": "fix/token-refresh",
+      "event": "pull_request",
+      "actor": "bob",
+      "run_number": 1203,
+      "html_url": "https://github.com/acme/api/actions/runs/70000701",
+      "updated_at": "@iso:-34m",
+      "can_rerun": true,
+      "can_cancel": false,
+      "state_emoji": "❌"
+    }
+  },
+  {
+    "collection": "runs",
+    "data": {
+      "run_id": "70000601",
+      "repo": "acme/mobile",
+      "workflow_name": "E2E Tests",
+      "status": "in_progress",
+      "conclusion": "",
+      "branch": "main",
+      "event": "schedule",
+      "actor": "ci-bot",
+      "run_number": 310,
+      "html_url": "https://github.com/acme/mobile/actions/runs/70000601",
+      "updated_at": "@iso:-41m",
+      "can_rerun": false,
+      "can_cancel": true,
+      "state_emoji": "🟡"
+    }
+  },
+  {
+    "collection": "runs",
+    "data": {
+      "run_id": "70000501",
+      "repo": "octo-labs/design-system",
+      "workflow_name": "CI",
+      "status": "completed",
+      "conclusion": "success",
+      "branch": "main",
+      "event": "push",
+      "actor": "dan",
+      "run_number": 221,
+      "html_url": "https://github.com/octo-labs/design-system/actions/runs/70000501",
+      "updated_at": "@iso:-224m",
+      "can_rerun": true,
+      "can_cancel": false,
+      "state_emoji": "✅"
+    }
+  },
+  {
+    "collection": "runs",
+    "data": {
+      "run_id": "70000702",
+      "repo": "acme/api",
+      "workflow_name": "Release",
+      "status": "completed",
+      "conclusion": "success",
+      "branch": "main",
+      "event": "push",
+      "actor": "bob",
+      "run_number": 56,
+      "html_url": "https://github.com/acme/api/actions/runs/70000702",
+      "updated_at": "@iso:-136m",
+      "can_rerun": true,
+      "can_cancel": false,
+      "state_emoji": "✅"
+    }
+  },
+  {
+    "collection": "runs",
+    "data": {
+      "run_id": "70000502",
+      "repo": "octo-labs/design-system",
+      "workflow_name": "Publish",
+      "status": "completed",
+      "conclusion": "cancelled",
+      "branch": "main",
+      "event": "workflow_dispatch",
+      "actor": "dan",
+      "run_number": 40,
+      "html_url": "https://github.com/octo-labs/design-system/actions/runs/70000502",
+      "updated_at": "@iso:-899m",
+      "can_rerun": true,
+      "can_cancel": false,
+      "state_emoji": "⏹"
+    }
+  },
+  {
+    "collection": "runs",
+    "data": {
+      "run_id": "70000603",
+      "repo": "acme/mobile",
+      "workflow_name": "Lint",
+      "status": "completed",
+      "conclusion": "success",
+      "branch": "feature/onboarding",
+      "event": "pull_request",
+      "actor": "carol",
+      "run_number": 944,
+      "html_url": "https://github.com/acme/mobile/actions/runs/70000603",
+      "updated_at": "@iso:-692m",
+      "can_rerun": true,
+      "can_cancel": false,
+      "state_emoji": "✅"
+    }
+  },
+  {
+    "collection": "runs",
+    "data": {
+      "run_id": "70000902",
+      "repo": "octo-labs/infra",
+      "workflow_name": "CodeQL",
+      "status": "completed",
+      "conclusion": "failure",
+      "branch": "main",
+      "event": "schedule",
+      "actor": "github-actions[bot]",
+      "run_number": 133,
+      "html_url": "https://github.com/octo-labs/infra/actions/runs/70000902",
+      "updated_at": "@iso:-1846m",
+      "can_rerun": true,
+      "can_cancel": false,
+      "state_emoji": "❌"
+    }
+  }
+]

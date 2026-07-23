@@ -70,5 +70,13 @@
   },
   "state": {
     "sync_error": ""
+  },
+  "shots": {
+    "seed": "infoq.shots.seed.json",
+    "locales": ["en", "zh"],
+    "themes": ["dark", "light"],
+    "frames": [
+      { "id": "main", "caption": { "default": "InfoQ Chinese, natively yours", "zh": "InfoQ 中文，原生阅读体验" } }
+    ]
   }
 }

@@ -81,5 +81,14 @@
   },
   "state": {
     "sync_error": ""
+  },
+  "shots": {
+    "seed": "sspai.shots.seed.json",
+    "locales": ["en", "zh"],
+    "themes": ["dark", "light"],
+    "frames": [
+      { "id": "index", "caption": { "default": "Read SSPAI, natively", "zh": "原生阅读少数派" } },
+      { "id": "matrix", "state": { "/state/_ui/tabs/main": "matrix" }, "caption": { "default": "Dive into Matrix stories", "zh": "沉浸阅读 Matrix 专栏" } }
+    ]
   }
 }

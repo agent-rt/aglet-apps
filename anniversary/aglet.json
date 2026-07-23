@@ -1,6 +1,10 @@
 {
   "id": "anniversary",
-  "name": { "default": "Anniversary", "zh": "纪念日", "ja": "記念日" },
+  "name": {
+    "default": "Anniversary",
+    "zh": "纪念日",
+    "ja": "記念日"
+  },
   "description": {
     "default": "Track anniversaries (birthdays, milestones) with a live countdown to the next occurrence.",
     "zh": "记录纪念日（生日、里程碑），实时倒数到下一次。",
@@ -13,28 +17,91 @@
   "author": "aglet-dev",
   "default_locale": "en",
   "category": "utilities",
-  "keywords": ["anniversary", "birthday", "countdown", "reminder"],
-  "permissions": ["data:read", "data:write"],
-  "window": { "style": "phone", "width": 400, "height": 720 },
+  "keywords": [
+    "anniversary",
+    "birthday",
+    "countdown",
+    "reminder"
+  ],
+  "permissions": [
+    "data:read",
+    "data:write"
+  ],
+  "window": {
+    "style": "phone",
+    "width": 400,
+    "height": 720
+  },
   "collections": {
     "events": {
       "schema": {
-        "title": { "type": "string" },
-        "date": { "type": "string" },
-        "kind": { "type": "string" },
-        "calendar": { "type": "string" },
-        "note": { "type": "string" },
-        "recurring": { "type": "boolean" },
-        "created_at": { "type": "string" },
-        "days_until": { "type": "number" },
-        "next_at": { "type": "string" },
-        "milestone": { "type": "string" },
-        "age_label": { "type": "string" },
-        "which": { "type": "string" },
-        "secondary": { "type": "string" },
-        "cal_badge": { "type": "string" }
+        "title": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "calendar": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        },
+        "recurring": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "days_until": {
+          "type": "number"
+        },
+        "next_at": {
+          "type": "string"
+        },
+        "milestone": {
+          "type": "string"
+        },
+        "age_label": {
+          "type": "string"
+        },
+        "which": {
+          "type": "string"
+        },
+        "secondary": {
+          "type": "string"
+        },
+        "cal_badge": {
+          "type": "string"
+        }
       },
-      "indexes": ["days_until", "kind"]
+      "indexes": [
+        "days_until",
+        "kind"
+      ]
     }
+  },
+  "shots": {
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "frames": [
+      {
+        "id": "main",
+        "caption": {
+          "default": "Never miss a moment that matters",
+          "zh": "重要的日子,不再错过"
+        }
+      }
+    ],
+    "seed": "anniversary.shots.seed.json"
   }
 }

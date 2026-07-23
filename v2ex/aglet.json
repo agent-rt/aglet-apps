@@ -83,5 +83,14 @@
   },
   "state": {
     "sync_error": ""
+  },
+  "shots": {
+    "seed": "v2ex.shots.seed.json",
+    "locales": ["en", "zh"],
+    "themes": ["dark", "light"],
+    "frames": [
+      { "id": "latest", "state": { "/state/_ui/tabs/main": "latest" }, "caption": { "default": "Latest topics from V2EX", "zh": "V2EX 最新主题" } },
+      { "id": "hot", "state": { "/state/_ui/tabs/main": "hot" }, "caption": { "default": "What's hot right now", "zh": "当前最热讨论" } }
+    ]
   }
 }

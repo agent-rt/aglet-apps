@@ -41,5 +41,24 @@
     "Enter": "toggle",
     " ": "toggle",
     "Escape": "reset"
+  },
+  "shots": {
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "frames": [
+      {
+        "id": "main",
+        "caption": {
+          "default": "Focus, one timer at a time",
+          "zh": "专注,从一个计时开始"
+        }
+      }
+    ]
   }
 }

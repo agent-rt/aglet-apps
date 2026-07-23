@@ -149,5 +149,14 @@
         ]
       }
     ]
+  },
+  "shots": {
+    "seed": "gh-actions.shots.seed.json",
+    "locales": ["en", "zh"],
+    "themes": ["dark", "light"],
+    "frames": [
+      { "id": "repos", "caption": { "default": "Every repo's CI at a glance", "zh": "一眼看清每个仓库的 CI" } },
+      { "id": "runs", "state": { "/state/_ui/tabs/main": "runs" }, "caption": { "default": "Re-run or cancel from anywhere", "zh": "随时重跑或取消运行" } }
+    ]
   }
 }

@@ -1,0 +1,86 @@
+[
+  {
+    "collection": "latest_topics",
+    "data": {
+      "guid": "https://www.v2ex.com/t/1102301",
+      "title": "分享一下我用 Rust 重写公司核心结算服务后的性能对比",
+      "url": "https://www.v2ex.com/t/1102301",
+      "summary": "从 Node.js 迁到 Rust，P99 从 210ms 降到 34ms，内存占用少了三分之二。踩了不少 async 生命周期的坑，贴几段对照代码。",
+      "author": "rustacean_lin",
+      "node": "程序员",
+      "published_at": "@iso:-5m",
+      "published_ts": "@ms:-5m",
+      "source": "V2EX Latest"
+    }
+  },
+  {
+    "collection": "latest_topics",
+    "data": {
+      "guid": "https://www.v2ex.com/t/1102288",
+      "title": "M4 MacBook Pro 到手，聊聊从 Intel 机器迁移过来的真实体验",
+      "url": "https://www.v2ex.com/t/1102288",
+      "summary": "续航夸张，编译 Zig 项目速度接近三倍。Docker 有几个 x86 镜像还得跑 Rosetta，记录一下踩坑和替代方案。",
+      "author": "applefan_92",
+      "node": "Apple",
+      "published_at": "@iso:-92m",
+      "published_ts": "@ms:-92m",
+      "source": "V2EX Latest"
+    }
+  },
+  {
+    "collection": "latest_topics",
+    "data": {
+      "guid": "https://www.v2ex.com/t/1102260",
+      "title": "请教各位，自建 NAS 存代码和照片，用 ZFS 还是 Btrfs？",
+      "url": "https://www.v2ex.com/t/1102260",
+      "summary": "四盘位准备组 RAID，主要跑家庭相册和 Git 仓库备份。纠结文件系统的快照与纠错，想听听长期使用者的经验。",
+      "author": "homelab_diy",
+      "node": "问与答",
+      "published_at": "@iso:-647m",
+      "published_ts": "@ms:-647m",
+      "source": "V2EX Latest"
+    }
+  },
+  {
+    "collection": "hot_topics",
+    "data": {
+      "guid": "https://www.v2ex.com/t/1101940",
+      "title": "工作五年，第一次遇到愿意为技术债买单的老板",
+      "url": "https://www.v2ex.com/t/1101940",
+      "summary": "排期里专门留了两周还债，重构了三年没人敢碰的老模块。上线后线上报错少了一大半，团队士气也回来了。",
+      "author": "backend_zhou",
+      "node": "职场",
+      "published_at": "@iso:-72m",
+      "published_ts": "@ms:-72m",
+      "source": "V2EX Hot"
+    }
+  },
+  {
+    "collection": "hot_topics",
+    "data": {
+      "guid": "https://www.v2ex.com/t/1101802",
+      "title": "独立开发的第一个 App 今天上架 App Store，记录一下这一年",
+      "url": "https://www.v2ex.com/t/1101802",
+      "summary": "一个人写完前后端加设计，审核被拒了三次终于过了。首日下载不多但很满足，分享踩过的坑和后续打算。",
+      "author": "solo_maker",
+      "node": "分享创造",
+      "published_at": "@iso:-837m",
+      "published_ts": "@ms:-837m",
+      "source": "V2EX Hot"
+    }
+  },
+  {
+    "collection": "hot_topics",
+    "data": {
+      "guid": "https://www.v2ex.com/t/1101655",
+      "title": "发现一个非常好用的开源 SQLite 图形客户端，比付费的还顺手",
+      "url": "https://www.v2ex.com/t/1101655",
+      "summary": "跨平台、界面干净，支持 WAL 模式和实时查询，还能直接看索引命中。日常调试本地库真香，推荐给同样用 SQLite 的朋友。",
+      "author": "opensource_wang",
+      "node": "分享发现",
+      "published_at": "@iso:-1157m",
+      "published_ts": "@ms:-1157m",
+      "source": "V2EX Hot"
+    }
+  }
+]

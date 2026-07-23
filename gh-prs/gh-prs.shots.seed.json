@@ -1,0 +1,128 @@
+[
+  {
+    "collection": "prs",
+    "data": {
+      "pr_id": "octo-labs/runtime#482",
+      "number": 482,
+      "title": "Fix flaky timer test in scheduler",
+      "url": "https://github.com/octo-labs/runtime/pull/482",
+      "repo": "octo-labs/runtime",
+      "author": "dmitri-k",
+      "state": "open",
+      "is_draft": false,
+      "reviewed_by_me": true,
+      "authored_by_me": false,
+      "comments_count": 4,
+      "labels": "bug, needs-review, ci: passing",
+      "updated_at": "@iso:-44m"
+    }
+  },
+  {
+    "collection": "prs",
+    "data": {
+      "pr_id": "octo-labs/desktop#1207",
+      "number": 1207,
+      "title": "Add dark mode to settings panel",
+      "url": "https://github.com/octo-labs/desktop/pull/1207",
+      "repo": "octo-labs/desktop",
+      "author": "sara-chen",
+      "state": "open",
+      "is_draft": false,
+      "reviewed_by_me": true,
+      "authored_by_me": false,
+      "comments_count": 12,
+      "labels": "feature, ui, changes-requested",
+      "updated_at": "@iso:-980m"
+    }
+  },
+  {
+    "collection": "prs",
+    "data": {
+      "pr_id": "octo-labs/api-gateway#77",
+      "number": 77,
+      "title": "Return 429 with Retry-After on rate limit",
+      "url": "https://github.com/octo-labs/api-gateway/pull/77",
+      "repo": "octo-labs/api-gateway",
+      "author": "winston-lee",
+      "state": "open",
+      "is_draft": false,
+      "reviewed_by_me": true,
+      "authored_by_me": false,
+      "comments_count": 2,
+      "labels": "bug, needs-review, ci: passing",
+      "updated_at": "@iso:-1315m"
+    }
+  },
+  {
+    "collection": "prs",
+    "data": {
+      "pr_id": "octo-labs/core#93",
+      "number": 93,
+      "title": "Bump tokio to 1.40 and drop deprecated APIs",
+      "url": "https://github.com/octo-labs/core/pull/93",
+      "repo": "octo-labs/core",
+      "author": "aisha-patel",
+      "state": "open",
+      "is_draft": true,
+      "reviewed_by_me": true,
+      "authored_by_me": false,
+      "comments_count": 0,
+      "labels": "dependencies, ci: pending",
+      "updated_at": "@iso:-2593m"
+    }
+  },
+  {
+    "collection": "prs",
+    "data": {
+      "pr_id": "octo-labs/runtime#488",
+      "number": 488,
+      "title": "Share the WAL handle across the connection pool",
+      "url": "https://github.com/octo-labs/runtime/pull/488",
+      "repo": "octo-labs/runtime",
+      "author": "j-navarro",
+      "state": "open",
+      "is_draft": false,
+      "reviewed_by_me": false,
+      "authored_by_me": true,
+      "comments_count": 6,
+      "labels": "refactor, ci: passing",
+      "updated_at": "@iso:-5m"
+    }
+  },
+  {
+    "collection": "prs",
+    "data": {
+      "pr_id": "octo-labs/desktop#1219",
+      "number": 1219,
+      "title": "Persist window size between launches",
+      "url": "https://github.com/octo-labs/desktop/pull/1219",
+      "repo": "octo-labs/desktop",
+      "author": "j-navarro",
+      "state": "open",
+      "is_draft": false,
+      "reviewed_by_me": false,
+      "authored_by_me": true,
+      "comments_count": 1,
+      "labels": "feature, awaiting-review",
+      "updated_at": "@iso:-757m"
+    }
+  },
+  {
+    "collection": "prs",
+    "data": {
+      "pr_id": "octo-labs/docs#56",
+      "number": 56,
+      "title": "Document the plugin manifest schema",
+      "url": "https://github.com/octo-labs/docs/pull/56",
+      "repo": "octo-labs/docs",
+      "author": "j-navarro",
+      "state": "open",
+      "is_draft": true,
+      "reviewed_by_me": false,
+      "authored_by_me": true,
+      "comments_count": 0,
+      "labels": "docs",
+      "updated_at": "@iso:-3010m"
+    }
+  }
+]

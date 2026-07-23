@@ -1,0 +1,134 @@
+[
+  {
+    "collection": "hot_items",
+    "data": {
+      "guid": "https://36kr.com/p/3210001",
+      "title": "AI 编程助手争夺战:大厂与创业公司谁能定义下一代开发工具",
+      "url": "https://36kr.com/p/3210001",
+      "summary": "从代码补全到全流程 Agent,开发者工具正在被重新定义。头部云厂商与独立创业团队各押注不同技术路线,商业化拐点临近。",
+      "published_at": "@iso:-230m",
+      "published_ts": "@ms:-230m",
+      "source": "36Kr Hot"
+    }
+  },
+  {
+    "collection": "hot_items",
+    "data": {
+      "guid": "https://36kr.com/p/3210002",
+      "title": "国产大模型价格战再起,推理成本一年下降九成",
+      "url": "https://36kr.com/p/3210002",
+      "summary": "厂商密集下调 API 调用价格,B 端客户迁移成本走低。价格战背后是算力优化与开源生态的双重驱动。",
+      "published_at": "@iso:-320m",
+      "published_ts": "@ms:-320m",
+      "source": "36Kr Hot"
+    }
+  },
+  {
+    "collection": "hot_items",
+    "data": {
+      "guid": "https://36kr.com/p/3210003",
+      "title": "新能源车企出海东南亚:本地化建厂与充电网络成新战场",
+      "url": "https://36kr.com/p/3210003",
+      "summary": "泰国、印尼相继落地整车工厂,补能网络布局提速。本地供应链与政策补贴决定谁能站稳第二增长曲线。",
+      "published_at": "@iso:-830m",
+      "published_ts": "@ms:-830m",
+      "source": "36Kr Hot"
+    }
+  },
+  {
+    "collection": "hot_items",
+    "data": {
+      "guid": "https://36kr.com/p/3210004",
+      "title": "具身智能创业热:人形机器人量产元年来了吗",
+      "url": "https://36kr.com/p/3210004",
+      "summary": "多家团队公布量产时间表与工厂订单,零部件国产化率快速提升。距离真正走进车间与家庭仍有硬件与成本鸿沟。",
+      "published_at": "@iso:-950m",
+      "published_ts": "@ms:-950m",
+      "source": "36Kr Hot"
+    }
+  },
+  {
+    "collection": "hot_items",
+    "data": {
+      "guid": "https://36kr.com/p/3210005",
+      "title": "咖啡赛道内卷:9.9 元价格战之后,连锁品牌如何讲新故事",
+      "url": "https://36kr.com/p/3210005",
+      "summary": "低价补贴退潮,门店密度触顶。品牌开始转向供应链、鲜奶产品与出海,寻找价格战之外的第二增长点。",
+      "published_at": "@iso:-1070m",
+      "published_ts": "@ms:-1070m",
+      "source": "36Kr Hot"
+    }
+  },
+  {
+    "collection": "newsflashes",
+    "data": {
+      "guid": "https://36kr.com/newsflashes/3220001",
+      "title": "某头部云厂商宣布下调 GPU 算力租赁价格,最高降幅达 40%",
+      "url": "https://36kr.com/newsflashes/3220001",
+      "summary": "新价格即日生效,覆盖主流推理卡型号,面向中小客户推出按量计费的弹性套餐。",
+      "published_at": "@iso:-5m",
+      "published_ts": "@ms:-5m",
+      "source": "36Kr Newsflashes"
+    }
+  },
+  {
+    "collection": "newsflashes",
+    "data": {
+      "guid": "https://36kr.com/newsflashes/3220002",
+      "title": "国内首个 L4 级自动驾驶出租车商业化牌照落地,试点范围扩大",
+      "url": "https://36kr.com/newsflashes/3220002",
+      "summary": "试点城市新增两地,允许在指定区域内全无人载客运营并收费。",
+      "published_at": "@iso:-30m",
+      "published_ts": "@ms:-30m",
+      "source": "36Kr Newsflashes"
+    }
+  },
+  {
+    "collection": "newsflashes",
+    "data": {
+      "guid": "https://36kr.com/newsflashes/3220003",
+      "title": "某消费电子品牌发布首款 AI 眼镜,售价 1999 元起",
+      "url": "https://36kr.com/newsflashes/3220003",
+      "summary": "支持实时翻译、拍照与语音助手,重量控制在 40 克以内,首批预售当日售罄。",
+      "published_at": "@iso:-60m",
+      "published_ts": "@ms:-60m",
+      "source": "36Kr Newsflashes"
+    }
+  },
+  {
+    "collection": "newsflashes",
+    "data": {
+      "guid": "https://36kr.com/newsflashes/3220004",
+      "title": "工信部:上半年新能源汽车产销量同比增长超三成",
+      "url": "https://36kr.com/newsflashes/3220004",
+      "summary": "新能源渗透率继续攀升,出口成为拉动增长的重要引擎。",
+      "published_at": "@iso:-100m",
+      "published_ts": "@ms:-100m",
+      "source": "36Kr Newsflashes"
+    }
+  },
+  {
+    "collection": "newsflashes",
+    "data": {
+      "guid": "https://36kr.com/newsflashes/3220005",
+      "title": "某生鲜电商完成新一轮融资,估值突破百亿元",
+      "url": "https://36kr.com/newsflashes/3220005",
+      "summary": "本轮融资将用于冷链仓储扩建与下沉市场拓展,投资方包括多家产业资本。",
+      "published_at": "@iso:-140m",
+      "published_ts": "@ms:-140m",
+      "source": "36Kr Newsflashes"
+    }
+  },
+  {
+    "collection": "newsflashes",
+    "data": {
+      "guid": "https://36kr.com/newsflashes/3220006",
+      "title": "开源社区发布新一代向量数据库,支持亿级检索毫秒响应",
+      "url": "https://36kr.com/newsflashes/3220006",
+      "summary": "新版本主打混合检索与低内存占用,已被多家 AI 应用团队用于生产环境。",
+      "published_at": "@iso:-185m",
+      "published_ts": "@ms:-185m",
+      "source": "36Kr Newsflashes"
+    }
+  }
+]

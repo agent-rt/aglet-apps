@@ -79,5 +79,14 @@
   },
   "state": {
     "sync_error": ""
+  },
+  "shots": {
+    "seed": "36kr.shots.seed.json",
+    "locales": ["en", "zh"],
+    "themes": ["dark", "light"],
+    "frames": [
+      { "id": "hot", "caption": { "default": "China tech, ranked by the crowd", "zh": "24 小时科技热榜" } },
+      { "id": "flash", "state": { "/state/_ui/tabs/main": "flash" }, "caption": { "default": "Real-time startup newsflashes", "zh": "实时创投快讯" } }
+    ]
   }
 }

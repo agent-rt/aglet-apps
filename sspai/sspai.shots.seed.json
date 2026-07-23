@@ -1,0 +1,80 @@
+[
+  {
+    "collection": "index_articles",
+    "data": {
+      "guid": "https://sspai.com/post/98001",
+      "title": "2026 年，我把整套笔记系统搬到了本地优先的工具上",
+      "url": "https://sspai.com/post/98001",
+      "summary": "从云端同步迁到本地优先：数据始终在自己手里，离线也能秒开，搜索还更快。分享我这半年踩过的坑与最终选择。",
+      "author": "王隐",
+      "published_at": "@iso:-95m",
+      "published_ts": "@ms:-95m",
+      "source": "SSPAI Index"
+    }
+  },
+  {
+    "collection": "index_articles",
+    "data": {
+      "guid": "https://sspai.com/post/98002",
+      "title": "一把趁手的机械键盘，如何改变了我每天的打字体验",
+      "url": "https://sspai.com/post/98002",
+      "summary": "换轴、改键帽、调 QMK 配列——聊聊一把定制键盘为什么值得折腾，以及手感之外那些容易被忽略的细节。",
+      "author": "Tp",
+      "published_at": "@iso:-1265m",
+      "published_ts": "@ms:-1265m",
+      "source": "SSPAI Index"
+    }
+  },
+  {
+    "collection": "index_articles",
+    "data": {
+      "guid": "https://sspai.com/post/98003",
+      "title": "少数派编辑部：这个月我们都在用的效率 App",
+      "url": "https://sspai.com/post/98003",
+      "summary": "任务管理、稍后读、剪贴板历史……编辑部成员各自安利一款最近离不开的工具，附上真实使用场景。",
+      "author": "少数派编辑部",
+      "published_at": "@iso:-3050m",
+      "published_ts": "@ms:-3050m",
+      "source": "SSPAI Index"
+    }
+  },
+  {
+    "collection": "matrix_articles",
+    "data": {
+      "guid": "https://sspai.com/post/97501",
+      "title": "我的自动化工作流：用快捷指令串起一整天",
+      "url": "https://sspai.com/post/97501",
+      "summary": "从早上的通勤播报到晚上的复盘归档，把重复操作交给快捷指令。分享十几个我天天在跑的自动化流程。",
+      "author": "岚之星",
+      "published_at": "@iso:-5m",
+      "published_ts": "@ms:-5m",
+      "source": "SSPAI Matrix"
+    }
+  },
+  {
+    "collection": "matrix_articles",
+    "data": {
+      "guid": "https://sspai.com/post/97502",
+      "title": "从手机到微单：这一年我的摄影装备与心态变化",
+      "url": "https://sspai.com/post/97502",
+      "summary": "不再追求参数，而是回到「拍到」本身。记录一年里我的器材取舍，以及一台相机怎样重新让我爱上记录生活。",
+      "author": "Kiririn",
+      "published_at": "@iso:-1115m",
+      "published_ts": "@ms:-1115m",
+      "source": "SSPAI Matrix"
+    }
+  },
+  {
+    "collection": "matrix_articles",
+    "data": {
+      "guid": "https://sspai.com/post/97503",
+      "title": "macOS 上那些被长期低估的原生小功能",
+      "url": "https://sspai.com/post/97503",
+      "summary": "不装第三方也能很顺手：访达标签、聚焦运算、文本替换、屏幕取色……盘点那些系统自带却常被忽略的实用点。",
+      "author": "白麓",
+      "published_at": "@iso:-2890m",
+      "published_ts": "@ms:-2890m",
+      "source": "SSPAI Matrix"
+    }
+  }
+]

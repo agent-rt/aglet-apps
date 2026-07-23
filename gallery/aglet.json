@@ -38,32 +38,82 @@
     "people": {
       "storage": "memory",
       "schema": {
-        "name": { "type": "string" },
-        "role": { "type": "string" },
-        "city": { "type": "string" },
-        "score": { "type": "number" },
-        "n": { "type": "number" }
+        "name": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "score": {
+          "type": "number"
+        },
+        "n": {
+          "type": "number"
+        }
       },
-      "indexes": ["n", "score"]
+      "indexes": [
+        "n",
+        "score"
+      ]
     },
     "metrics": {
       "storage": "memory",
       "schema": {
-        "ts": { "type": "number" },
-        "cpu": { "type": "number" },
-        "mem": { "type": "number" }
+        "ts": {
+          "type": "number"
+        },
+        "cpu": {
+          "type": "number"
+        },
+        "mem": {
+          "type": "number"
+        }
       },
-      "indexes": ["ts"]
+      "indexes": [
+        "ts"
+      ]
     },
     "places": {
       "storage": "memory",
       "schema": {
-        "name": { "type": "string" },
-        "lat": { "type": "number" },
-        "lng": { "type": "number" },
-        "n": { "type": "number" }
+        "name": {
+          "type": "string"
+        },
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
+        },
+        "n": {
+          "type": "number"
+        }
       },
-      "indexes": ["n"]
+      "indexes": [
+        "n"
+      ]
     }
+  },
+  "shots": {
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "frames": [
+      {
+        "id": "main",
+        "caption": {
+          "default": "Every component, natively rendered",
+          "zh": "每个组件,原生渲染"
+        }
+      }
+    ]
   }
 }
