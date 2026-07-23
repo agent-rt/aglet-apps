@@ -12,7 +12,7 @@
   },
   "version": "0.3.1",
   "license": "MIT",
-  "min_runtime": "0.1.7",
+  "min_runtime": "0.1.8",
   "renderer": "auto",
   "requires": [
     {
@@ -30,82 +30,191 @@
   "settings": {
     "groups": [
       {
-        "title": { "default": "Track", "zh": "统计", "ja": "計測" },
+        "title": {
+          "default": "Track",
+          "zh": "统计",
+          "ja": "計測"
+        },
         "fields": [
           {
             "key": "enable_claude",
             "type": "bool",
             "default": "true",
-            "label": { "default": "Claude", "zh": "Claude", "ja": "Claude" },
-            "help": { "default": "Poll Claude usage", "zh": "统计 Claude 用量", "ja": "Claude 使用量を計測" }
+            "label": {
+              "default": "Claude",
+              "zh": "Claude",
+              "ja": "Claude"
+            },
+            "help": {
+              "default": "Poll Claude usage",
+              "zh": "统计 Claude 用量",
+              "ja": "Claude 使用量を計測"
+            }
           },
           {
             "key": "enable_codex",
             "type": "bool",
             "default": "true",
-            "label": { "default": "Codex", "zh": "Codex", "ja": "Codex" },
-            "help": { "default": "Poll Codex usage", "zh": "统计 Codex 用量", "ja": "Codex 使用量を計測" }
+            "label": {
+              "default": "Codex",
+              "zh": "Codex",
+              "ja": "Codex"
+            },
+            "help": {
+              "default": "Poll Codex usage",
+              "zh": "统计 Codex 用量",
+              "ja": "Codex 使用量を計測"
+            }
           }
         ]
       },
       {
-        "title": { "default": "Menu bar", "zh": "菜单栏", "ja": "メニューバー" },
+        "title": {
+          "default": "Menu bar",
+          "zh": "菜单栏",
+          "ja": "メニューバー"
+        },
         "fields": [
           {
             "key": "menubar_layout",
             "type": "select",
             "default": "horizontal",
-            "label": { "default": "Layout", "zh": "排列", "ja": "レイアウト" },
+            "label": {
+              "default": "Layout",
+              "zh": "排列",
+              "ja": "レイアウト"
+            },
             "options": [
-              { "value": "horizontal", "label": { "default": "Horizontal", "zh": "水平", "ja": "横" } },
-              { "value": "vertical", "label": { "default": "Vertical", "zh": "竖直", "ja": "縦" } }
+              {
+                "value": "horizontal",
+                "label": {
+                  "default": "Horizontal",
+                  "zh": "水平",
+                  "ja": "横"
+                }
+              },
+              {
+                "value": "vertical",
+                "label": {
+                  "default": "Vertical",
+                  "zh": "竖直",
+                  "ja": "縦"
+                }
+              }
             ]
           },
           {
             "key": "menubar_style",
             "type": "select",
             "default": "bar",
-            "label": { "default": "Style", "zh": "形态", "ja": "形式" },
+            "label": {
+              "default": "Style",
+              "zh": "形态",
+              "ja": "形式"
+            },
             "options": [
-              { "value": "bar", "label": { "default": "Bar", "zh": "进度条", "ja": "バー" } },
-              { "value": "text", "label": { "default": "Percent", "zh": "百分比", "ja": "パーセント" } },
-              { "value": "gauge", "label": { "default": "Ring", "zh": "圆环", "ja": "リング" } }
+              {
+                "value": "bar",
+                "label": {
+                  "default": "Bar",
+                  "zh": "进度条",
+                  "ja": "バー"
+                }
+              },
+              {
+                "value": "text",
+                "label": {
+                  "default": "Percent",
+                  "zh": "百分比",
+                  "ja": "パーセント"
+                }
+              },
+              {
+                "value": "gauge",
+                "label": {
+                  "default": "Ring",
+                  "zh": "圆环",
+                  "ja": "リング"
+                }
+              }
             ]
           },
           {
             "key": "primary_color",
             "type": "color",
             "default": "",
-            "label": { "default": "Primary color", "zh": "主颜色", "ja": "メインカラー" },
-            "help": { "default": "Empty = system accent; high usage → orange/red", "zh": "留空＝系统强调色；高用量→橙/红", "ja": "空＝システム強調色、高使用→オレンジ/赤" }
+            "label": {
+              "default": "Primary color",
+              "zh": "主颜色",
+              "ja": "メインカラー"
+            },
+            "help": {
+              "default": "Empty = system accent; high usage → orange/red",
+              "zh": "留空＝系统强调色；高用量→橙/红",
+              "ja": "空＝システム強調色、高使用→オレンジ/赤"
+            }
           },
           {
             "key": "tray_claude",
             "type": "bool",
             "default": "true",
-            "label": { "default": "Claude", "zh": "Claude", "ja": "Claude" },
-            "help": { "default": "Show in menu bar", "zh": "在菜单栏显示", "ja": "メニューバーに表示" },
-            "disabledWhen": { "key": "enable_claude", "equals": "false" }
+            "label": {
+              "default": "Claude",
+              "zh": "Claude",
+              "ja": "Claude"
+            },
+            "help": {
+              "default": "Show in menu bar",
+              "zh": "在菜单栏显示",
+              "ja": "メニューバーに表示"
+            },
+            "disabledWhen": {
+              "key": "enable_claude",
+              "equals": "false"
+            }
           },
           {
             "key": "tray_codex",
             "type": "bool",
             "default": "true",
-            "label": { "default": "Codex", "zh": "Codex", "ja": "Codex" },
-            "help": { "default": "Show in menu bar", "zh": "在菜单栏显示", "ja": "メニューバーに表示" },
-            "disabledWhen": { "key": "enable_codex", "equals": "false" }
+            "label": {
+              "default": "Codex",
+              "zh": "Codex",
+              "ja": "Codex"
+            },
+            "help": {
+              "default": "Show in menu bar",
+              "zh": "在菜单栏显示",
+              "ja": "メニューバーに表示"
+            },
+            "disabledWhen": {
+              "key": "enable_codex",
+              "equals": "false"
+            }
           }
         ]
       },
       {
-        "title": { "default": "Alerts", "zh": "提醒", "ja": "通知" },
+        "title": {
+          "default": "Alerts",
+          "zh": "提醒",
+          "ja": "通知"
+        },
         "fields": [
           {
             "key": "notify_enabled",
             "type": "bool",
             "default": "true",
-            "label": { "default": "Usage alerts", "zh": "用量提醒", "ja": "使用量アラート" },
-            "help": { "default": "Notify at threshold", "zh": "达阈值时通知", "ja": "しきい値で通知" }
+            "label": {
+              "default": "Usage alerts",
+              "zh": "用量提醒",
+              "ja": "使用量アラート"
+            },
+            "help": {
+              "default": "Notify at threshold",
+              "zh": "达阈值时通知",
+              "ja": "しきい値で通知"
+            }
           },
           {
             "key": "notify_at",
@@ -114,9 +223,20 @@
             "min": 50,
             "max": 100,
             "step": 5,
-            "label": { "default": "Threshold %", "zh": "阈值 %", "ja": "しきい値 %" },
-            "help": { "default": "Session or weekly reaches this %", "zh": "会话或每周达此 %", "ja": "セッション/週がこの%" },
-            "disabledWhen": { "key": "notify_enabled", "equals": "false" }
+            "label": {
+              "default": "Threshold %",
+              "zh": "阈值 %",
+              "ja": "しきい値 %"
+            },
+            "help": {
+              "default": "Session or weekly reaches this %",
+              "zh": "会话或每周达此 %",
+              "ja": "セッション/週がこの%"
+            },
+            "disabledWhen": {
+              "key": "notify_enabled",
+              "equals": "false"
+            }
           }
         ]
       }
@@ -126,38 +246,92 @@
     "samples": {
       "storage": "persistent",
       "schema": {
-        "ts": { "type": "integer" },
-        "source": { "type": "string" },
-        "ok": { "type": "boolean" },
-        "session_pct": { "type": "integer" },
-        "weekly_pct": { "type": "integer" },
-        "session_resets_ms": { "type": "integer" },
-        "weekly_resets_ms": { "type": "integer" }
+        "ts": {
+          "type": "integer"
+        },
+        "source": {
+          "type": "string"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "session_pct": {
+          "type": "integer"
+        },
+        "weekly_pct": {
+          "type": "integer"
+        },
+        "session_resets_ms": {
+          "type": "integer"
+        },
+        "weekly_resets_ms": {
+          "type": "integer"
+        }
       }
     },
     "current": {
       "storage": "persistent",
       "schema": {
-        "source": { "type": "string" },
-        "label": { "type": "string" },
-        "abbrev": { "type": "string" },
-        "order": { "type": "integer" },
-        "enabled": { "type": "boolean" },
-        "ts": { "type": "integer" },
-        "refreshed_text": { "type": "string" },
-        "ok": { "type": "boolean" },
-        "needs_auth": { "type": "boolean" },
-        "notified_session": { "type": "boolean" },
-        "notified_weekly": { "type": "boolean" },
-        "err": { "type": "string" },
-        "session_pct": { "type": "integer" },
-        "session_pct_text": { "type": "string" },
-        "session_color": { "type": "string" },
-        "session_reset_text": { "type": "string" },
-        "weekly_pct": { "type": "integer" },
-        "weekly_pct_text": { "type": "string" },
-        "weekly_color": { "type": "string" },
-        "weekly_reset_text": { "type": "string" }
+        "source": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string"
+        },
+        "abbrev": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        },
+        "enabled": {
+          "type": "boolean"
+        },
+        "ts": {
+          "type": "integer"
+        },
+        "refreshed_text": {
+          "type": "string"
+        },
+        "ok": {
+          "type": "boolean"
+        },
+        "needs_auth": {
+          "type": "boolean"
+        },
+        "notified_session": {
+          "type": "boolean"
+        },
+        "notified_weekly": {
+          "type": "boolean"
+        },
+        "err": {
+          "type": "string"
+        },
+        "session_pct": {
+          "type": "integer"
+        },
+        "session_pct_text": {
+          "type": "string"
+        },
+        "session_color": {
+          "type": "string"
+        },
+        "session_reset_text": {
+          "type": "string"
+        },
+        "weekly_pct": {
+          "type": "integer"
+        },
+        "weekly_pct_text": {
+          "type": "string"
+        },
+        "weekly_color": {
+          "type": "string"
+        },
+        "weekly_reset_text": {
+          "type": "string"
+        }
       }
     }
   },
@@ -174,5 +348,9 @@
   "window": {
     "width": 280,
     "height": 340
+  },
+  "icon": {
+    "fg": "coins-fill",
+    "bg": "#7c3aed"
   }
 }
