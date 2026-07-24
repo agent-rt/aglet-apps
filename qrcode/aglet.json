@@ -1,0 +1,48 @@
+{
+  "id": "qrcode",
+  "name": { "default": "QR Code", "zh": "二维码", "ja": "QRコード" },
+  "description": {
+    "default": "Generate and read QR & barcodes — local, private, offline.",
+    "zh": "生成与识别二维码 / 条码 —— 本地、私密、离线。",
+    "ja": "QR・バーコードの生成と読み取り —— ローカル・プライベート・オフライン。"
+  },
+  "version": "0.1.0",
+  "min_runtime": "0.1.8",
+  "renderer": "native",
+  "default_locale": "en",
+  "category": "productivity",
+  "keys": { "cmd+v": "pasteScan" },
+  "permissions": [
+    "barcode:encode",
+    "barcode:decode",
+    "clipboard:write",
+    "clipboard:read",
+    "fs:read",
+    "fs:write",
+    "settings:read",
+    "settings:write"
+  ],
+  "requires": [
+    { "plugin": "barcode" },
+    { "plugin": "clipboard" },
+    { "plugin": "fs" }
+  ],
+  "window": { "style": "desktop", "width": 440, "height": "auto" },
+  "state": {
+    "mode": "gen",
+    "genMode": true,
+    "scanMode": false,
+    "text": "https://aglet.dev",
+    "format": "QRCode",
+    "ecc": "M",
+    "size": 256,
+    "qrUrl": "",
+    "hasQr": false,
+    "genError": "",
+    "hasScan": false,
+    "scanText": "",
+    "scanFormat": "",
+    "scanError": ""
+  },
+  "icon": { "fg": "qr-code", "bg": "#6366f1" }
+}

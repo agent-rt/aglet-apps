@@ -1,0 +1,13 @@
+{
+  "name": "qrcode 生成:onEnter 即出真二维码",
+  "aglet": "..",
+  "_comment": "默认文本 https://aglet.dev → onEnter 触发 generate → barcode.encode 返回 data-url → hasQr=true → <Image> 渲染。需 --link ../../aglet-plugins/barcode。",
+  "steps": [
+    {
+      "action": "view.waitfor",
+      "select": { "role": "image" },
+      "timeout": 8000,
+      "expect": { "ok": true, "data": { "found": true } }
+    }
+  ]
+}
