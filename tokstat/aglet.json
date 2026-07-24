@@ -10,7 +10,7 @@
     "zh": "在菜单栏查看 AI 编程用量（会话与每周），含进度条与重置倒计时。按需启用各家、选择在菜单栏显示哪些。",
     "ja": "メニューバーで AI コーディングの使用量（セッション・週）を表示。使うプロバイダを有効化し、メニューバーに出すものを選べます。"
   },
-  "version": "0.3.2",
+  "version": "0.3.3",
   "license": "MIT",
   "min_runtime": "0.1.8",
   "renderer": "auto",
@@ -352,5 +352,25 @@
   "icon": {
     "fg": "coins-fill",
     "bg": "#7c3aed"
+  },
+  "shots": {
+    "seed": "tokstat.shots.seed.json",
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "frames": [
+      {
+        "id": "main",
+        "caption": {
+          "default": "Every AI plan’s usage, at a glance",
+          "zh": "所有 AI 用量,一眼看尽"
+        }
+      }
+    ]
   }
 }

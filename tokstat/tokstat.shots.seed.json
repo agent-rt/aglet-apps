@@ -1,0 +1,14 @@
+[
+  { "collection": "current", "by_field": "source", "data": {
+    "source": "claude", "label": "Claude", "abbrev": "CL", "order": 1,
+    "enabled": true, "ok": true, "needs_auth": false, "err": "",
+    "session_pct": 15, "session_pct_text": "15%", "session_reset_text": "2h 41m",
+    "weekly_pct": 58, "weekly_pct_text": "58%", "weekly_reset_text": "3d 4h",
+    "refreshed_text": "14:32" } },
+  { "collection": "current", "by_field": "source", "data": {
+    "source": "codex", "label": "Codex", "abbrev": "CX", "order": 2,
+    "enabled": true, "ok": true, "needs_auth": false, "err": "",
+    "session_pct": 34, "session_pct_text": "34%", "session_reset_text": "1h 8m",
+    "weekly_pct": 72, "weekly_pct_text": "72%", "weekly_reset_text": "5d 12h",
+    "refreshed_text": "14:32" } }
+]
