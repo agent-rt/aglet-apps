@@ -110,6 +110,11 @@
               <Button label={t.reauth} size="sm" variant="bordered" onClick={() => scripts.refreshNow()}/>
             </VStack>
             )}
+            {/* enabled 但拉取失败(非需重登):启用状态与数据可用性解耦 —— 显示 provider + 「暂不可用」,
+                不消失成「未启用」。err 非空即有异常(正向守卫,见 tsx JSX guard 只支持正向)。 */}
+            {item.err && (
+            <Text className="text-[10px] text-[var(--ag-fg-muted)] leading-tight">{t.unavailable}</Text>
+            )}
           </VStack>
         </Item>
         <Empty>

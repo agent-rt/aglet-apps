@@ -98,11 +98,14 @@ async function readCred(ctx, provider) {
 async function getJson(url, headers) {
   let r;
   try { r = await fetch(url, { headers }); }
-  catch (e) { console.warn(`[tokstat] fetch ${url} threw:`, String(e)); return { transient: true }; }
-  if (r.status === 429 || !r.ok) return { transient: true, status: r.status };
+  catch (e) { console.warn(`[tokstat] fetch ${url} threw:`, String(e)); return { transient: true, err: "network" }; }
+  if (r.status === 429 || !r.ok) {
+    console.warn(`[tokstat] fetch ${url} → HTTP ${r.status}`); // 异常处理:transient 非 2xx 也 log(不再静默)
+    return { transient: true, status: r.status, err: `HTTP ${r.status}` };
+  }
   let d;
-  try { d = r.json(); } catch (_e) { return { transient: true }; }
-  if (!d || d.error) return { transient: true };
+  try { d = r.json(); } catch (e) { console.warn(`[tokstat] ${url} body not JSON:`, String(e)); return { transient: true, err: "bad-body" }; }
+  if (!d || d.error) { console.warn(`[tokstat] ${url} body error:`, JSON.stringify(d?.error ?? null)); return { transient: true, err: "api-error" }; }
   return { ok: true, data: d };
 }
 
@@ -240,85 +243,55 @@ async function upsertProvider(p, side, ts, ctx) {
   }
 }
 
-// 设某 provider current 行的 enabled 标志(不删行、不动缓存值)。
-// current 是**持久缓存**:禁用只标记 enabled=false(弹层按 enabled 过滤隐藏、菜单栏按
-// 设置守卫隐藏),值保留 → 再启用时即便 fetch 命中 429 也能立刻显示上次真值,历史不丢。
-async function setEnabled(id, enabled, ctx) {
-  try {
-    const r = aglet.data.list("current", { where: { source: id }, limit: 1 });
-    if (r && r.items && r.items.length) {
-      const row = { ...r.items[0].data, enabled };
-      await aglet.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
-      return true;
-    }
-  } catch (e) {
-    console.warn(`[tokstat] setEnabled current(${id}) failed:`, String(e));
-  }
-  return false;
-}
-
-// 从最近一条 sample 重建 current 行(启用但 fetch 失败[429/需登录]且 current 缺失时的兜底)。
-// current 可能被历史上的禁用删掉、或旧版本清过 —— 只要 samples 有历史,就用它显示上次真值。
-// 派生字段(text/color/reset)从 sample 原始值重算。返回是否重建成功。
-async function restoreFromSample(p, ctx) {
-  try {
-    const r = aglet.data.list("samples", { where: { source: p.id }, orderBy: [{ field: "ts", direction: "desc" }], limit: 1 });
-    const s = r && r.items && r.items[0] && r.items[0].data;
-    if (!s) return false;
-    const row = {
-      source: p.id, label: p.label, abbrev: p.abbrev, order: p.order,
-      ts: s.ts, enabled: true, ok: true, needs_auth: false, err: "",
-      session_pct: numOr0(s.session_pct), session_pct_text: pctText(s.session_pct),
-      session_reset_text: resetLine(s.session_resets_ms),
-      weekly_pct: numOr0(s.weekly_pct), weekly_pct_text: pctText(s.weekly_pct),
-      weekly_reset_text: resetLine(s.weekly_resets_ms),
-    };
-    await aglet.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
-    return true;
-  } catch (e) {
-    console.warn(`[tokstat] restoreFromSample(${p.id}) failed:`, String(e));
-    return false;
-  }
-}
-
-// ── 一拍 ───────────────────────────────────────────────────────────────────
-
-async function runRefresh(ctx) {
-  const ts = aglet.now ? aglet.now() : Date.now();
-  for (const p of PROVIDERS) {
-    if (!boolSetting("enable_" + p.id, true)) {
-      await setEnabled(p.id, false, ctx); // 未启用：不轮询,标记隐藏,保留缓存值
-      continue;
-    }
-    const cred = await readCred(ctx, p.id);
-    const side = await p.fetch(cred);
-    if (side.ok) {
-      await upsertProvider(p, side, ts, ctx);
-    } else if (side.needs_auth) {
-      // token 过期/未登录:不替用户刷新(边界),标记 needs_auth → 弹层提示重登 codex。
-      await markNeedsAuth(p, ctx);
-    } else {
-      // transient(429/网断):保留上次真值。current 在 → 翻 enabled=true;current 缺失
-      // 但有历史 sample → 从 sample 重建(覆盖旧版本删过 current 的情况),再启用即可见。
-      const had = await setEnabled(p.id, true, ctx);
-      if (!had) await restoreFromSample(p, ctx);
-    }
-  }
-}
-
-// 标记某 provider 需重新登录(token 过期/失效)。保留上次 pct(若有),置 ok=false+needs_auth=true
-// → 弹层 <Item> 里 {item.needs_auth && ...} 显示重登提示 + 刷新按钮。不动凭据、不代刷新。
-async function markNeedsAuth(p, ctx) {
-  let base = {};
+// **总是** upsert 一个 current 行(建 or 合并),再叠 patch。**enabled 与数据解耦**:
+// enabled 由调用方按【设置】传;数据字段(pct/ok/needs_auth/err)是另一条轴。无现有行时从最近
+// sample 取缓存值填底,避免首刷失败占位空白。这是根治「fetch 失败 → 无行 → 误显示未启用」的地基:
+// 启用的 provider 在**任何** fetch 结果下都保证有 enabled=true 的行 → UI 永远显示它。
+async function ensureCurrent(p, patch) {
+  let base = null;
   try {
     const r = aglet.data.list("current", { where: { source: p.id }, limit: 1 });
     if (r && r.items && r.items.length) base = r.items[0].data;
   } catch (_e) {}
-  const row = { ...base, source: p.id, label: p.label, abbrev: p.abbrev, order: p.order, enabled: true, ok: false, needs_auth: true };
+  if (!base) {
+    try {
+      const r = aglet.data.list("samples", { where: { source: p.id }, orderBy: [{ field: "ts", direction: "desc" }], limit: 1 });
+      const s = r && r.items && r.items[0] && r.items[0].data;
+      if (s) base = {
+        ts: s.ts, refreshed_text: clockText(s.ts),
+        session_pct: numOr0(s.session_pct), session_pct_text: pctText(s.session_pct), session_reset_text: resetLine(s.session_resets_ms),
+        weekly_pct: numOr0(s.weekly_pct), weekly_pct_text: pctText(s.weekly_pct), weekly_reset_text: resetLine(s.weekly_resets_ms),
+      };
+    } catch (_e) {}
+  }
+  const row = { source: p.id, label: p.label, abbrev: p.abbrev, order: p.order, ...(base || {}), ...patch };
   try {
     await aglet.dispatch("data.upsert", { collection: "current", by_field: "source", data: row });
   } catch (e) {
-    console.warn(`[tokstat] markNeedsAuth(${p.id}) failed:`, String(e));
+    console.warn(`[tokstat] ensureCurrent(${p.id}) failed:`, String(e));
+  }
+}
+
+// ── 一拍 ───────────────────────────────────────────────────────────────────
+// **enabled = 设置(唯一真相),恒在每个分支写;数据可用性是独立轴。** 三态:
+//   有数据 → upsertProvider(pct + notify + sample);需重登 → ok=false/needs_auth=true;
+//   暂不可用(429/网断/API 异常)→ ok=false/needs_auth=false/err(保留缓存值)。
+// 三态都保证 enabled=true 的行存在 → 启用的 provider 永不「消失成未启用」。
+// 「No providers enabled」只在设置里全部关掉(enabled=false)时出现 —— 纯设置条件,与 fetch 无关。
+async function runRefresh() {
+  const ts = aglet.now ? aglet.now() : Date.now();
+  for (const p of PROVIDERS) {
+    const on = boolSetting("enable_" + p.id, true); // 唯一真相 = 设置
+    if (!on) { await ensureCurrent(p, { enabled: false }); continue; } // 禁用:标记隐藏,保留缓存值
+    const cred = await readCred(null, p.id);
+    const side = await p.fetch(cred);
+    if (side.ok) {
+      await upsertProvider(p, side, ts, null); // 有数据:enabled=true + 数据 + notify + sample
+    } else if (side.needs_auth) {
+      await ensureCurrent(p, { enabled: true, ok: false, needs_auth: true, err: "" }); // 需重登(保留缓存 pct)
+    } else {
+      await ensureCurrent(p, { enabled: true, ok: false, needs_auth: false, err: side.err || "unavailable" }); // 暂不可用
+    }
   }
 }
 
