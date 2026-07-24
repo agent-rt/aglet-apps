@@ -153,7 +153,17 @@ async function fetchCodex(cred) {
   if (!res.ok) return res;
   const rl = res.data.rate_limit;
   if (!rl) return { transient: true };
-  return { ok: true, session: codexWindow(rl.primary_window), weekly: codexWindow(rl.secondary_window) };
+  // 不按位置(primary/secondary)认窗:Codex 2026-07 去掉 5h 限制后 primary_window 变成周窗、
+  // secondary_window=null,位置假设会张冠李戴(把周数据当 session、weekly 读到 null 恒 0)。
+  // 改按 limit_window_seconds 归类:≤6h → session、否则 → weekly;缺失的窗 → 该侧留空(不渲染)。
+  // 第一性:读窗口本身代表多长,别假设它在哪个槽。窗口若都在则各归其位,与 Claude 语义一致。
+  let session, weekly;
+  for (const w of [rl.primary_window, rl.secondary_window]) {
+    if (!w || typeof w.limit_window_seconds !== "number") continue;
+    if (w.limit_window_seconds <= 6 * 3600) session = codexWindow(w);
+    else weekly = codexWindow(w);
+  }
+  return { ok: true, session, weekly };
 }
 
 // ── Provider 注册表 ────────────────────────────────────────────────────────
@@ -215,6 +225,9 @@ async function upsertProvider(p, side, ts, ctx) {
     notified_session: nS,
     notified_weekly: nW,
     err: "",
+    // 该 provider 是否有 session(短)窗:Codex 2026-07 去掉 5h 后只剩周窗 → false,UI 据此
+    // 隐藏 session 行(popover 是 DataList 单模板迭代,只能数据驱动隐藏,正向守卫见 ui.tsx)。
+    has_session: typeof sPct === "number",
     session_pct: numOr0(sPct),
     session_pct_text: pctText(sPct),
     session_reset_text: resetLine(sess.resets_at_ms),
