@@ -10,7 +10,7 @@
     "zh": "菜单栏实时系统监控——网速、内存、CPU，每项可独立开关。",
     "ja": "メニューバーにリアルタイムのシステム状態——ネット速度・メモリ・CPU。各項目を個別にオン/オフ。"
   },
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "min_runtime": "0.1.8",
   "renderer": "auto",
@@ -168,5 +168,27 @@
   "icon": {
     "fg": "gauge-fill",
     "bg": "#10b981"
+  },
+  "shots": {
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "frames": [
+      {
+        "id": "main",
+        "caption": {
+          "default": "Your Mac’s vitals, live in the menu bar",
+          "zh": "菜单栏里的实时性能面板"
+        },
+        "state": {
+          "/state/_ui/_demo": true
+        }
+      }
+    ]
   }
 }

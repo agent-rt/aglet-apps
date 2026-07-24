@@ -11,6 +11,26 @@
 export default (aglet) => {
   const CAP = 60; // sparkline 保留最近 ~60 采样点(≈60s)
 
+  // 演示数据(store 上架截图 / 插件不可用时的占位):/state/_demo=true 时 sample() 走固定值 +
+  // 一次性起伏曲线,不连真实插件、不被实时采样覆盖 → 截图确定且好看。shots 用 frame.state 注入
+  // 该标志(见 aglet.json shots)。平时 _demo 未设 → 恒走真实分支,零影响。
+  const GB = 1024 * 1024 * 1024, MB = 1024 * 1024, KB = 1024;
+  const DEMO_STATE = {
+    cpuVal: 32, cpuUser: 11, cpuSys: 21, cpuTemp: 54, cpuTempText: "54°C", cpuText: "32%", cpuUnit: "%",
+    memPct: 68, memUsed: Math.round(0.68 * 32 * GB), memTotal: 32 * GB, memText: "68%",
+    down: Math.round(1.8 * MB), up: Math.round(340 * KB),
+    rxTotal: Math.round(4.2 * GB), txTotal: Math.round(890 * MB),
+    downText: "1.8 MB/s", upText: "340 KB/s",
+  };
+  // 60 点自然起伏(正弦叠加,非随机 → 每次截图一致)。sparkline 只画 down/up。
+  const demoCurve = () => Array.from({ length: CAP }, (_, i) => {
+    const down = Math.max(120 * KB, 1.4 * MB + Math.sin(i / 6) * 0.7 * MB + Math.sin(i / 2.3) * 0.3 * MB);
+    const up = Math.max(30 * KB, down * 0.18 + Math.sin(i / 4) * 40 * KB);
+    return { down: Math.round(down), up: Math.round(up), cpu: 28 + Math.round(Math.sin(i / 5) * 8), mem: 68 };
+  });
+  let demoSeeded = false;
+  const isDemo = () => { try { return aglet.getState("/state/_ui/_demo") === true; } catch (_e) { return false; } };
+
   // 设置读取：值以字符串存（"true"/"false"/select value）。开关默认开 → 未设置视为开。
   const on = (k) => {
     try { return (aglet.settings.get(k) || {}).value !== "false"; } catch (_e) { return true; }
@@ -31,6 +51,21 @@ export default (aglet) => {
   // 每项指标独立 try/catch —— 单个 sysmon action 失败（未实现 / 平台不支持）不该拖垮其余指标，
   // 也不该丢整个 patch。失败项值保留上次（不覆盖）。
   const sample = async () => {
+    // 演示态:固定 state + 一次性起伏曲线,不采真实、不被覆盖。截图确定。
+    if (isDemo()) {
+      aglet.setState(DEMO_STATE);
+      if (!demoSeeded) {
+        try {
+          const r = aglet.data.list("samples", {});
+          for (const it of (r && r.items) || []) aglet.data.delete("samples", it.id);
+          let t = aglet.now() - CAP * 1000;
+          for (const p of demoCurve()) { aglet.data.create("samples", { ts: t, down: p.down, up: p.up, cpu: p.cpu, mem: p.mem }); t += 1000; }
+        } catch (_e) {}
+        demoSeeded = true;
+      }
+      return;
+    }
+
     const patch = {};
 
     if (on("enable_net")) {

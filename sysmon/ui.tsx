@@ -96,11 +96,11 @@
           </HStack>
           <HStack className="items-center justify-between">
             <HStack gap={4} className="items-center">
-              <Icon symbol="arrow-down" color="success"/>
+              <Icon symbol="arrow-down" size="sm" color="#4FD1C5"/>
               <Text className="text-sm font-semibold tabular-nums">{state.downText}</Text>
             </HStack>
             <HStack gap={4} className="items-center">
-              <Icon symbol="arrow-up" color="warning"/>
+              <Icon symbol="arrow-up" size="sm" color="#F5B14C"/>
               <Text className="text-sm font-semibold tabular-nums">{state.upText}</Text>
             </HStack>
           </HStack>
