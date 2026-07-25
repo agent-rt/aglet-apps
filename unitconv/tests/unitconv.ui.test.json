@@ -1,0 +1,13 @@
+{
+  "name": "unitconv: onEnter 算出长度换算列表",
+  "aglet": "..",
+  "_comment": "默认 cat=length val=1 base=m → init 触发 recompute → setState rows → <For> 渲染每个单位 chip(Button)。断言 'km' chip 出现即证明换算行已算出并渲染。",
+  "steps": [
+    {
+      "action": "view.waitfor",
+      "select": { "role": "button", "props": { "label": "km" } },
+      "timeout": 8000,
+      "expect": { "ok": true, "data": { "found": true } }
+    }
+  ]
+}

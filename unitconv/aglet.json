@@ -1,0 +1,23 @@
+{
+  "id": "unitconv",
+  "name": { "default": "Convert", "zh": "换算", "ja": "変換" },
+  "description": {
+    "default": "Unit converter — length, weight, temperature, data. Type once, see every unit.",
+    "zh": "单位换算 —— 长度、重量、温度、数据。输入一次,所有单位实时换算。",
+    "ja": "単位換算 —— 長さ・重さ・温度・データ。入力すると全単位を即換算。"
+  },
+  "version": "0.1.0",
+  "min_runtime": "0.1.8",
+  "renderer": "native",
+  "default_locale": "en",
+  "category": "productivity",
+  "window": { "style": "desktop", "width": 380, "height": "auto" },
+  "state": {
+    "cat": "length",
+    "val": "1",
+    "base": "m",
+    "baseLabel": "m",
+    "rows": []
+  },
+  "icon": { "fg": "ruler", "bg": "#14b8a6" }
+}
