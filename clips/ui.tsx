@@ -7,6 +7,8 @@
         onClick={() => scripts.clearAll()}/>
     </HStack>
 
+    <Text className="text-xs" color="secondary" content={t.hint}/>
+
     <DataList collection="clips"
       query={{ orderBy: [{ field: "ts", direction: "desc" }], limit: 100 }}>
       <Empty>
@@ -18,8 +20,8 @@
           <HStack justify="between" align="center">
             <Text className="text-xs" color="secondary" content={item.ts | relative}/>
             <HStack className="gap-1">
-              <Button label={t.copy} variant="ghost" size="sm" leftIcon="copy"
-                color="#0ea5e9" onClick={() => scripts.recopy({ text: item.text })}/>
+              <Button label={t.paste} variant="flat" size="sm"
+                color="#0ea5e9" onClick={() => scripts.pasteItem({ text: item.text })}/>
               <Button variant="ghost" size="sm" leftIcon="trash"
                 onClick={() => scripts.remove({ id: item.id })}/>
             </HStack>

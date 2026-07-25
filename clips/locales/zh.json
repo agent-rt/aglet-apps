@@ -7,5 +7,9 @@
   "copied": "已复制到剪贴板",
   "copyFail": "复制失败",
   "cleared": "已清空历史",
-  "clearFail": "清空失败"
+  "clearFail": "清空失败",
+  "paste": "粘回",
+  "pasted": "已回填到输入框",
+  "pasteFail": "回填失败",
+  "hint": "⌘1–9 快速回填 · 或点行粘回"
 }

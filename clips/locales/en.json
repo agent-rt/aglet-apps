@@ -7,5 +7,9 @@
   "copied": "Copied to clipboard",
   "copyFail": "Copy failed",
   "cleared": "History cleared",
-  "clearFail": "Couldn't clear"
+  "clearFail": "Couldn't clear",
+  "paste": "Paste back",
+  "pasted": "Pasted back",
+  "pasteFail": "Paste failed",
+  "hint": "⌘1–9 to paste back · or click a row"
 }

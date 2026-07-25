@@ -28,6 +28,12 @@
     { "id": "rearm", "run": "arm", "every": "30s", "while": "always" },
     { "id": "summon", "run": "summon", "on": "hotkey.fired", "while": "always" }
   ],
+  "keys": {
+    "cmd+1": "paste1", "cmd+2": "paste2", "cmd+3": "paste3",
+    "cmd+4": "paste4", "cmd+5": "paste5", "cmd+6": "paste6",
+    "cmd+7": "paste7", "cmd+8": "paste8", "cmd+9": "paste9",
+    "Enter": "pasteTop"
+  },
   "collections": {
     "clips": {
       "schema": {
