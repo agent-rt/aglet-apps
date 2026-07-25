@@ -1,0 +1,11 @@
+{
+  "title": "剪贴板",
+  "clear": "清空",
+  "emptyTitle": "还没有复制记录",
+  "emptyDesc": "复制任何内容都会出现在这里。",
+  "copy": "复制",
+  "copied": "已复制到剪贴板",
+  "copyFail": "复制失败",
+  "cleared": "已清空历史",
+  "clearFail": "清空失败"
+}

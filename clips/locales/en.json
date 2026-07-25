@@ -1,0 +1,11 @@
+{
+  "title": "Clipboard",
+  "clear": "Clear",
+  "emptyTitle": "Nothing copied yet",
+  "emptyDesc": "Copy anything and it shows up here.",
+  "copy": "Copy",
+  "copied": "Copied to clipboard",
+  "copyFail": "Copy failed",
+  "cleared": "History cleared",
+  "clearFail": "Couldn't clear"
+}

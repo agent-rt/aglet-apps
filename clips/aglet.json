@@ -1,0 +1,45 @@
+{
+  "id": "clips",
+  "name": { "default": "Clipboard", "zh": "剪贴板", "ja": "クリップボード" },
+  "description": {
+    "default": "Clipboard history — every copy, one click to paste back. Local & private.",
+    "zh": "剪贴板历史 —— 每次复制都留痕,一键回填。本地、私密。",
+    "ja": "クリップボード履歴 —— コピーを記録し、ワンクリックで貼り戻し。ローカル・プライベート。"
+  },
+  "version": "0.1.0",
+  "min_runtime": "0.1.8",
+  "renderer": "native",
+  "default_locale": "en",
+  "category": "productivity",
+  "permissions": [
+    "data:read",
+    "data:write",
+    "clipboard:read",
+    "clipboard:write",
+    "hotkey:register"
+  ],
+  "requires": [
+    { "plugin": "clipboard" },
+    { "plugin": "hotkey" }
+  ],
+  "jobs": [
+    { "id": "capture", "run": "capture", "on": "clipboard.changed", "while": "always" },
+    { "id": "arm", "run": "arm", "once": true },
+    { "id": "rearm", "run": "arm", "every": "30s", "while": "always" },
+    { "id": "summon", "run": "summon", "on": "hotkey.fired", "while": "always" }
+  ],
+  "collections": {
+    "clips": {
+      "schema": {
+        "hash": { "type": "string" },
+        "text": { "type": "string" },
+        "preview": { "type": "string" },
+        "kind": { "type": "string" },
+        "ts": { "type": "integer" }
+      },
+      "indexes": ["hash", "ts"]
+    }
+  },
+  "window": { "style": "desktop", "width": 380, "height": 520 },
+  "icon": { "fg": "clipboard", "bg": "#0ea5e9" }
+}
