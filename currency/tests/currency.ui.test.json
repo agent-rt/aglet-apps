@@ -1,0 +1,8 @@
+{
+  "name": "currency: onEnter 建出币种换算列表",
+  "aglet": "..",
+  "_comment": "onEnter → fetchRates(成功或失败末尾都 recompute)→ setState rows → <For> 出币种 chip。断言 'JPY' chip 出现(rows 已建;fetch 失败时值显 …,chip 仍在)。",
+  "steps": [
+    { "action": "view.waitfor", "select": { "role": "button", "props": { "label": "JPY" } }, "timeout": 10000, "expect": { "ok": true, "data": { "found": true } } }
+  ]
+}

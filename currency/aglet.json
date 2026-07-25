@@ -1,0 +1,24 @@
+{
+  "id": "currency",
+  "name": { "default": "Currency", "zh": "汇率", "ja": "為替" },
+  "description": {
+    "default": "Live currency converter — type an amount, see it in every currency.",
+    "zh": "实时汇率换算 —— 输入金额,一眼看遍各币种。",
+    "ja": "リアルタイム為替換算 —— 金額を入力すると全通貨で表示。"
+  },
+  "version": "0.1.0",
+  "min_runtime": "0.1.8",
+  "renderer": "native",
+  "default_locale": "en",
+  "category": "productivity",
+  "window": { "style": "desktop", "width": 380, "height": "auto" },
+  "state": {
+    "amount": "100",
+    "base": "USD",
+    "rows": [],
+    "updated": "",
+    "loading": false,
+    "err": ""
+  },
+  "icon": { "fg": "currency-circle-dollar", "bg": "#14b8a6" }
+}
