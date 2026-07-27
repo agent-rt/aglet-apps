@@ -1,0 +1,81 @@
+{
+  "id": "scratch",
+  "name": {
+    "default": "Scratch",
+    "zh": "随手记",
+    "ja": "さっとメモ"
+  },
+  "description": {
+    "default": "Jot a line, drop a file — markdown, searchable, always at hand.",
+    "zh": "随手记一段话、拖个文件进来 —— markdown 渲染,可搜,随时翻。",
+    "ja": "ひとことメモ、ファイルをドロップ —— markdown 対応・検索可能。"
+  },
+  "version": "0.1.0",
+  "min_runtime": "0.1.8",
+  "renderer": "native",
+  "default_locale": "en",
+  "category": "productivity",
+  "window": {
+    "style": "desktop",
+    "width": 420,
+    "height": 720
+  },
+  "icon": {
+    "fg": "note-pencil",
+    "bg": "#f59e0b"
+  },
+  "permissions": [
+    "data:read",
+    "data:write",
+    "fs:read",
+    "image:read",
+    "image:convert"
+  ],
+  "keys": {
+    "cmd+Enter": "send"
+  },
+  "state": {
+    "q": ""
+  },
+  "collections": {
+    "notes": {
+      "schema": {
+        "body": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "pinned": {
+          "type": "boolean"
+        },
+        "att_path": {
+          "type": "string"
+        },
+        "att_name": {
+          "type": "string"
+        },
+        "att_size": {
+          "type": "integer"
+        },
+        "att_missing": {
+          "type": "boolean"
+        },
+        "has_note": {
+          "type": "boolean"
+        },
+        "att_thumb": {
+          "type": "string"
+        }
+      }
+    }
+  },
+  "requires": [
+    {
+      "plugin": "fs"
+    },
+    {
+      "plugin": "image"
+    }
+  ]
+}

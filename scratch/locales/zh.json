@@ -1,0 +1,14 @@
+{
+  "title": "随手记",
+  "ph": "随手记点什么…   ⌘↵ 发送",
+  "search": "🔍  搜索",
+  "save": "保存",
+  "pickFile": "选个文件",
+  "emptyTitle": "还什么都没有",
+  "emptyDesc": "写一行,或把文件拖进这个窗口的任意位置",
+  "loadMore": "加载更多",
+  "listCapped": "只显示最新 {d} 条(共 {d} 条)",
+  "gone": "文件已移动或删除",
+  "composeTitle": "新建一条",
+  "newNote": "写"
+}

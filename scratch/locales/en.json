@@ -1,0 +1,14 @@
+{
+  "title": "Scratch",
+  "ph": "Jot something…   ⌘↵ to send",
+  "search": "🔍  Search",
+  "save": "Save",
+  "pickFile": "Attach a file",
+  "emptyTitle": "Nothing yet",
+  "emptyDesc": "Type a line, or drop a file anywhere in this window",
+  "loadMore": "Load more",
+  "listCapped": "Showing the newest {d} of {d}",
+  "gone": "file moved or deleted",
+  "composeTitle": "New note",
+  "newNote": "Write"
+}

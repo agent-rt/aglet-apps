@@ -1,0 +1,225 @@
+{
+  "name": "scratch send / pin / attach-queue / delete E2E (select-only)",
+  "aglet": "..",
+  "_comment": "select-only:snapshot → ref forward。i18n-immune:按 role + props.icon 选,不按文案。形态=底部输入条+待发队列。",
+  "steps": [
+    {
+      "_comment": "写草稿(app 域 —— 常驻 runtime 读不到 window 域的 /form)",
+      "action": "state.mutate",
+      "params": {
+        "path": "/state/draft",
+        "value": "### 标题\n正文 **粗体**\n\n- 甲"
+      }
+    },
+    {
+      "_comment": "点发送(纸飞机)→ 入库一条 text",
+      "action": "intent.fire",
+      "select": {
+        "role": "button",
+        "props": {
+          "icon": "paper-plane-right"
+        }
+      },
+      "expect": {
+        "ok": true,
+        "data": {
+          "clicked": true
+        }
+      }
+    },
+    {
+      "action": "data.list",
+      "params": {
+        "collection": "notes"
+      },
+      "expect": {
+        "ok": true,
+        "items_len": 1
+      }
+    },
+    {
+      "_comment": "草稿已清空",
+      "action": "state.waitfor",
+      "expect": {
+        "ok": true,
+        "data": {
+          "state": {
+            "draft": ""
+          }
+        }
+      },
+      "timeout": 3000
+    },
+    {
+      "_comment": "markdown 已在内核展开:该行渲出真 Heading(以前 ### 是字面文本)",
+      "action": "view.waitfor",
+      "select": {
+        "role": "heading"
+      },
+      "timeout": 5000,
+      "expect": {
+        "ok": true,
+        "data": {
+          "found": true
+        }
+      }
+    },
+    {
+      "_comment": "置顶",
+      "action": "intent.fire",
+      "select": {
+        "role": "button",
+        "props": {
+          "icon": "push-pin"
+        },
+        "in_item": {
+          "kind": "text"
+        }
+      },
+      "expect": {
+        "ok": true,
+        "data": {
+          "clicked": true
+        }
+      }
+    },
+    {
+      "action": "data.list",
+      "params": {
+        "collection": "notes",
+        "query": {
+          "where": {
+            "pinned": true
+          }
+        }
+      },
+      "expect": {
+        "ok": true,
+        "items_len": 1
+      }
+    },
+    {
+      "_comment": "拖文件 → 进**待发队列**,不直接入库(整窗 onDrop 由渲染器注入 path,这里直调)",
+      "action": "scripts.call",
+      "params": {
+        "fn": "attach",
+        "args": {
+          "path": "/etc/hosts"
+        }
+      },
+      "expect": {
+        "ok": true
+      }
+    },
+    {
+      "_comment": "仍只有 1 条 —— 附件还在队列里没落库",
+      "action": "data.list",
+      "params": {
+        "collection": "notes"
+      },
+      "expect": {
+        "ok": true,
+        "items_len": 1
+      }
+    },
+    {
+      "_comment": "待发队列里出现该文件(× 按钮可见)",
+      "action": "view.waitfor",
+      "select": {
+        "role": "button",
+        "props": {
+          "icon": "x"
+        }
+      },
+      "timeout": 5000,
+      "expect": {
+        "ok": true,
+        "data": {
+          "found": true
+        }
+      }
+    },
+    {
+      "_comment": "点 × 移除 → 队列空",
+      "action": "intent.fire",
+      "select": {
+        "role": "button",
+        "props": {
+          "icon": "x"
+        }
+      },
+      "expect": {
+        "ok": true,
+        "data": {
+          "clicked": true
+        }
+      }
+    },
+    {
+      "_comment": "再拖一个并发送 → 落库成第 2 条",
+      "action": "scripts.call",
+      "params": {
+        "fn": "attach",
+        "args": {
+          "path": "/etc/hosts"
+        }
+      },
+      "expect": {
+        "ok": true
+      }
+    },
+    {
+      "action": "scripts.call",
+      "params": {
+        "fn": "send"
+      },
+      "expect": {
+        "ok": true
+      }
+    },
+    {
+      "action": "data.list",
+      "params": {
+        "collection": "notes",
+        "query": {
+          "where": {
+            "kind": "file"
+          }
+        }
+      },
+      "expect": {
+        "ok": true,
+        "items_len": 1
+      }
+    },
+    {
+      "_comment": "删掉文字那条 → 只剩附件那条",
+      "action": "intent.fire",
+      "select": {
+        "role": "button",
+        "props": {
+          "icon": "trash"
+        },
+        "in_item": {
+          "kind": "text"
+        }
+      },
+      "expect": {
+        "ok": true,
+        "data": {
+          "clicked": true
+        }
+      }
+    },
+    {
+      "action": "data.list",
+      "params": {
+        "collection": "notes"
+      },
+      "expect": {
+        "ok": true,
+        "items_len": 1
+      }
+    }
+  ]
+}
