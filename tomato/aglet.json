@@ -1,0 +1,44 @@
+{
+  "id": "tomato",
+  "name": {
+    "default": "Pomodoro",
+    "zh": "番茄钟",
+    "ja": "ポモドーロ"
+  },
+  "description": {
+    "default": "Menu-bar Pomodoro timer with a forced full-screen break lock.",
+    "zh": "菜单栏番茄钟 —— 专注计时 + 强制全屏休息锁定。",
+    "ja": "メニューバー・ポモドーロ —— 集中タイマー + 強制全画面休憩ロック。"
+  },
+  "version": "0.1.0",
+  "min_runtime": "0.1.8",
+  "renderer": "auto",
+  "default_locale": "en",
+  "category": "productivity",
+  "window": {
+    "width": 260,
+    "height": 320
+  },
+  "permissions": [],
+  "state": {
+    "phase": "idle",
+    "running": false,
+    "remaining": 1500,
+    "display": "25:00",
+    "trayText": "🍅 25:00",
+    "round": 0,
+    "focusMin": 25,
+    "shortMin": 5,
+    "longMin": 15,
+    "locked": false,
+    "isFocus": false,
+    "isBreak": false,
+    "isIdle": true,
+    "isRunning": false,
+    "phaseLabel": ""
+  },
+  "icon": {
+    "fg": "timer",
+    "bg": "#ef4444"
+  }
+}
