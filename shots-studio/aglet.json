@@ -1,10 +1,14 @@
 {
   "id": "shots-studio",
-  "name": "Shots Studio",
-  "name_i18n": { "default": "Shots Studio", "zh": "截图工作室", "ja": "ショットスタジオ" },
-  "description": "Store 营销截图合成 studio —— 把捕获的 app 窗口截图合成成 App Store 风格营销图。",
-  "description_i18n": {
+  "name": {
+    "default": "Shots Studio",
+    "en": "Shots Studio",
+    "zh": "截图工作室",
+    "ja": "ショットスタジオ"
+  },
+  "description": {
     "default": "Compose captured app-window screenshots into App Store–style marketing shots.",
+    "en": "Compose captured app-window screenshots into App Store–style marketing shots.",
     "zh": "把捕获的 app 窗口截图合成成 App Store 风格营销图。",
     "ja": "取得したアプリ画面を App Store 風のマーケティング画像に合成。"
   },
