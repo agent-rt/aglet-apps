@@ -11,7 +11,7 @@
     "ja": "ひとことメモ、ファイルをドロップ —— markdown 対応・検索可能。"
   },
   "version": "0.1.0",
-  "min_runtime": "0.1.8",
+  "min_runtime": "0.2.0",
   "renderer": "native",
   "default_locale": "en",
   "category": "productivity",
