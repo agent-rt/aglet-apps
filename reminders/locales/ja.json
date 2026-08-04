@@ -1,0 +1,22 @@
+{
+  "menuQuit": "終了",
+  "tabActive": "未完了",
+  "tabDone": "完了",
+
+  "labelTitle": "タイトル",
+  "titlePlaceholder": "リマインダーを追加…",
+  "labelNotes": "メモ",
+  "notesPlaceholder": "任意",
+  "labelDue": "期限",
+
+  "btnAdd": "追加",
+  "btnComplete": "完了",
+  "btnUndo": "戻す",
+  "btnDelete": "削除",
+
+  "emptyActive": "受信箱は空です",
+  "emptyDone": "完了済みのリマインダーはありません",
+
+  "tagDue": "期限",
+  "tagCompleted": "完了"
+}

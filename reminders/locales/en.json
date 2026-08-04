@@ -1,0 +1,22 @@
+{
+  "menuQuit": "Quit",
+  "tabActive": "Active",
+  "tabDone": "Done",
+
+  "labelTitle": "Title",
+  "titlePlaceholder": "Add a reminder…",
+  "labelNotes": "Notes",
+  "notesPlaceholder": "Optional",
+  "labelDue": "Due",
+
+  "btnAdd": "Add",
+  "btnComplete": "Complete",
+  "btnUndo": "Undo",
+  "btnDelete": "Delete",
+
+  "emptyActive": "Inbox zero",
+  "emptyDone": "No completed reminders yet",
+
+  "tagDue": "Due",
+  "tagCompleted": "Completed"
+}

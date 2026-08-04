@@ -1,0 +1,22 @@
+{
+  "menuQuit": "退出",
+  "tabActive": "待办",
+  "tabDone": "完成",
+
+  "labelTitle": "标题",
+  "titlePlaceholder": "加一条提醒…",
+  "labelNotes": "备注",
+  "notesPlaceholder": "可选",
+  "labelDue": "截止时间",
+
+  "btnAdd": "添加",
+  "btnComplete": "完成",
+  "btnUndo": "撤销",
+  "btnDelete": "删除",
+
+  "emptyActive": "清单空空如也",
+  "emptyDone": "还没有完成的提醒",
+
+  "tagDue": "截止",
+  "tagCompleted": "完成"
+}

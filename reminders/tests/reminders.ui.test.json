@@ -1,0 +1,156 @@
+{
+  "name": "reminders add → complete → undo E2E",
+  "aglet": "..",
+  "_comment": "全 select 通道：snapshot+ref，无 text/selector 依赖，跨 locale + 跨 runtime。",
+  "steps": [
+    {
+      "action": "data.create",
+      "params": {
+        "collection": "items",
+        "data": {
+          "title": "Buy milk",
+          "notes": "and bread",
+          "due_at": "2026-12-01 18:00",
+          "completed": false,
+          "created_at": "@now"
+        }
+      }
+    },
+    {
+      "_comment": "等行渲染 —— 按 record.title 选 Heading",
+      "action": "view.waitfor",
+      "select": {
+        "role": "heading",
+        "in_item": {
+          "title": "Buy milk"
+        }
+      },
+      "timeout": 3000,
+      "expect": {
+        "ok": true,
+        "data": {
+          "found": true
+        }
+      }
+    },
+    {
+      "_comment": "点该行的 Complete Button（行内唯一 Button）",
+      "action": "intent.fire",
+      "select": {
+        "role": "button",
+        "in_item": {
+          "title": "Buy milk",
+          "completed": false
+        }
+      },
+      "expect": {
+        "ok": true,
+        "data": {
+          "clicked": true
+        }
+      }
+    },
+    {
+      "action": "data.list",
+      "params": {
+        "collection": "items",
+        "query": {
+          "where": {
+            "completed": true
+          }
+        }
+      },
+      "expect": {
+        "ok": true,
+        "items_len": 1
+      }
+    },
+    {
+      "_comment": "切到 Done tab —— Tabs id=main，state-driven。",
+      "action": "intent.fire",
+      "select": {
+        "role": "tab",
+        "value": "done"
+      },
+      "expect": {
+        "ok": true,
+        "data": {
+          "clicked": true
+        }
+      }
+    },
+    {
+      "_comment": "_ui.tabs.main 已写入 done —— overlay state 真在 session.state 里。",
+      "action": "state.waitfor",
+      "timeout": 1000,
+      "expect": {
+        "ok": true,
+        "data": {
+          "state": {
+            "_ui": {
+              "tabs": {
+                "main": "done"
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "_comment": "等 completed:true 行的 Undo Button 出现",
+      "action": "view.waitfor",
+      "select": {
+        "role": "button",
+        "in_item": {
+          "title": "Buy milk",
+          "completed": true
+        },
+        "props": {
+          "icon": "arrow-counter-clockwise"
+        }
+      },
+      "timeout": 3000,
+      "expect": {
+        "ok": true,
+        "data": {
+          "found": true
+        }
+      }
+    },
+    {
+      "_comment": "Undo Button —— 用 color=primary 与 Delete (color=danger) 区分",
+      "action": "intent.fire",
+      "select": {
+        "role": "button",
+        "in_item": {
+          "title": "Buy milk",
+          "completed": true
+        },
+        "props": {
+          "icon": "arrow-counter-clockwise"
+        }
+      },
+      "expect": {
+        "ok": true,
+        "data": {
+          "clicked": true
+        }
+      }
+    },
+    {
+      "action": "data.list",
+      "params": {
+        "collection": "items",
+        "query": {
+          "where": {
+            "completed": false
+          }
+        }
+      },
+      "expect": {
+        "ok": true,
+        "items_len": 1
+      }
+    }
+  ]
+}

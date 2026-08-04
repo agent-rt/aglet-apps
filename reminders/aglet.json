@@ -1,0 +1,85 @@
+{
+  "id": "reminders",
+  "name": {
+    "default": "Reminders",
+    "zh": "提醒",
+    "ja": "リマインダー"
+  },
+  "description": {
+    "default": "Lightweight reminders with optional due time. Schedules native OS notifications at the due time.",
+    "zh": "轻量提醒，可选截止时间。到点由系统原生通知（OS 排程，无需轮询）。",
+    "ja": "軽量リマインダー、任意で締切時刻。締切時に OS ネイティブ通知（スケジュール投递）。"
+  },
+  "version": "1.0.0",
+  "license": "MIT",
+  "renderer": "auto",
+  "author": "agent-rt",
+  "category": "productivity",
+  "keywords": [
+    "reminders",
+    "todo",
+    "tasks",
+    "notify"
+  ],
+  "icon": "https://api.iconify.design/ph/bell-fill.svg?color=%23ef6f5f&width=256",
+  "screenshots": [
+    {
+      "url": "screenshots/01.png",
+      "caption": "Active reminders list"
+    }
+  ],
+  "permissions": [
+    "data:read",
+    "data:write",
+    "notifications:post"
+  ],
+  "window": {
+    "width": 320,
+    "height": 460
+  },
+  "min_runtime": "0.1.8",
+  "state": {
+    "trayText": ""
+  },
+  "reminders": [
+    {
+      "collection": "items",
+      "at": "remind_at_ms",
+      "title": "title",
+      "body": "notes",
+      "url": "aglet://reminders/"
+    }
+  ],
+  "collections": {
+    "items": {
+      "schema": {
+        "title": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        },
+        "due_at": {
+          "type": "string"
+        },
+        "remind_at_ms": {
+          "type": "number"
+        },
+        "completed": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string"
+        },
+        "completed_at": {
+          "type": "string"
+        }
+      },
+      "indexes": [
+        "completed",
+        "due_at",
+        "completed_at"
+      ]
+    }
+  }
+}
