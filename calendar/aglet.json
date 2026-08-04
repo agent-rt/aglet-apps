@@ -1,0 +1,51 @@
+{
+  "id": "calendar",
+  "name": {
+    "default": "Up Next",
+    "zh": "接下来",
+    "ja": "次の予定"
+  },
+  "description": {
+    "default": "Your next calendar event in the menu bar. Reads the system calendar locally — nothing leaves your Mac.",
+    "zh": "菜单栏显示接下来的日程。只在本机读取系统日历，数据不出本机。",
+    "ja": "次の予定をメニューバーに表示。システムカレンダーをローカルで読むだけで、外部送信はしません。"
+  },
+  "version": "1.0.0",
+  "license": "MIT",
+  "renderer": "auto",
+  "author": "aglet-dev",
+  "category": "productivity",
+  "keywords": [
+    "calendar",
+    "agenda",
+    "schedule",
+    "meetings"
+  ],
+  "icon": "https://api.iconify.design/ph/calendar-dots-fill.svg?color=%234c8bf5&width=256",
+  "permissions": [
+    "calendar:read"
+  ],
+  "window": {
+    "width": 320,
+    "height": 420
+  },
+  "min_runtime": "0.3.0",
+  "state": {
+    "trayText": "",
+    "status": "notDetermined",
+    "events": [],
+    "loading": false,
+    "authorized": false,
+    "needsAuth": true,
+    "denied": false,
+    "empty": false
+  },
+  "jobs": [
+    {
+      "id": "refresh",
+      "run": "refresh",
+      "every": "5m",
+      "while": "always"
+    }
+  ]
+}

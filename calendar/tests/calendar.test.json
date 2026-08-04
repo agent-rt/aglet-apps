@@ -1,0 +1,19 @@
+{
+  "name": "calendar 只读 verb 契约 + 未授权优雅降级",
+  "aglet": "..",
+  "_comment": "headless 无 GUI host → host.calendar.* 反向 RPC 打不通,adapter 落回安全缺省(status=unavailable / events=[])。本测断言的是**契约存在且不报错**:action 被识别、未授权时返回空列表而非异常。真机授权流程需人工点系统弹窗,不在 scenario 覆盖范围。",
+  "steps": [
+    {
+      "_comment": "action 必须被识别(不能 UNKNOWN_VERB);headless 下 status 落回 unavailable",
+      "action": "calendar.status",
+      "params": {},
+      "expect": { "ok": true }
+    },
+    {
+      "_comment": "未授权/不可用 → events 空数组,不抛异常",
+      "action": "calendar.listEvents",
+      "params": {},
+      "expect": { "ok": true }
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "title": "接下来",
+  "menuRefresh": "刷新",
+  "menuQuit": "退出",
+  "allDay": "全天",
+  "emptyToday": "暂无日程",
+  "authHint": "允许读取日历后，即可在菜单栏看到接下来的日程。数据只留在本机。",
+  "btnGrant": "允许访问日历",
+  "deniedHint": "已拒绝访问。请到「系统设置 › 隐私与安全性 › 日历」中开启。"
+}

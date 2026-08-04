@@ -1,0 +1,10 @@
+{
+  "title": "Up Next",
+  "menuRefresh": "Refresh",
+  "menuQuit": "Quit",
+  "allDay": "All day",
+  "emptyToday": "Nothing scheduled",
+  "authHint": "Allow reading your calendar to show upcoming events in the menu bar. Data stays on this Mac.",
+  "btnGrant": "Allow calendar access",
+  "deniedHint": "Access was denied. Enable it in System Settings › Privacy & Security › Calendars."
+}
