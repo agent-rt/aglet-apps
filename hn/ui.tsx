@@ -6,11 +6,17 @@
       <DataList
         collection="stories"
         query={{
-          // feed = **当前 HN 首页**:只取在榜的(on_front),按官方 rank 升序 —— rank 是
-          // topstories.json 的数组下标,即 HN 的热度排名。此前按 hn_id desc(提交时间)排,
-          // 顺序与首页几乎无重合(官方 #1 常是老帖)。离榜的由 ingest 清理/降级。
-          where: { on_front: true, disliked: false },
-          orderBy: [{ field: "rank", direction: "asc" }],
+          // 排序 = 官方 rank 升序:rank 是 topstories.json 的数组下标,即 HN 的热度排名
+          // (此前按 hn_id desc / 提交时间排,与首页前 10 只有 1 条重合)。
+          // **不按 on_front 过滤 —— 历史全展示**:榜内 30 条(rank 0..29)在最前、与首页一致,
+          // 离榜的 rank=OFF_RANK 自然接在后面,往下滚就是历史。
+          // 次级键 hn_id desc 是必须的:离榜记录 rank 全等于 OFF_RANK,只按 rank 排它们之间
+          // 顺序不定(实测多字段 orderBy 生效:desc→[903,902]、asc→[902,903])。
+          where: { disliked: false },
+          orderBy: [
+            { field: "rank", direction: "asc" },
+            { field: "hn_id", direction: "desc" },
+          ],
         }}
         paginate={{ pageSize: 10, infinite: true }}
       >

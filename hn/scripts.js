@@ -75,16 +75,15 @@ async function llmcall(endpoint, model, key, system, user) {
 
 // data.list 在 script 侧返回 { items: [...] }（call 解 envelope.data）。容错处理。
 export default (aglet) => ({
-  // Page.onEnter → 打开窗口立刻刷一轮。**升级/新装后的空窗期就靠它兜住**:feed 只显示
-  // `on_front: true` 的记录,而 0.1.4 之前入库的老记录没有这个字段 → 升级后界面是空的,
-  // 而 hn 的 job 周期是 15 分钟,此前只能干等(实测踩过:用户升级后界面空白)。
+  // Page.onEnter → 打开窗口立刻刷一轮,不用等 15 分钟的 job 周期。
+  // (0.1.4 曾因 feed 按新字段过滤 + 无此入口,升级后界面空白到下一个周期。)
   async refreshNow() {
     await aglet.dispatch("scheduler.run_app", {});
   },
 
   async ingest(args) {
     const MAX = (args && args.max) || DEFAULT_MAX;
-    let prune_err = ""; // 离榜清理若失败,经 return 值暴露(见 Phase 1.5)
+    let prune_err = ""; // 降级/补字段若失败,经 return 值暴露(见 Phase 1.5 / 1.6)
 
     const ids_resp = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json");
     if (!ids_resp.ok) throw new Error(`topstories fetch failed: ${ids_resp.status}`);
@@ -117,7 +116,7 @@ export default (aglet) => ({
         // 此前这个下标被丢掉,UI 只能按 hn_id(= 提交时间)倒序 → 榜单顺序跟首页完全不同:
         // 官方 #1 常是 id 很小的老帖(发布早、热度高),按 id 排会沉到几百位后。
         rank: i,
-        on_front: true, // 本轮在榜;离榜的在下面 prune 里降级/删除
+        on_front: true, // 本轮在榜;离榜的在 Phase 1.5 降级(不删)
         title_en: item.title,
         url: item.url || `https://news.ycombinator.com/item?id=${id}`,
         domain: domainOf(item.url),
@@ -145,47 +144,43 @@ export default (aglet) => ({
       }
     }
 
-    // ── Phase 1.5：离榜清理 ────────────────────────────────────────────────
-    // 此前**只增不减**:每轮 upsert top30 却从不清理离榜的,库里累积了上过榜的所有故事
-    // (实测 1242 条),而首页只有 30 条 —— 列表里混着大量旧帖。
-    // 策略:离榜且用户没标记过 → 删(feed 就是当前首页);标记过(liked/disliked)→ 保留但
-    // 降级(on_front=false, rank=OFF_RANK),收藏/屏蔽列表照旧能看到,且排在榜内之后。
+    // ── Phase 1.5：离榜降级（**不删任何东西**）────────────────────────────
+    // 上一轮在榜、本轮不在的 → 标 on_front=false + rank=OFF_RANK,于是它在 feed 里自然
+    // 沉到榜内 30 条之后,往下滚仍能翻到。**历史全部保留**。
     //
-    // ⚠️ 只查 `on_front: true`(上一轮在榜的,≤30 条),**别拉全表**:data.list 的 limit
-    // 上限是 1000,写 2000 直接 RESOURCE_TOO_LARGE —— 而那个异常被 catch 静默吞掉,
-    // 表现为「prune 一条没处理、也看不到任何错」(实际排查花了好几轮)。离榜且未标记的
-    // 会被删掉,所以「上一轮在榜」这个集合足以覆盖所有待处理对象。
+    // ⚠️ 0.1.5 曾在这里**删除**未标记的离榜故事(以为 feed 就该等于当前首页),实际删掉了
+    // 用户积累的 1212 条、不可恢复。需求从来只是「顺序跟首页一致」,不是「只留 30 条」——
+    // 别再自作主张缩小范围。
+    //
+    // ⚠️ 只查 `on_front: true`(上一轮在榜的,≤30 条),别拉全表:data.list 的 limit 上限是
+    // 1000,写 2000 直接 RESOURCE_TOO_LARGE,而异常曾被 catch 静默吞掉(白查好几轮)。
     const seen = new Set(ids);
-    let pruned = 0, demoted = 0;
+    let demoted = 0;
     try {
       const prev = aglet.data.list("stories", { where: { on_front: true }, limit: 200 });
       for (const rec of (prev && prev.items) || []) {
         const d = rec.data || {};
         if (seen.has(d.hn_id)) continue;
-        if (d.liked || d.disliked) {
-          await aglet.dispatch("data.update", {
-            collection: "stories", id: rec.id,
-            patch: { on_front: false, rank: OFF_RANK },
-          });
-          demoted++;
-        } else {
-          await aglet.dispatch("data.delete", { collection: "stories", id: rec.id });
-          pruned++;
-        }
+        await aglet.dispatch("data.update", {
+          collection: "stories", id: rec.id,
+          patch: { on_front: false, rank: OFF_RANK },
+        });
+        demoted++;
       }
     } catch (e) {
       // **不许静默** —— 上一版这里只有 console.warn，异常就此消失，白查好几轮。
       // 进 return 值 → run_job 结果直接落 aglet.log，一眼看到。
-      console.warn("[hn] prune failed:", String(e));
+      console.warn("[hn] demote failed:", String(e));
       prune_err = String(e).slice(0, 120);
     }
 
-    // ── Phase 1.6：老格式迁移 ──────────────────────────────────────────────
-    // 0.1.4 之前入库的记录**没有 on_front/rank 字段** —— 上面的 prune 按
-    // `where {on_front:true}` 查,扫不到它们,于是升级后它们永久残留(实测 1212 条:不显示、
-    // 但一直占着库)。这里按「没有 on_front」识别并清掉:未标记的删,标记过的降级保留。
-    // limit 1000 是数据层上限(写 2000 会 RESOURCE_TOO_LARGE),超过一轮处理不完 —— 每轮
-    // 清一批,删掉后总数下降,几轮自然收敛,不必一次搞定。
+    // ── Phase 1.6：老格式补字段（**不删,只补**）──────────────────────────
+    // 0.1.4 之前入库的记录没有 on_front/rank —— 而 feed 现在按 `rank asc` 排,rank 为 null
+    // 在 SQLite ASC 下**排最前**,会插到榜内 30 条之前把顺序搞乱。所以给它们补上
+    // on_front=false + rank=OFF_RANK,归位到榜后。
+    //
+    // ⚠️ 0.1.5 在这里**删除**了未标记的老记录(1212 条,不可恢复)。现在一律只补字段。
+    // limit 1000 是数据层上限;超过一轮处理不完 → 每轮补一批,几轮收敛(补过的下轮跳过)。
     let migrated = 0;
     try {
       const legacy = aglet.data.list("stories", { limit: 1000 });
@@ -193,14 +188,10 @@ export default (aglet) => ({
         const d = rec.data || {};
         if (d.on_front !== undefined && d.on_front !== null) continue; // 已是新格式
         if (seen.has(d.hn_id)) continue; // 本轮在榜,上面 upsert 已补齐字段
-        if (d.liked || d.disliked) {
-          await aglet.dispatch("data.update", {
-            collection: "stories", id: rec.id,
-            patch: { on_front: false, rank: OFF_RANK },
-          });
-        } else {
-          await aglet.dispatch("data.delete", { collection: "stories", id: rec.id });
-        }
+        await aglet.dispatch("data.update", {
+          collection: "stories", id: rec.id,
+          patch: { on_front: false, rank: OFF_RANK },
+        });
         migrated++;
       }
     } catch (e) {
@@ -265,6 +256,6 @@ export default (aglet) => ({
       }
     }
 
-    return { fetched: ids.length, added, refreshed, translated, llm: endpoint ? "on" : "off", pruned, demoted, migrated, prune_err };
+    return { fetched: ids.length, added, refreshed, translated, llm: endpoint ? "on" : "off", demoted, migrated, prune_err };
   },
 });
