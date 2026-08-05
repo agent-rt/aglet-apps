@@ -37,13 +37,13 @@
                 <Show when={item.due_overdue}>
                   <HStack gap={1} align="center">
                     <Icon symbol="warning" size="sm" color="danger"/>
-                    <Text color="danger">{t.due} {item.due}</Text>
+                    <Text color="danger">{t.due} {item.due | relative}</Text>
                   </HStack>
                 </Show>
                 <Show when={item.due_ok}>
                   <HStack gap={1} align="center">
                     <Icon symbol="calendar" size="sm" color="secondary"/>
-                    <Text muted>{t.due} {item.due}</Text>
+                    <Text muted>{t.due} {item.due | relative}</Text>
                   </HStack>
                 </Show>
               </HStack>
@@ -84,13 +84,13 @@
                 <Show when={item.due_overdue}>
                   <HStack gap={1} align="center">
                     <Icon symbol="warning" size="sm" color="danger"/>
-                    <Text color="danger">{t.due} {item.due}</Text>
+                    <Text color="danger">{t.due} {item.due | relative}</Text>
                   </HStack>
                 </Show>
                 <Show when={item.due_ok}>
                   <HStack gap={1} align="center">
                     <Icon symbol="calendar" size="sm" color="secondary"/>
-                    <Text muted>{t.due} {item.due}</Text>
+                    <Text muted>{t.due} {item.due | relative}</Text>
                   </HStack>
                 </Show>
               </HStack>
@@ -132,7 +132,7 @@
                 <Show when={item.due_ok}>
                   <HStack gap={1} align="center">
                     <Icon symbol="calendar" size="sm" color="secondary"/>
-                    <Text muted>{t.due} {item.due}</Text>
+                    <Text muted>{t.due} {item.due | relative}</Text>
                   </HStack>
                 </Show>
               </HStack>
