@@ -1,0 +1,144 @@
+{
+  "id": "jira",
+  "name": {
+    "default": "Jira",
+    "zh": "Jira 工单",
+    "ja": "Jira 課題"
+  },
+  "description": {
+    "default": "My assigned Jira issues, grouped by status. Connects via Atlassian REST API + API token.",
+    "zh": "分配给我的 Jira 工单，按状态分桶。用 Atlassian REST API + API token 直连（零外部 CLI）。",
+    "ja": "自分にアサインされた Jira 課題。Atlassian REST API + API トークンで直接接続。"
+  },
+  "docs": "# Jira 工单\n\n只读看板：展示「分配给我」的 Jira 工单，按状态分三桶（进行中 / 待办 / 完成）。\n\n## 连接\n\n点工具栏齿轮（⚙）打开设置，填：\n- **Site**: 你的 Atlassian 域名，如 `yourteam.atlassian.net`\n- **Email**: 你的 Atlassian 账号邮箱\n- **API token**: 去 https://id.atlassian.com/manage-profile/security/api-tokens 建一个\n\ntoken 存进平台 Keychain（secrets 能力，非明文）；site/email 存 settings。app 不写存储代码。\n\n## 数据来源\n\n后台 job（每 10 分钟 + 开窗即刷）经 Atlassian REST API 拉：\n\n```\nPOST https://<site>/rest/api/3/search/jql\n  Authorization: Basic base64(email:token)\n  { jql: \"assignee = currentUser() ORDER BY updated DESC\", fields: [...] }\n```\n\n按 `key` upsert 进 `issues`；本轮未命中的（已关闭/转派）自动删除。`status.statusCategory`（new/indeterminate/done）精确分三桶。\n\n## 只读\n\nAgent 写库，用户浏览 + 点击跳 Jira 网页。\n",
+  "version": "0.1.0",
+  "renderer": "auto",
+  "author": "agent-rt",
+  "category": "productivity",
+  "keywords": [
+    "jira",
+    "issues",
+    "atlassian",
+    "api-token"
+  ],
+  "icon": "https://api.iconify.design/ph/kanban-fill.svg?color=%230052cc&width=256",
+  "permissions": [
+    "data:read",
+    "data:write",
+    "secrets:read",
+    "secrets:write",
+    "settings:read",
+    "settings:write"
+  ],
+  "min_runtime": "0.3.0",
+  "window": {
+    "style": "phone",
+    "width": 440,
+    "height": 780,
+    "resizable": false
+  },
+  "jobs": [
+    {
+      "id": "ingest",
+      "run": "ingest",
+      "every": "10m",
+      "while": "always"
+    }
+  ],
+  "collections": {
+    "issues": {
+      "schema": {
+        "key": {
+          "type": "string"
+        },
+        "summary": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "bucket": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "created": {
+          "type": "string"
+        },
+        "updated": {
+          "type": "string"
+        }
+      },
+      "indexes": [
+        "key",
+        "bucket",
+        "type",
+        "status",
+        "updated"
+      ]
+    },
+    "sync": {
+      "schema": {
+        "id": {
+          "type": "string"
+        },
+        "has_error": {
+          "type": "boolean"
+        },
+        "err": {
+          "type": "string"
+        },
+        "needs_auth": {
+          "type": "boolean"
+        },
+        "connected_email": {
+          "type": "string"
+        },
+        "refreshed_text": {
+          "type": "string"
+        },
+        "ts": {
+          "type": "number"
+        }
+      },
+      "indexes": [
+        "id"
+      ]
+    }
+  },
+  "auth": {
+    "groups": [
+      {
+        "title": "Jira Connection",
+        "help": "Read-only board of issues assigned to you. Create an API token at id.atlassian.com/manage-profile/security/api-tokens.",
+        "fields": [
+          {
+            "key": "site",
+            "label": "Site",
+            "type": "text",
+            "placeholder": "yourteam.atlassian.net",
+            "required": true
+          },
+          {
+            "key": "email",
+            "label": "Email",
+            "type": "text",
+            "placeholder": "you@company.com",
+            "required": true
+          },
+          {
+            "key": "jira_token",
+            "label": "API token",
+            "type": "secret",
+            "required": true,
+            "help": "Stored in the system Keychain."
+          }
+        ]
+      }
+    ]
+  }
+}

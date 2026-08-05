@@ -1,0 +1,15 @@
+{
+  "tabDoing": "進行中",
+  "tabTodo": "未対応",
+  "tabDone": "完了",
+  "openJira": "Jira で開く",
+  "emptyDoingTitle": "進行中の課題なし",
+  "emptyDoingDesc": "アサインされた課題で対応中のものはありません。",
+  "emptyTodoTitle": "未対応なし",
+  "emptyTodoDesc": "アサインされた未対応 / バックログの課題はありません。",
+  "emptyDoneTitle": "完了した課題なし",
+  "emptyDoneDesc": "完了した課題はここに表示されます。",
+  "created": "作成",
+  "updated": "更新",
+  "syncFailed": "同期失敗 —— Jira 設定(site / メール / API トークン)を確認"
+}

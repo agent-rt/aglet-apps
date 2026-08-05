@@ -1,0 +1,15 @@
+{
+  "tabDoing": "In Progress",
+  "tabTodo": "To Do",
+  "tabDone": "Done",
+  "openJira": "Open in Jira",
+  "emptyDoingTitle": "Nothing in progress",
+  "emptyDoingDesc": "No issues assigned to you are being worked on.",
+  "emptyTodoTitle": "Nothing queued",
+  "emptyTodoDesc": "No to-do / backlog issues assigned to you.",
+  "emptyDoneTitle": "Nothing done yet",
+  "emptyDoneDesc": "Completed issues will show up here.",
+  "created": "created",
+  "updated": "updated",
+  "syncFailed": "Sync failed — check your Jira settings (site / email / API token)"
+}

@@ -1,0 +1,15 @@
+{
+  "tabDoing": "进行中",
+  "tabTodo": "待办",
+  "tabDone": "完成",
+  "openJira": "在 Jira 打开",
+  "emptyDoingTitle": "没有进行中的工单",
+  "emptyDoingDesc": "分配给你的工单暂无在处理中的。",
+  "emptyTodoTitle": "没有待办",
+  "emptyTodoDesc": "分配给你的待办 / 排队工单为空。",
+  "emptyDoneTitle": "还没有完成的",
+  "emptyDoneDesc": "完成的工单会出现在这里。",
+  "created": "创建",
+  "updated": "更新",
+  "syncFailed": "同步失败 —— 请检查 Jira 设置(site / 邮箱 / API token)"
+}
