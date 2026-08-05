@@ -36,6 +36,17 @@ function fmtIso(iso) {
   return iso.slice(0, 10) + " " + iso.slice(11, 16);
 }
 
+// 截止日(fields.duedate)是**纯日期** "YYYY-MM-DD"、无时区 → 按**本地日终**判逾期
+// (当天 23:59 前不算迟)。已完成的桶不标逾期(事后追责没意义)。
+// 拆成两个互斥布尔给 UI 用:TSX 守卫只有正向可靠(否定式会编出无 when 的 If),
+// 所以「逾期」「未逾期」各给一个 flag,而不是让 ui.tsx 去写 !overdue。
+function dueInfo(due, bucket) {
+  if (!due) return { due: "", due_overdue: false, due_ok: false };
+  const end = new Date(`${due}T23:59:59`).getTime();
+  const overdue = bucket !== "done" && Number.isFinite(end) && end < Date.now();
+  return { due, due_overdue: overdue, due_ok: !overdue };
+}
+
 function clockText(ms) {
   const d = new Date(ms);
   const p = (n) => String(n).padStart(2, "0");
@@ -85,7 +96,7 @@ export default {
         headers: { Authorization: auth, "Content-Type": "application/json", Accept: "application/json" },
         body: JSON.stringify({
           jql: "assignee = currentUser() ORDER BY updated DESC",
-          fields: ["summary", "status", "created", "updated"],
+          fields: ["summary", "status", "created", "updated", "duedate"],
           maxResults: 100,
         }),
       });
@@ -113,16 +124,17 @@ export default {
       const fld = it.fields || {};
       const statusName = (fld.status && fld.status.name) || "";
       const cat = (fld.status && fld.status.statusCategory && fld.status.statusCategory.key) || "";
-      const row = {
+      const bucket = bucketOf(cat, statusName);
+      const row = Object.assign({
         key,
         summary: fld.summary || "",
         status: statusName,
-        bucket: bucketOf(cat, statusName),
+        bucket,
         type: typeOf(key),
         url: `https://${site}/browse/${key}`,
         created: fmtIso(fld.created),
         updated: fmtIso(fld.updated),
-      };
+      }, dueInfo(fld.duedate, bucket));
       // 原子 upsert by key —— 取代旧的 list-then-create/update（两次往返 + 竞态）。
       try {
         const res = await aglet.dispatch("data.upsert", { collection: "issues", by_field: "key", data: row });

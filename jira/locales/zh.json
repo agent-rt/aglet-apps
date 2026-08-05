@@ -11,5 +11,6 @@
   "emptyDoneDesc": "完成的工单会出现在这里。",
   "created": "创建",
   "updated": "更新",
-  "syncFailed": "同步失败 —— 请检查 Jira 设置(site / 邮箱 / API token)"
+  "syncFailed": "同步失败 —— 请检查 Jira 设置(site / 邮箱 / API token)",
+  "due": "截止"
 }

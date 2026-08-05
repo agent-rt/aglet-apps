@@ -71,6 +71,15 @@
         },
         "updated": {
           "type": "string"
+        },
+        "due": {
+          "type": "string"
+        },
+        "due_overdue": {
+          "type": "boolean"
+        },
+        "due_ok": {
+          "type": "boolean"
         }
       },
       "indexes": [
@@ -78,7 +87,8 @@
         "bucket",
         "type",
         "status",
-        "updated"
+        "updated",
+        "due"
       ]
     },
     "sync": {

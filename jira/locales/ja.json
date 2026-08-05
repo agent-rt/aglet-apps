@@ -11,5 +11,6 @@
   "emptyDoneDesc": "完了した課題はここに表示されます。",
   "created": "作成",
   "updated": "更新",
-  "syncFailed": "同期失敗 —— Jira 設定(site / メール / API トークン)を確認"
+  "syncFailed": "同期失敗 —— Jira 設定(site / メール / API トークン)を確認",
+  "due": "期限"
 }

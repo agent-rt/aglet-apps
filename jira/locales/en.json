@@ -11,5 +11,6 @@
   "emptyDoneDesc": "Completed issues will show up here.",
   "created": "created",
   "updated": "updated",
-  "syncFailed": "Sync failed — check your Jira settings (site / email / API token)"
+  "syncFailed": "Sync failed — check your Jira settings (site / email / API token)",
+  "due": "due"
 }

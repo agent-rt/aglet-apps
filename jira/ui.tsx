@@ -2,22 +2,11 @@
   {/* Jira 只读看板:Atlassian REST API + API token 直连(零 CLI)。凭据在「设置」tab 填,
       token 存 secrets(Keychain)。按 status.statusCategory 三桶分 tab。点卡片跳浏览器。 */}
   {/* 未配置引导由宿主通用横幅提供(框架检测 required 设置未填),app 不再手搓。 */}
-  {/* 卡片版式对齐 hn:标题走 <Heading level={3}>(不是 muted 小字)、元信息合成一行、
-      时间用 |relative 管道(parseDateInput 认 "YYYY-MM-DD HH:MM")、**不用 tailwind
-      className**,间距/对齐全走组件 props。pageSize 也跟 hn 取 10,滚动体感一致。 */}
-  {/* 同步失败内联提示(不弹 OS 通知)。状态由 ingest job 写进 `sync` 单行 —— 后台层
-      (data-only)不能 setState,且 manifest.state 顶层 key 会被重播种、写不持久,故数据驱动。
-      <Item> 是模板型 slot:children 第一个必须是 element,裸 `{cond && ...}` 会
-      InvalidPlacement,故显式包 <Show when>(守卫只有正向可靠)。 */}
-  <DataList collection="sync" query={{ where: { id: "state" }, limit: 1 }}>
-    <Item>
-      <Show when={item.has_error}>
-        <HStack gap={3} align="center">
-          <Tag label={t.syncFailed} color="danger" icon="warning"/>
-        </HStack>
-      </Show>
-    </Item>
-  </DataList>
+  {/* ⚠️ Page 的直接子级**只放 Tabs**(照 hn):曾在这上面加过一个 sync 集合的错误横幅,
+      多出的兄弟节点会让 Tabs 内列表的版式跑掉。同步失败的可见性走 jobs.js 的
+      console.warn(进 logs/jira.jsonl)+ `sync` 集合落库,不占 UI。 */}
+  {/* 卡片版式对齐 hn:标题走 <Heading level={3}>、元信息合成一行、时间用 |relative
+      管道、**不用 tailwind className**,间距/对齐全走组件 props。 */}
   <Tabs id="main" defaultValue="doing" position="bottom">
 
     <Tab value="doing" label={t.tabDoing} icon="arrow-right">
@@ -43,6 +32,20 @@
                   <Icon symbol="clock" size="sm" color="secondary"/>
                   <Text muted>{item.updated | relative}</Text>
                 </HStack>
+                {/* 截止日:逾期红 + warning,未逾期灰 + calendar。两个**正向**守卫
+                    (flag 由 jobs.js 算好),不写 !overdue —— 否定式编不出 when。 */}
+                <Show when={item.due_overdue}>
+                  <HStack gap={1} align="center">
+                    <Icon symbol="warning" size="sm" color="danger"/>
+                    <Text color="danger">{t.due} {item.due}</Text>
+                  </HStack>
+                </Show>
+                <Show when={item.due_ok}>
+                  <HStack gap={1} align="center">
+                    <Icon symbol="calendar" size="sm" color="secondary"/>
+                    <Text muted>{t.due} {item.due}</Text>
+                  </HStack>
+                </Show>
               </HStack>
               <HStack justify="end" gap={6} align="center">
                 <Tooltip content={item.url}>
@@ -78,6 +81,18 @@
                   <Icon symbol="clock" size="sm" color="secondary"/>
                   <Text muted>{item.updated | relative}</Text>
                 </HStack>
+                <Show when={item.due_overdue}>
+                  <HStack gap={1} align="center">
+                    <Icon symbol="warning" size="sm" color="danger"/>
+                    <Text color="danger">{t.due} {item.due}</Text>
+                  </HStack>
+                </Show>
+                <Show when={item.due_ok}>
+                  <HStack gap={1} align="center">
+                    <Icon symbol="calendar" size="sm" color="secondary"/>
+                    <Text muted>{t.due} {item.due}</Text>
+                  </HStack>
+                </Show>
               </HStack>
               <HStack justify="end" gap={6} align="center">
                 <Tooltip content={item.url}>
@@ -113,6 +128,13 @@
                   <Icon symbol="clock" size="sm" color="secondary"/>
                   <Text muted>{item.updated | relative}</Text>
                 </HStack>
+                {/* done 桶不标逾期(jobs.js 里 bucket==="done" 一律 due_overdue=false)。 */}
+                <Show when={item.due_ok}>
+                  <HStack gap={1} align="center">
+                    <Icon symbol="calendar" size="sm" color="secondary"/>
+                    <Text muted>{t.due} {item.due}</Text>
+                  </HStack>
+                </Show>
               </HStack>
               <HStack justify="end" gap={6} align="center">
                 <Tooltip content={item.url}>
