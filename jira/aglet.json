@@ -78,7 +78,10 @@
         "due_overdue": {
           "type": "boolean"
         },
-        "due_ok": {
+        "due_soon": {
+          "type": "boolean"
+        },
+        "due_later": {
           "type": "boolean"
         }
       },

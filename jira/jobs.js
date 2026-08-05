@@ -36,15 +36,26 @@ function fmtIso(iso) {
   return iso.slice(0, 10) + " " + iso.slice(11, 16);
 }
 
-// 截止日(fields.duedate)是**纯日期** "YYYY-MM-DD"、无时区 → 按**本地日终**判逾期
-// (当天 23:59 前不算迟)。已完成的桶不标逾期(事后追责没意义)。
-// 拆成两个互斥布尔给 UI 用:TSX 守卫只有正向可靠(否定式会编出无 when 的 If),
-// 所以「逾期」「未逾期」各给一个 flag,而不是让 ui.tsx 去写 !overdue。
+// 「临近」阈值:≤3 天内到期算紧急(含今天)。想更早/更晚提醒改这个常量即可。
+const DUE_SOON_MS = 3 * 86400000;
+
+// 截止日(fields.duedate)是**纯日期** "YYYY-MM-DD"、无时区 → 按**本地日终**算
+// (当天 23:59 前不算迟)。三档紧急度,颜色在 ui.tsx 决定(这里只出事实,不 bake 颜色):
+//   · due_overdue  已过期      → danger + warning 图标
+//   · due_soon     ≤3 天内到期 → warning
+//   · due_later    还早         → muted
+// 已完成的桶一律落 due_later —— 已经做完了不该再报警。
+// 三个 flag **互斥且正向**:TSX 守卫只有正向可靠(否定式会编出无 when 的 If),
+// 所以每档给一个 flag,而不是让 ui.tsx 去写 !overdue && !soon。
 function dueInfo(due, bucket) {
-  if (!due) return { due: "", due_overdue: false, due_ok: false };
+  if (!due) return { due: "", due_overdue: false, due_soon: false, due_later: false };
   const end = new Date(`${due}T23:59:59`).getTime();
-  const overdue = bucket !== "done" && Number.isFinite(end) && end < Date.now();
-  return { due, due_overdue: overdue, due_ok: !overdue };
+  if (!Number.isFinite(end)) return { due, due_overdue: false, due_soon: false, due_later: true };
+  const done = bucket === "done";
+  const now = Date.now();
+  const overdue = !done && end < now;
+  const soon = !done && !overdue && end < now + DUE_SOON_MS;
+  return { due, due_overdue: overdue, due_soon: soon, due_later: !overdue && !soon };
 }
 
 function clockText(ms) {

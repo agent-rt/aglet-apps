@@ -28,23 +28,40 @@
               </HStack>
               <HStack gap={5} align="center">
                 <Text muted>{item.key}</Text>
-                <HStack gap={1} align="center">
-                  <Icon symbol="clock" size="sm" color="secondary"/>
-                  <Text muted>{item.updated | relative}</Text>
-                </HStack>
-                {/* 截止日:逾期红 + warning,未逾期灰 + calendar。两个**正向**守卫
-                    (flag 由 jobs.js 算好),不写 !overdue —— 否定式编不出 when。 */}
+                <Tooltip content={item.updated}>
+                  <HStack gap={1} align="center">
+                    <Icon symbol="clock" size="sm" color="secondary"/>
+                    <Text muted>{item.updated | relative}</Text>
+                  </HStack>
+                </Tooltip>
+                {/* 截止日三档紧急度(flag 由 jobs.js 算,颜色在这里定 —— 改配色不必重跑
+                    ingest):overdue 红+warning 图标 / soon(≤3天) 橙 / later 灰。三个都是
+                    **正向**守卫:否定式(!overdue && !soon)会编出无 when 的 If → web 显 native 隐。
+                    正文给相对时间("in 4 days")读着快,**真正的日期**放 <Tooltip> —— native
+                    渲成 .help() 原生 hover 提示,不占列表宽度。 */}
                 <Show when={item.due_overdue}>
-                  <HStack gap={1} align="center">
-                    <Icon symbol="warning" size="sm" color="danger"/>
-                    <Text color="danger">{t.due} {item.due | relative}</Text>
-                  </HStack>
+                  <Tooltip content={item.due}>
+                    <HStack gap={1} align="center">
+                      <Icon symbol="warning" size="sm" color="danger"/>
+                      <Text color="danger">{t.due} {item.due | relative}</Text>
+                    </HStack>
+                  </Tooltip>
                 </Show>
-                <Show when={item.due_ok}>
-                  <HStack gap={1} align="center">
-                    <Icon symbol="calendar" size="sm" color="secondary"/>
-                    <Text muted>{t.due} {item.due | relative}</Text>
-                  </HStack>
+                <Show when={item.due_soon}>
+                  <Tooltip content={item.due}>
+                    <HStack gap={1} align="center">
+                      <Icon symbol="calendar" size="sm" color="warning"/>
+                      <Text color="warning">{t.due} {item.due | relative}</Text>
+                    </HStack>
+                  </Tooltip>
+                </Show>
+                <Show when={item.due_later}>
+                  <Tooltip content={item.due}>
+                    <HStack gap={1} align="center">
+                      <Icon symbol="calendar" size="sm" color="secondary"/>
+                      <Text muted>{t.due} {item.due | relative}</Text>
+                    </HStack>
+                  </Tooltip>
                 </Show>
               </HStack>
               <HStack justify="end" gap={6} align="center">
@@ -77,21 +94,35 @@
               </HStack>
               <HStack gap={5} align="center">
                 <Text muted>{item.key}</Text>
-                <HStack gap={1} align="center">
-                  <Icon symbol="clock" size="sm" color="secondary"/>
-                  <Text muted>{item.updated | relative}</Text>
-                </HStack>
+                <Tooltip content={item.updated}>
+                  <HStack gap={1} align="center">
+                    <Icon symbol="clock" size="sm" color="secondary"/>
+                    <Text muted>{item.updated | relative}</Text>
+                  </HStack>
+                </Tooltip>
                 <Show when={item.due_overdue}>
-                  <HStack gap={1} align="center">
-                    <Icon symbol="warning" size="sm" color="danger"/>
-                    <Text color="danger">{t.due} {item.due | relative}</Text>
-                  </HStack>
+                  <Tooltip content={item.due}>
+                    <HStack gap={1} align="center">
+                      <Icon symbol="warning" size="sm" color="danger"/>
+                      <Text color="danger">{t.due} {item.due | relative}</Text>
+                    </HStack>
+                  </Tooltip>
                 </Show>
-                <Show when={item.due_ok}>
-                  <HStack gap={1} align="center">
-                    <Icon symbol="calendar" size="sm" color="secondary"/>
-                    <Text muted>{t.due} {item.due | relative}</Text>
-                  </HStack>
+                <Show when={item.due_soon}>
+                  <Tooltip content={item.due}>
+                    <HStack gap={1} align="center">
+                      <Icon symbol="calendar" size="sm" color="warning"/>
+                      <Text color="warning">{t.due} {item.due | relative}</Text>
+                    </HStack>
+                  </Tooltip>
+                </Show>
+                <Show when={item.due_later}>
+                  <Tooltip content={item.due}>
+                    <HStack gap={1} align="center">
+                      <Icon symbol="calendar" size="sm" color="secondary"/>
+                      <Text muted>{t.due} {item.due | relative}</Text>
+                    </HStack>
+                  </Tooltip>
                 </Show>
               </HStack>
               <HStack justify="end" gap={6} align="center">
@@ -124,16 +155,28 @@
               </HStack>
               <HStack gap={5} align="center">
                 <Text muted>{item.key}</Text>
-                <HStack gap={1} align="center">
-                  <Icon symbol="clock" size="sm" color="secondary"/>
-                  <Text muted>{item.updated | relative}</Text>
-                </HStack>
-                {/* done 桶不标逾期(jobs.js 里 bucket==="done" 一律 due_overdue=false)。 */}
-                <Show when={item.due_ok}>
+                <Tooltip content={item.updated}>
                   <HStack gap={1} align="center">
-                    <Icon symbol="calendar" size="sm" color="secondary"/>
-                    <Text muted>{t.due} {item.due | relative}</Text>
+                    <Icon symbol="clock" size="sm" color="secondary"/>
+                    <Text muted>{item.updated | relative}</Text>
                   </HStack>
+                </Tooltip>
+                {/* done 桶不标逾期(jobs.js 里 bucket==="done" 一律 due_overdue=false)。 */}
+                <Show when={item.due_soon}>
+                  <Tooltip content={item.due}>
+                    <HStack gap={1} align="center">
+                      <Icon symbol="calendar" size="sm" color="warning"/>
+                      <Text color="warning">{t.due} {item.due | relative}</Text>
+                    </HStack>
+                  </Tooltip>
+                </Show>
+                <Show when={item.due_later}>
+                  <Tooltip content={item.due}>
+                    <HStack gap={1} align="center">
+                      <Icon symbol="calendar" size="sm" color="secondary"/>
+                      <Text muted>{t.due} {item.due | relative}</Text>
+                    </HStack>
+                  </Tooltip>
                 </Show>
               </HStack>
               <HStack justify="end" gap={6} align="center">
