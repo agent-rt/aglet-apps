@@ -1,0 +1,195 @@
+[
+  {
+    "settings": {
+      "site": "yourteam.atlassian.net",
+      "email": "you@example.com"
+    }
+  },
+  {
+    "secrets": {
+      "jira_token": "shots-placeholder-not-a-real-token"
+    }
+  },
+  {
+    "collection": "sync",
+    "data": {
+      "id": "state",
+      "has_error": false,
+      "err": "",
+      "needs_auth": false,
+      "connected_email": "you@example.com",
+      "refreshed_text": "14:32",
+      "ts": 0
+    }
+  },
+  {
+    "collection": "issues",
+    "data": {
+      "key": "WEB-4412",
+      "summary": "Checkout page drops the coupon field on Safari 18",
+      "status": "In Progress",
+      "bucket": "doing",
+      "type": "dev",
+      "url": "https://yourteam.atlassian.net/browse/WEB-4412",
+      "created": "@iso:-9d",
+      "updated": "@iso:-2h",
+      "due": "@iso:-2d",
+      "due_overdue": true,
+      "due_soon": false,
+      "due_later": false
+    }
+  },
+  {
+    "collection": "issues",
+    "data": {
+      "key": "WEB-4408",
+      "summary": "Add retry with backoff to the payment webhook consumer",
+      "status": "In Review",
+      "bucket": "doing",
+      "type": "dev",
+      "url": "https://yourteam.atlassian.net/browse/WEB-4408",
+      "created": "@iso:-12d",
+      "updated": "@iso:-7h",
+      "due": "@iso:+1d",
+      "due_overdue": false,
+      "due_soon": true,
+      "due_later": false
+    }
+  },
+  {
+    "collection": "issues",
+    "data": {
+      "key": "INC-231",
+      "summary": "Nightly export job times out when the queue exceeds 50k rows",
+      "status": "Investigating",
+      "bucket": "doing",
+      "type": "incident",
+      "url": "https://yourteam.atlassian.net/browse/INC-231",
+      "created": "@iso:-3d",
+      "updated": "@iso:-20h",
+      "due": "@iso:+12d",
+      "due_overdue": false,
+      "due_soon": false,
+      "due_later": true
+    }
+  },
+  {
+    "collection": "issues",
+    "data": {
+      "key": "WEB-4390",
+      "summary": "Dark mode: tokenise the remaining hard-coded greys",
+      "status": "In Progress",
+      "bucket": "doing",
+      "type": "dev",
+      "url": "https://yourteam.atlassian.net/browse/WEB-4390",
+      "created": "@iso:-16d",
+      "updated": "@iso:-2d",
+      "due": "",
+      "due_overdue": false,
+      "due_soon": false,
+      "due_later": false
+    }
+  },
+  {
+    "collection": "issues",
+    "data": {
+      "key": "WEB-4431",
+      "summary": "Ship the invite-teammates flow behind a feature flag",
+      "status": "To Do",
+      "bucket": "todo",
+      "type": "dev",
+      "url": "https://yourteam.atlassian.net/browse/WEB-4431",
+      "created": "@iso:-1d",
+      "updated": "@iso:-4h",
+      "due": "@iso:+2d",
+      "due_overdue": false,
+      "due_soon": true,
+      "due_later": false
+    }
+  },
+  {
+    "collection": "issues",
+    "data": {
+      "key": "PJM-1180",
+      "summary": "Q3 roadmap: pick the two bets we actually staff",
+      "status": "To Do",
+      "bucket": "todo",
+      "type": "project",
+      "url": "https://yourteam.atlassian.net/browse/PJM-1180",
+      "created": "@iso:-6d",
+      "updated": "@iso:-1d",
+      "due": "@iso:+3w",
+      "due_overdue": false,
+      "due_soon": false,
+      "due_later": true
+    }
+  },
+  {
+    "collection": "issues",
+    "data": {
+      "key": "WEB-4425",
+      "summary": "Replace the hand-rolled date picker with the design-system one",
+      "status": "Backlog",
+      "bucket": "todo",
+      "type": "dev",
+      "url": "https://yourteam.atlassian.net/browse/WEB-4425",
+      "created": "@iso:-8d",
+      "updated": "@iso:-3d",
+      "due": "",
+      "due_overdue": false,
+      "due_soon": false,
+      "due_later": false
+    }
+  },
+  {
+    "collection": "issues",
+    "data": {
+      "key": "WEB-4377",
+      "summary": "Cache the pricing table response at the edge",
+      "status": "Done",
+      "bucket": "done",
+      "type": "dev",
+      "url": "https://yourteam.atlassian.net/browse/WEB-4377",
+      "created": "@iso:-21d",
+      "updated": "@iso:-5h",
+      "due": "@iso:-1d",
+      "due_overdue": false,
+      "due_soon": false,
+      "due_later": true
+    }
+  },
+  {
+    "collection": "issues",
+    "data": {
+      "key": "INC-224",
+      "summary": "Postmortem: search index rebuild wiped synonyms",
+      "status": "Resolved",
+      "bucket": "done",
+      "type": "incident",
+      "url": "https://yourteam.atlassian.net/browse/INC-224",
+      "created": "@iso:-18d",
+      "updated": "@iso:-2d",
+      "due": "@iso:-6d",
+      "due_overdue": false,
+      "due_soon": false,
+      "due_later": true
+    }
+  },
+  {
+    "collection": "issues",
+    "data": {
+      "key": "WEB-4361",
+      "summary": "Drop the legacy /v1 session endpoint",
+      "status": "Ready for release",
+      "bucket": "done",
+      "type": "dev",
+      "url": "https://yourteam.atlassian.net/browse/WEB-4361",
+      "created": "@iso:-25d",
+      "updated": "@iso:-4d",
+      "due": "",
+      "due_overdue": false,
+      "due_soon": false,
+      "due_later": false
+    }
+  }
+]

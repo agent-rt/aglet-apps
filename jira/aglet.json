@@ -153,5 +153,35 @@
         ]
       }
     ]
+  },
+  "shots": {
+    "seed": "jira.shots.seed.json",
+    "locales": [
+      "en",
+      "zh"
+    ],
+    "themes": [
+      "dark",
+      "light"
+    ],
+    "frames": [
+      {
+        "id": "doing",
+        "caption": {
+          "default": "Everything assigned to you, at a glance",
+          "zh": "分配给我的工单，一眼看完"
+        }
+      },
+      {
+        "id": "todo",
+        "state": {
+          "/state/_ui/tabs/main": "todo"
+        },
+        "caption": {
+          "default": "Due dates that actually stand out",
+          "zh": "截止日按紧急度着色"
+        }
+      }
+    ]
   }
 }
