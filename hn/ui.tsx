@@ -4,8 +4,11 @@
       <DataList
         collection="stories"
         query={{
-          where: { disliked: false },
-          orderBy: [{ field: "hn_id", direction: "desc" }],
+          // feed = **当前 HN 首页**:只取在榜的(on_front),按官方 rank 升序 —— rank 是
+          // topstories.json 的数组下标,即 HN 的热度排名。此前按 hn_id desc(提交时间)排,
+          // 顺序与首页几乎无重合(官方 #1 常是老帖)。离榜的由 ingest 清理/降级。
+          where: { on_front: true, disliked: false },
+          orderBy: [{ field: "rank", direction: "asc" }],
         }}
         paginate={{ pageSize: 10, infinite: true }}
       >

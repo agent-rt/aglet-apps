@@ -16,6 +16,8 @@
 // (installAppCtx 后 = app-bound,settings/secrets/data 不用手传 app_id);fetch 全局照旧,
 // 并发抓用原生 Promise.all(urls.map(fetch))(fetchAll 别名已删,见 PER_APP_SCRIPTS_MODEL)。
 const DEFAULT_MAX = 30;
+// 离榜记录的 rank 哨兵:UI 按 rank asc 排,离榜的自然沉到榜内之后。
+const OFF_RANK = 9999;
 
 function domainOf(u) {
   if (!u) return "";
@@ -75,6 +77,7 @@ async function llmcall(endpoint, model, key, system, user) {
 export default (aglet) => ({
   async ingest(args) {
     const MAX = (args && args.max) || DEFAULT_MAX;
+    let prune_err = ""; // 离榜清理若失败,经 return 值暴露(见 Phase 1.5)
 
     const ids_resp = await fetch("https://hacker-news.firebaseio.com/v0/topstories.json");
     if (!ids_resp.ok) throw new Error(`topstories fetch failed: ${ids_resp.status}`);
@@ -103,6 +106,11 @@ export default (aglet) => ({
 
       const up = aglet.data.upsert("stories", "hn_id", {
         hn_id: id,
+        // `i` 是 topstories.json 数组下标 = **HN 首页的热度排名**(score × 时间衰减)。
+        // 此前这个下标被丢掉,UI 只能按 hn_id(= 提交时间)倒序 → 榜单顺序跟首页完全不同:
+        // 官方 #1 常是 id 很小的老帖(发布早、热度高),按 id 排会沉到几百位后。
+        rank: i,
+        on_front: true, // 本轮在榜;离榜的在下面 prune 里降级/删除
         title_en: item.title,
         url: item.url || `https://news.ycombinator.com/item?id=${id}`,
         domain: domainOf(item.url),
@@ -128,6 +136,41 @@ export default (aglet) => ({
         const cur = up.data || {};
         if (!cur.title || !cur.summary) pending.push({ id: up.id, title_en: item.title, kids, text: selfText });
       }
+    }
+
+    // ── Phase 1.5：离榜清理 ────────────────────────────────────────────────
+    // 此前**只增不减**:每轮 upsert top30 却从不清理离榜的,库里累积了上过榜的所有故事
+    // (实测 1242 条),而首页只有 30 条 —— 列表里混着大量旧帖。
+    // 策略:离榜且用户没标记过 → 删(feed 就是当前首页);标记过(liked/disliked)→ 保留但
+    // 降级(on_front=false, rank=OFF_RANK),收藏/屏蔽列表照旧能看到,且排在榜内之后。
+    //
+    // ⚠️ 只查 `on_front: true`(上一轮在榜的,≤30 条),**别拉全表**:data.list 的 limit
+    // 上限是 1000,写 2000 直接 RESOURCE_TOO_LARGE —— 而那个异常被 catch 静默吞掉,
+    // 表现为「prune 一条没处理、也看不到任何错」(实际排查花了好几轮)。离榜且未标记的
+    // 会被删掉,所以「上一轮在榜」这个集合足以覆盖所有待处理对象。
+    const seen = new Set(ids);
+    let pruned = 0, demoted = 0;
+    try {
+      const prev = aglet.data.list("stories", { where: { on_front: true }, limit: 200 });
+      for (const rec of (prev && prev.items) || []) {
+        const d = rec.data || {};
+        if (seen.has(d.hn_id)) continue;
+        if (d.liked || d.disliked) {
+          await aglet.dispatch("data.update", {
+            collection: "stories", id: rec.id,
+            patch: { on_front: false, rank: OFF_RANK },
+          });
+          demoted++;
+        } else {
+          await aglet.dispatch("data.delete", { collection: "stories", id: rec.id });
+          pruned++;
+        }
+      }
+    } catch (e) {
+      // **不许静默** —— 上一版这里只有 console.warn，异常就此消失，白查好几轮。
+      // 进 return 值 → run_job 结果直接落 aglet.log，一眼看到。
+      console.warn("[hn] prune failed:", String(e));
+      prune_err = String(e).slice(0, 120);
     }
 
     // ── Phase 2（渐进）：翻译标题 + 基于真实内容的摘要。未配 LLM → 跳过(纯英文榜)。──
@@ -187,6 +230,6 @@ export default (aglet) => ({
       }
     }
 
-    return { fetched: ids.length, added, refreshed, translated, llm: endpoint ? "on" : "off" };
+    return { fetched: ids.length, added, refreshed, translated, llm: endpoint ? "on" : "off", pruned, demoted, prune_err };
   },
 });
