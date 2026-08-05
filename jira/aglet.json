@@ -30,7 +30,7 @@
     "settings:read",
     "settings:write"
   ],
-  "min_runtime": "0.3.0",
+  "min_runtime": "0.3.1",
   "window": {
     "style": "phone",
     "width": 440,
