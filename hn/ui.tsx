@@ -1,4 +1,6 @@
-<Page>
+<Page onEnter={() => scripts.refreshNow()}>
+  {/* onEnter：开窗即刷一轮榜。feed 只显示 `on_front:true`，而 0.1.4 之前入库的老记录没有
+      这个字段 —— 没有它的话升级后界面会空着等到下一个 15 分钟 job 周期（实测踩过）。 */}
   <Tabs id="main" defaultValue="feed" position="bottom">
     <Tab value="feed" label={t.tabFeed} icon="fire">
       <DataList

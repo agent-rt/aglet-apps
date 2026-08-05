@@ -75,6 +75,13 @@ async function llmcall(endpoint, model, key, system, user) {
 
 // data.list 在 script 侧返回 { items: [...] }（call 解 envelope.data）。容错处理。
 export default (aglet) => ({
+  // Page.onEnter → 打开窗口立刻刷一轮。**升级/新装后的空窗期就靠它兜住**:feed 只显示
+  // `on_front: true` 的记录,而 0.1.4 之前入库的老记录没有这个字段 → 升级后界面是空的,
+  // 而 hn 的 job 周期是 15 分钟,此前只能干等(实测踩过:用户升级后界面空白)。
+  async refreshNow() {
+    await aglet.dispatch("scheduler.run_app", {});
+  },
+
   async ingest(args) {
     const MAX = (args && args.max) || DEFAULT_MAX;
     let prune_err = ""; // 离榜清理若失败,经 return 值暴露(见 Phase 1.5)
@@ -173,6 +180,34 @@ export default (aglet) => ({
       prune_err = String(e).slice(0, 120);
     }
 
+    // ── Phase 1.6：老格式迁移 ──────────────────────────────────────────────
+    // 0.1.4 之前入库的记录**没有 on_front/rank 字段** —— 上面的 prune 按
+    // `where {on_front:true}` 查,扫不到它们,于是升级后它们永久残留(实测 1212 条:不显示、
+    // 但一直占着库)。这里按「没有 on_front」识别并清掉:未标记的删,标记过的降级保留。
+    // limit 1000 是数据层上限(写 2000 会 RESOURCE_TOO_LARGE),超过一轮处理不完 —— 每轮
+    // 清一批,删掉后总数下降,几轮自然收敛,不必一次搞定。
+    let migrated = 0;
+    try {
+      const legacy = aglet.data.list("stories", { limit: 1000 });
+      for (const rec of (legacy && legacy.items) || []) {
+        const d = rec.data || {};
+        if (d.on_front !== undefined && d.on_front !== null) continue; // 已是新格式
+        if (seen.has(d.hn_id)) continue; // 本轮在榜,上面 upsert 已补齐字段
+        if (d.liked || d.disliked) {
+          await aglet.dispatch("data.update", {
+            collection: "stories", id: rec.id,
+            patch: { on_front: false, rank: OFF_RANK },
+          });
+        } else {
+          await aglet.dispatch("data.delete", { collection: "stories", id: rec.id });
+        }
+        migrated++;
+      }
+    } catch (e) {
+      console.warn("[hn] migrate failed:", String(e));
+      prune_err = (prune_err ? prune_err + "; " : "") + "migrate:" + String(e).slice(0, 80);
+    }
+
     // ── Phase 2（渐进）：翻译标题 + 基于真实内容的摘要。未配 LLM → 跳过(纯英文榜)。──
     const endpoint = cfg("llm_endpoint");
     let translated = 0;
@@ -230,6 +265,6 @@ export default (aglet) => ({
       }
     }
 
-    return { fetched: ids.length, added, refreshed, translated, llm: endpoint ? "on" : "off", pruned, demoted, prune_err };
+    return { fetched: ids.length, added, refreshed, translated, llm: endpoint ? "on" : "off", pruned, demoted, migrated, prune_err };
   },
 });

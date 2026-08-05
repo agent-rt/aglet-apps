@@ -13,7 +13,7 @@
     "ja": "Agent が翻訳・要約した HackerNews。お気に入りとブロックに対応。"
   },
   "docs": "# HackerNews Reader\n\nHN 阅读器。Agent 是核心 —— 从 news.ycombinator.com 拉首页、按用户当前语言翻译标题 + 写 1-2 句摘要后入库。用户在 miniapp 里浏览、点赞、屏蔽。\n\n## 关于语言\n\n用户的 macOS / browser 系统语言决定 agent 的翻译目标语种。一份用户环境只装一份 hn —— 数据库里 `title` 始终是该用户当前语言。\n\n- 中文用户 → title=中文翻译，summary=中文摘要\n- 日语用户 → title=日语翻译\n- 英文用户 → title=title_en 原文（不翻译）\n\n若用户切换系统语言：要么 agent 在下次 refresh 重译现有 stories，要么用户手动清库后重拉。小工具不负责数据 i18n。\n\n## 工作流（每次刷新）\n\n```sh\n# 1. 拉首页 markdown\nmdctl https://news.ycombinator.com > /tmp/hn.md\n\n# 2. 解析每条 story\n# 3. 对每条 story:\n#    a) aglet bridge hn '{\"action\":\"data.list\",\"params\":{\"collection\":\"stories\",\"query\":{\"where\":{\"hn_id\":<id>}}}}'\n#    b) 若已存在 → data.update 仅更新 points / comments / age（保留 liked/disliked）\n#    c) 不存在 → 翻译 title_en → title（按用户语言），写 summary（按用户语言），data.create\n```\n\n## 翻译规范\n\n- **title_en**：HN 原文标题原样保留（用户切语言时备查）。\n- **title**：用户当前语言；技术名词保留英文（Rust / Kafka / GPU / OAuth）。\n- **summary**：1-2 句，≤ 80 字符/词；不复述标题，写「为什么这条上 HN」。\n- 每次 ingestion ≤ 30 条。\n\n## 写入示例\n\n```sh\naglet bridge hn '{\n  \"id\": \"x\",\n  \"action\": \"data.create\",\n  \"params\": {\n    \"collection\": \"stories\",\n    \"data\": {\n      \"hn_id\": 48111545,\n      \"title_en\": \"Why our software dies\",\n      \"title\": \"为什么我们的软件会死\",\n      \"summary\": \"团队规模增长后代码所有权稀释，老旧路径无人维护，最终被新写法取代。\",\n      \"points\": 576,\n      \"liked\": false,\n      \"disliked\": false\n    }\n  }\n}'\n```\n\n## 不要\n\n- 不要把英文 title 直接写进 title（中文用户场景下应翻译）\n- 不要触碰 `liked` / `disliked` —— 那是用户字段，Agent 永远写 false/false\n- 同一 hn_id 不要重复 data.create — 必须先 data.list 检查\n",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "min_runtime": "0.1.8",
   "license": "MIT",
   "renderer": "auto",
